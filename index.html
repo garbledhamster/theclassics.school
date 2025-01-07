@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>theclassics.school – Grow Mind, Body, Spirit, and Life</title>
+  <style>
+    /* ----- Color Palette (from "How to Read a Book") ----- 
+       fbab34 (Yellow)
+       e04e19 (Red)
+       e98839 (Orange/Brown)
+       fcefdc (Soft White)
+       829559 (Green)
+       d8c19c (Beige/Green)
+    */
+
+    :root {
+      --color-yellow:  #FBAB34;
+      --color-red:     #E04E19;
+      --color-orange:  #E98839;
+      --color-white:   #FCEFDC;
+      --color-green:   #829559;
+      --color-beige:   #D8C19C;
+
+      --font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--color-white);
+      line-height: 1.5;
+      color: #333;
+    }
+
+    /* ----- Top Bar ----- */
+    header {
+      background-color: var(--color-beige);
+      padding: 1rem;
+      text-align: center;
+    }
+
+    header h1 {
+      color: var(--color-red);
+      font-size: 2rem;
+      margin-bottom: 0.25rem;
+    }
+
+    header p {
+      color: var(--color-green);
+      margin-bottom: 0;
+    }
+
+    nav {
+      background-color: var(--color-orange);
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem;
+    }
+
+    nav a {
+      color: var(--color-white);
+      text-decoration: none;
+      margin: 0 1rem;
+      font-weight: bold;
+    }
+
+    /* ----- Hero Section ----- */
+    .hero {
+      background: var(--color-yellow);
+      color: #fff;
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .hero h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      max-width: 600px;
+      margin: 0 auto;
+      font-size: 1.2rem;
+    }
+
+    /* ----- Main Content ----- */
+    main {
+      padding: 2rem 1rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .intro h3 {
+      color: var(--color-red);
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .intro p {
+      color: #555;
+      font-size: 1.1rem;
+    }
+
+    .lesson-preview {
+      background-color: var(--color-beige);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 5px;
+    }
+
+    .lesson-preview h4 {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      color: var(--color-orange);
+    }
+
+    .lesson-preview p {
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ----- Footer ----- */
+    footer {
+      background-color: var(--color-green);
+      color: var(--color-white);
+      text-align: center;
+      padding: 1rem;
+    }
+
+    footer p {
+      margin-bottom: 0.5rem;
+    }
+
+    footer a {
+      color: var(--color-white);
+      text-decoration: underline;
+    }
+
+    /* ----- Responsive ----- */
+    @media (min-width: 768px) {
+      nav a {
+        margin: 0 2rem;
+      }
+
+      .hero h2 {
+        font-size: 3rem;
+      }
+
+      .hero p {
+        font-size: 1.3rem;
+      }
+
+      .intro h3 {
+        font-size: 2rem;
+      }
+
+      .lesson-preview {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>theclassics.school 📚</h1>
+    <p>Classic Literature for the Mind, Body, Spirit, and Life</p>
+  </header>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Lessons</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </nav>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero">
+    <h2>📖 Expand Your Horizons 📖</h2>
+    <p>
+      Dive into the timeless world of classic literature, enhanced by AI-powered lessons, exercises, and reflections. 
+      Join us in the journey to read, discover, and grow.
+    </p>
+  </section>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main>
+    <div class="intro">
+      <h3>✨ A Portal to Insightful Reading ✨</h3>
+      <p>
+        Welcome to <strong>theclassics.school</strong>, your hub for interactive lessons drawn from the greatest works of literature. 
+        Our approach combines tradition with cutting-edge AI to enrich your learning and personal growth.
+      </p>
+    </div>
+
+    <div class="lesson-preview">
+      <h4>Lesson Preview: How to Read a Book</h4>
+      <p>
+        Learn the art, the purpose, and the levels of reading as you engage with texts in a transformative way. 
+        We’ll guide you through steps that develop your reading skills from elementary to advanced—turning simple reading into deep, analytical experiences.
+      </p>
+      <p>
+        <em>Coming Soon:</em> Explore exercises that make reading an active, engaging journey.
+      </p>
+    </div>
+
+    <div class="lesson-preview">
+      <h4>Lesson 1: The Purpose and Art of Reading</h4>
+      <p>
+        Understand why you read and how you can refine your approach. This lesson includes 
+        <strong>interactive prompts</strong>, reflective activities, and practical techniques to apply in your daily reading sessions.
+      </p>
+    </div>
+
+    <div class="lesson-preview">
+      <h4>Lesson 2: The Active Role of the Reader</h4>
+      <p>
+        Discover how to question and annotate text, connect ideas, and proactively engage with authors. 
+        Unlock the hidden layers in every paragraph you read. 
+      </p>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>© 2025 theclassics.school</p>
+    <p>
+      Created with ❤️ by Chatty. For inquiries, email us at
+      <a href="mailto:info@theclassics.school">info@theclassics.school</a>
+    </p>
+  </footer>
+
+</body>
+</html>
