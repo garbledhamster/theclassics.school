@@ -1,0 +1,67 @@
+course:
+  id: 0000
+  title: "How to Use This Site"
+  description: >
+    Welcome to theclassics.school! This guide will show you how to navigate
+    our platform, find your courses, track progress, and more.
+
+  lessons:
+    - lesson_id: 1
+      title: "Getting Started"
+      lecture_notes: >
+        To begin, simply browse the course list below or use the search bar.
+        When you find a course that interests you, click "View Lessons."
+        Use the left sidebar to switch between lessons, and the center panel
+        will display each lesson’s details.
+
+      sources:
+        - "theclassics.school Onboarding, Section 1"
+
+      exercises:
+        - name: "Explore a Course"
+          prompt: >
+            Use the search bar to look for "How to Read a Book" or any
+            other course you see. Then click "View Lessons" to load it.
+        - name: "Sidebar Navigation"
+          prompt: >
+            After loading a course, click each lesson in the sidebar to see
+            how the main content updates.
+
+      assignments:
+        - name: "Complete a Lesson"
+          description: >
+            Find a lesson that interests you, read the lecture notes, and
+            follow the exercises. Mark it as complete (in your notes or 
+            via localStorage if you’ve implemented progress tracking).
+        - name: "Share Feedback"
+          description: >
+            If something isn’t clear, note it down. We value your feedback
+            and are always improving the site experience.
+
+    - lesson_id: 2
+      title: "Next Steps and Tips"
+      lecture_notes: >
+        Remember that all your reading and learning can be done at your
+        own pace. The platform keeps things simple by storing data in
+        flat files, so you always see the latest content without complicated
+        setup.
+
+      sources:
+        - "theclassics.school Onboarding, Section 2"
+
+      exercises:
+        - name: "Poke Around"
+          prompt: >
+            Check out how the lessons are structured in the YAML files if
+            you’re curious. Look for the 'exercises' and 'assignments' fields.
+
+      assignments:
+        - name: "Pick Your Next Course"
+          description: >
+            Explore available courses in the search box and pick one to
+            start learning. Try something outside your typical reading list!
+        - name: "Stay Curious"
+          description: >
+            Reflect on your learning goals. How can you integrate more
+            reading time or discussion into your daily life?
+

@@ -1,0 +1,99 @@
+course:
+  id: 0001
+  title: "How to Read a Book"
+  description: >
+    A structured series of lessons designed to develop and refine your reading
+    skills—from basic comprehension to analytical and synoptic reading.
+  lessons:
+    - lesson_id: 1
+      title: "Why Reading Matters"
+      lecture_notes: |
+        This lesson introduces the concept of active reading and explains how
+        it differs from passive reading. It highlights the importance of
+        intentionality: that good reading is done with purpose, alertness,
+        and a willingness to be changed by the text.
+
+        **Key points include:**
+        - Reading as an active pursuit (not just background entertainment)
+        - How reading shapes thought, knowledge, and character
+        - The purpose behind making an effort to read well
+
+      sources:
+        - "Mortimer J. Adler, How to Read a Book, Chapter 1, Section 1"
+        - "Charles Van Doren, How to Read a Book, Preface"
+
+      exercises:
+        - name: "Reading Reflection"
+          prompt: >
+            Reflect briefly on your current reading habits. Consider which
+            books or articles you choose to read and why. How much time do
+            you typically devote? Are you mostly browsing for quick info, or
+            reading deeply?
+
+        - name: "Set Your Reading Goals"
+          prompt: >
+            Write down two or three goals for yourself as a reader. What kinds
+            of materials do you want to tackle? Where do you want to grow in
+            terms of knowledge or ability?
+
+      assignments:
+        - name: "Reading Habit Tracker"
+          description: >
+            For the coming week, track the time and type of reading you
+            do (e.g., social media, novel, textbook). At the end of the week,
+            note any observations about your focus, motivation, and how
+            purposeful your reading felt.
+
+        - name: "Personal Reading Statement"
+          description: >
+            Compose a short statement (one paragraph) about why reading
+            matters to you personally. Identify at least one concrete benefit
+            you hope to gain from more active reading.
+    - lesson_id: 2
+      title: "The Levels of Reading"
+      lecture_notes: |
+        This lesson explores the different levels of reading as outlined by Mortimer
+        Adler and Charles Van Doren. The purpose is to recognize that not all reading 
+        is the same and that different approaches are required depending on the depth
+        of engagement with a text.
+
+        The four levels of reading:
+        - **Elementary Reading:** Basic literacy, the ability to understand words and sentences.
+        - **Inspectional Reading:** A systematic skimming or superficial reading to grasp the main ideas quickly.
+        - **Analytical Reading:** A deeper, more engaged reading process that involves questioning and breaking down the text.
+        - **Syntopical Reading:** Comparing multiple texts on the same subject to form an independent analysis.
+
+        **Key takeaways:**
+        - Most people stop at elementary or inspectional reading, but true understanding
+          requires analytical and syntopical reading.
+        - Each level builds upon the previous one.
+        - Effective reading is an active process that demands effort and strategy.
+
+      sources:
+        - "Mortimer J. Adler, How to Read a Book, Chapter 2, Sections 1-4"
+      
+      exercises:
+        - name: "Assess Your Reading Level"
+          prompt: >
+            Reflect on your reading habits. Which level of reading do you typically engage
+            in? Do you often stop at understanding the surface of a book, or do you dive
+            deeper into its meaning?
+
+        - name: "Practice Inspectional Reading"
+          prompt: >
+            Choose a non-fiction book and spend 15 minutes practicing inspectional reading.
+            Write a brief summary of what you learned from the table of contents, headings,
+            and first and last paragraphs of chapters.
+
+      assignments:
+        - name: "Reading Level Tracker"
+          description: >
+            Over the next week, keep track of how you engage with different texts. 
+            Which level of reading are you using? Do you find yourself engaging more deeply
+            with certain types of books or articles?
+
+        - name: "Compare Two Books"
+          description: >
+            Select two books on the same subject and compare how they approach the topic.
+            Try to engage in syntopical reading—how do their perspectives differ? What new
+            insights emerge from comparing them?

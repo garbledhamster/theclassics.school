@@ -3,17 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>theclassics.school – Grow Mind, Body, Spirit, and Life</title>
+  <title>theclassics.school – How to Use This Site</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
   <style>
-    /* ----- Color Palette (from "How to Read a Book") ----- 
-       fbab34 (Yellow)
-       e04e19 (Red)
-       e98839 (Orange/Brown)
-       fcefdc (Soft White)
-       829559 (Green)
-       d8c19c (Beige/Green)
-    */
-
     :root {
       --color-yellow:  #FBAB34;
       --color-red:     #E04E19;
@@ -21,230 +18,636 @@
       --color-white:   #FCEFDC;
       --color-green:   #829559;
       --color-beige:   #D8C19C;
-
-      --font-family: "Helvetica Neue", Arial, sans-serif;
+      --font-base:     "Helvetica Neue", Arial, sans-serif;
+      --font-classic:  Georgia, serif;
+      font-size: 16px;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      /* Hide the blinking caret globally */
+      caret-color: transparent;
     }
-
+    /* Restore caret for inputs */
+    input, textarea, select {
+      caret-color: auto;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
     body {
-      font-family: var(--font-family);
       background-color: var(--color-white);
-      line-height: 1.5;
+      font-family: var(--font-base);
       color: #333;
+      line-height: 1.6;
     }
-
-    /* ----- Top Bar ----- */
+    p {
+      margin-bottom: 10px;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.5rem; }
+    h4 { font-size: 1.125rem; }
     header {
       background-color: var(--color-beige);
       padding: 1rem;
       text-align: center;
     }
-
     header h1 {
       color: var(--color-red);
-      font-size: 2rem;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
     }
-
     header p {
       color: var(--color-green);
-      margin-bottom: 0;
+      font-size: 1.125rem;
+      line-height: 1.4;
     }
-
     nav {
       background-color: var(--color-orange);
       display: flex;
       justify-content: center;
       padding: 0.5rem;
     }
-
     nav a {
       color: var(--color-white);
       text-decoration: none;
       margin: 0 1rem;
       font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
     }
-
-    /* ----- Hero Section ----- */
     .hero {
-      background: var(--color-yellow);
+      background-color: var(--color-yellow);
       color: #fff;
       text-align: center;
-      padding: 3rem 1rem;
+      padding: 2rem 1rem;
     }
-
     .hero h2 {
-      font-size: 2.2rem;
       margin-bottom: 1rem;
     }
-
     .hero p {
       max-width: 600px;
       margin: 0 auto;
-      font-size: 1.2rem;
+      font-size: 1.125rem;
+      line-height: 1.5;
     }
-
-    /* ----- Main Content ----- */
     main {
-      padding: 2rem 1rem;
-      max-width: 1000px;
-      margin: 0 auto;
+      width: 100%;
+      margin: 2rem 0;
+      padding: 0 1rem;
     }
-
-    .intro {
+    .course-search {
       text-align: center;
       margin-bottom: 2rem;
     }
-
-    .intro h3 {
+    .course-search input[type="text"] {
+      width: 60%;
+      max-width: 400px;
+      padding: 0.5rem;
+      border: 2px solid var(--color-green);
+      border-radius: 4px;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .course-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .course-card {
+      background-color: var(--color-beige);
+      border-radius: 5px;
+      padding: 1rem;
+      line-height: 1.6;
+    }
+    .course-card h3 {
       color: var(--color-red);
-      font-size: 1.8rem;
+      font-family: var(--font-classic);
+      margin-bottom: 0.5rem;
+      font-size: 1.25rem;
+      line-height: 1.3;
+    }
+    .course-card p {
+      margin-bottom: 0.5rem;
+      color: #555;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .course-card button {
+      background-color: var(--color-green);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .course-card button:hover {
+      background-color: #6e7a4b;
+    }
+    .lessons-container {
+      display: none;
+      margin-top: 2rem;
+      border-top: 1px solid #ccc;
+      padding-top: 1rem;
+      transition: all 0.5s ease-in-out;
+    }
+    .lesson-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+      transition: grid-template-columns 0.5s ease-in-out;
+    }
+    .lesson-layout.collapsed {
+      grid-template-columns: 48px 1fr;
+    }
+    .lesson-sidebar {
+      background-color: var(--color-beige);
+      border-radius: 5px;
+      padding: 1rem;
+      height: fit-content;
+      line-height: 1.5;
+      transition: width 0.5s ease-in-out, padding 0.5s ease-in-out;
+      position: relative;
+      overflow: hidden;
+    }
+    .lesson-sidebar.collapsed {
+      width: 48px;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    /* Sidebar header container for icon and title */
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 0;
+    }
+    .sidebar-header .sidebar-header-icon {
+      color: var(--color-red);
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      transition: margin 0.3s ease-in-out;
+      align-self: center;
+      line-height: 1;
+      margin-left: 5px;
+}
+
+    /* Adjust margins when sidebar is collapsed */
+    .lesson-sidebar.collapsed .sidebar-header-icon {
+      margin-right: 0;
+    }
+    .title-text {
+      transition: opacity 0.5s ease-in-out;
+      opacity: 1;
+      visibility: visible;
+    }
+    .lesson-sidebar.collapsed .title-text {
+      display: none;
+    }
+    .lesson-sidebar.collapsed .hover-checkbox {
+      display: none !important;
+    }
+    #lessonProgress {
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+    .lesson-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    .lesson-list li {
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 0.25rem;
+      border-radius: 5px;
+      transition: background-color 0.2s ease-in-out;
+      position: relative;
+      cursor: pointer;
+    }
+    /* When not hovered, collapse the checkbox column so text fills the space */
+    .lesson-list li:not(:hover) {
+      grid-template-columns: 24px 1fr;
+    }
+    .lesson-list li:hover {
+      background-color: #f5f0e6;
+    }
+    .lesson-list li.completed {
+      background-color: #d9efd0;
+    }
+    .hover-checkbox {
+      display: none;
+    }
+    .lesson-list li:hover .hover-checkbox {
+      display: inline-block;
+    }
+    .icon-area {
+      text-align: center;
+    }
+    .lesson-title {
+      font-weight: bold;
+      font-size: 1rem;
+      white-space: normal;
+      line-height: 1.4;
+      overflow-wrap: break-word;
+      margin: 0 0.5rem;
+    }
+    .lesson-sidebar.collapsed .lesson-title {
+      display: none;
+    }
+    .lesson-sidebar.collapsed li {
+      justify-content: center;
+    }
+    .lesson-content {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 1rem;
+      min-height: 300px;
+      line-height: 1.6;
+      max-width: 60ch;
+    }
+    .lesson-content h3 {
+      color: var(--color-orange);
+      font-family: var(--font-classic);
+      margin-bottom: 0.75rem;
+      font-size: 1.25rem;
+    }
+    .lesson-content h4 {
+      color: var(--color-red);
+      margin-bottom: 0.5rem;
+      font-size: 1.125rem;
+    }
+    .lesson-content ul {
+      list-style-type: disc;
+      margin-left: 1.5rem;
       margin-bottom: 1rem;
     }
-
-    .intro p {
-      color: #555;
-      font-size: 1.1rem;
-    }
-
-    .lesson-preview {
-      background-color: var(--color-beige);
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      border-radius: 5px;
-    }
-
-    .lesson-preview h4 {
-      font-size: 1.4rem;
-      margin-bottom: 0.5rem;
-      color: var(--color-orange);
-    }
-
-    .lesson-preview p {
-      color: #333;
-      margin-bottom: 0.5rem;
-    }
-
-    /* ----- Footer ----- */
     footer {
       background-color: var(--color-green);
       color: var(--color-white);
       text-align: center;
       padding: 1rem;
+      margin-top: 2rem;
+      line-height: 1.5;
     }
-
-    footer p {
-      margin-bottom: 0.5rem;
-    }
-
     footer a {
       color: var(--color-white);
       text-decoration: underline;
     }
-
-    /* ----- Responsive ----- */
-    @media (min-width: 768px) {
-      nav a {
-        margin: 0 2rem;
-      }
-
-      .hero h2 {
-        font-size: 3rem;
-      }
-
-      .hero p {
-        font-size: 1.3rem;
-      }
-
-      .intro h3 {
-        font-size: 2rem;
-      }
-
-      .lesson-preview {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+    /* Remove focus outline on clickable elements */
+    .lesson-list li:focus,
+    .sidebar-header-icon:focus,
+    nav a:focus,
+    button:focus {
+      outline: none;
+    }
+    @media (max-width: 768px) {
+      .course-list {
+        grid-template-columns: 1fr 1fr;
       }
     }
   </style>
 </head>
-
 <body>
-
-  <!-- ===== HEADER ===== -->
   <header>
-    <h1>theclassics.school 📚</h1>
-    <p>Classic Literature for the Mind, Body, Spirit, and Life</p>
+    <h1>theclassics.school</h1>
+    <p>A Place to Read, Discover, and Grow</p>
   </header>
-
-  <!-- ===== NAVIGATION ===== -->
   <nav>
-    <a href="#">Home</a>
-    <a href="#">Lessons</a>
-    <a href="#">About</a>
-    <a href="#">Contact</a>
+    <a href="#" id="homeLink">Home</a>
   </nav>
-
-  <!-- ===== HERO SECTION ===== -->
   <section class="hero">
-    <h2>📖 Expand Your Horizons 📖</h2>
+    <h2>Welcome to theclassics.school</h2>
     <p>
-      Dive into the timeless world of classic literature, enhanced by AI-powered lessons, exercises, and reflections. 
-      Join us in the journey to read, discover, and grow.
+      Here you’ll find structured lessons inspired by timeless works of literature,
+      philosophy, and beyond.
     </p>
   </section>
-
-  <!-- ===== MAIN CONTENT ===== -->
   <main>
-    <div class="intro">
-      <h3>✨ A Portal to Insightful Reading ✨</h3>
-      <p>
-        Welcome to <strong>theclassics.school</strong>, your hub for interactive lessons drawn from the greatest works of literature. 
-        Our approach combines tradition with cutting-edge AI to enrich your learning and personal growth.
-      </p>
+    <div class="course-search">
+      <input type="text" id="courseSearch" placeholder="Search for a course...">
     </div>
-
-    <div class="lesson-preview">
-      <h4>Lesson Preview: How to Read a Book</h4>
-      <p>
-        Learn the art, the purpose, and the levels of reading as you engage with texts in a transformative way. 
-        We’ll guide you through steps that develop your reading skills from elementary to advanced—turning simple reading into deep, analytical experiences.
-      </p>
-      <p>
-        <em>Coming Soon:</em> Explore exercises that make reading an active, engaging journey.
-      </p>
-    </div>
-
-    <div class="lesson-preview">
-      <h4>Lesson 1: The Purpose and Art of Reading</h4>
-      <p>
-        Understand why you read and how you can refine your approach. This lesson includes 
-        <strong>interactive prompts</strong>, reflective activities, and practical techniques to apply in your daily reading sessions.
-      </p>
-    </div>
-
-    <div class="lesson-preview">
-      <h4>Lesson 2: The Active Role of the Reader</h4>
-      <p>
-        Discover how to question and annotate text, connect ideas, and proactively engage with authors. 
-        Unlock the hidden layers in every paragraph you read. 
-      </p>
+    <div class="course-list" id="courseList"></div>
+    <div id="lessonsContainer" class="lessons-container">
+      <h2
+        id="selectedCourseTitle"
+        style="color: var(--color-red); font-family: var(--font-classic);"
+      ></h2>
+      <p id="selectedCourseDesc"></p>
+      <h4 id="lessonProgress"></h4>
+      <div class="lesson-layout" id="lessonLayout">
+        <aside class="lesson-sidebar" id="lessonSidebar">
+          <div class="sidebar-header">
+            <i class="fa-solid fa-feather sidebar-header-icon" id="sidebarToggle" title="Toggle Lessons Menu"></i>
+            <h3 class="title-text">Lessons</h3>
+          </div>
+          <ul id="lessonList" class="lesson-list"></ul>
+        </aside>
+        <div id="lessonContent" class="lesson-content">
+          <p style="color: #999;">Select a lesson on the left to see details here.</p>
+        </div>
+      </div>
     </div>
   </main>
-
-  <!-- ===== FOOTER ===== -->
   <footer>
     <p>© 2025 theclassics.school</p>
     <p>
-      Created with ❤️ by Chatty. For inquiries, email us at
-      <a href="mailto:info@theclassics.school">info@theclassics.school</a>
+      For inquiries, email us at
+      <a
+        href="mailto:info@theclassics.school"
+        style="color: #fff; text-decoration: underline;"
+      >
+        info@theclassics.school
+      </a>
     </p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    marked.setOptions({
+      gfm: true,
+      breaks: false,
+    });
+  </script>
+
+  <script>
+    let allCourses = [];
+    let currentCourseData = {};
+    const defaultGuidePath = 'lessons/0000_HowToUseThisSite.yaml';
+    const LESSON_CHECK_KEY = 'lessonProgress';
+    let isSidebarCollapsed = false;
+
+    function getStoredLessonProgress() {
+      const data = localStorage.getItem(LESSON_CHECK_KEY);
+      return data ? JSON.parse(data) : {};
+    }
+
+    function setStoredLessonProgress(progressObj) {
+      localStorage.setItem(LESSON_CHECK_KEY, JSON.stringify(progressObj));
+    }
+
+    function isLessonChecked(filePath, lessonTitle) {
+      const store = getStoredLessonProgress();
+      if (!store[filePath]) return false;
+      return !!store[filePath][lessonTitle];
+    }
+
+    function toggleLessonChecked(filePath, lessonTitle, isChecked) {
+      const store = getStoredLessonProgress();
+      if (!store[filePath]) {
+        store[filePath] = {};
+      }
+      store[filePath][lessonTitle] = isChecked;
+      setStoredLessonProgress(store);
+    }
+
+    function getLessonIcon(type) {
+      switch(type) {
+        case 'reading': return '<i class="fas fa-book"></i>';
+        case 'quiz': return '<i class="fas fa-question-circle"></i>';
+        case 'video': return '<i class="fas fa-video"></i>';
+        default: return '<i class="fas fa-file-alt"></i>';
+      }
+    }
+
+    async function loadCourses() {
+      try {
+        const response = await fetch('lessons.json');
+        if (!response.ok) {
+          throw new Error('Could not load lessons.json');
+        }
+        return await response.json();
+      } catch (error) {
+        console.error('Error fetching lessons.json:', error);
+        return [];
+      }
+    }
+
+    function renderCourses(courses) {
+      const courseList = document.getElementById('courseList');
+      courseList.innerHTML = '';
+      courses.forEach(course => {
+        const card = document.createElement('div');
+        card.classList.add('course-card');
+        card.innerHTML = `
+          <h3>${course.title}</h3>
+          <p>Course ID: ${course.id}</p>
+          <button data-file="${course.file}">View Lessons</button>
+        `;
+        courseList.appendChild(card);
+      });
+    }
+
+    function filterCourses(courses, query) {
+      return courses.filter(course =>
+        course.title.toLowerCase().includes(query.toLowerCase())
+      );
+    }
+
+    async function handleViewLessons(filePath) {
+      try {
+        const response = await fetch(filePath);
+        if (!response.ok) {
+          throw new Error('Unable to load YAML file: ' + filePath);
+        }
+        const yamlText = await response.text();
+        const courseData = jsyaml.load(yamlText);
+        currentCourseData = courseData;
+        showCourseContent(courseData, filePath);
+      } catch (error) {
+        console.error('Error fetching YAML:', error);
+      }
+    }
+
+    function showCourseContent(courseData, filePath) {
+      if (!courseData || !courseData.course) return;
+      const courseObj = courseData.course;
+      const lessonsContainer = document.getElementById('lessonsContainer');
+      const courseTitleEl = document.getElementById('selectedCourseTitle');
+      const courseDescEl = document.getElementById('selectedCourseDesc');
+      const lessonListEl = document.getElementById('lessonList');
+      const lessonContentEl = document.getElementById('lessonContent');
+      const lessonProgressEl = document.getElementById('lessonProgress');
+
+      lessonsContainer.style.display = 'block';
+
+      courseTitleEl.textContent = courseObj.title || 'Untitled Course';
+      courseDescEl.textContent = courseObj.description || '';
+
+      lessonListEl.innerHTML = '';
+      lessonContentEl.innerHTML = '<p style="color: #999;">Select a lesson on the left to see details here.</p>';
+
+      (courseObj.lessons || []).forEach(lesson => {
+        const lessonLabel = lesson.title || `Lesson ${lesson.lesson_id}`;
+
+        if (lesson.section && !document.getElementById('section-' + lesson.section)) {
+          const sectionHeader = document.createElement('h4');
+          sectionHeader.id = 'section-' + lesson.section;
+          sectionHeader.classList.add('title-text');
+          sectionHeader.textContent = lesson.section;
+          lessonListEl.appendChild(sectionHeader);
+        }
+
+        const li = document.createElement('li');
+        if (isLessonChecked(filePath, lessonLabel)) {
+          li.classList.add('completed');
+        }
+        li.innerHTML = `
+          <div class="icon-area">
+            ${lesson.type ? getLessonIcon(lesson.type) : '<i class="fas fa-file-alt"></i>'}
+          </div>
+          <div class="lesson-title">${lessonLabel}</div>
+          <div class="hover-checkbox">
+            <input type="checkbox" ${isLessonChecked(filePath, lessonLabel) ? 'checked' : ''} />
+          </div>
+        `;
+
+        li.addEventListener('click', (event) => {
+          // If not clicking directly on the checkbox, show the lesson content
+          if (!event.target.closest('.hover-checkbox')) {
+            displayLessonContent(lesson);
+          }
+        });
+
+        // Handle the checkbox status
+        const checkbox = li.querySelector('.hover-checkbox input[type="checkbox"]');
+        checkbox.addEventListener('change', () => {
+          toggleLessonChecked(filePath, lessonLabel, checkbox.checked);
+          li.classList.toggle('completed', checkbox.checked);
+          updateProgress();
+        });
+
+        lessonListEl.appendChild(li);
+      });
+
+      function updateProgress() {
+        const total = (courseObj.lessons || []).length;
+        const completed = (courseObj.lessons || []).filter(lesson =>
+          isLessonChecked(filePath, lesson.title || `Lesson ${lesson.lesson_id}`)
+        ).length;
+        lessonProgressEl.textContent = `Completed ${completed} / ${total} lessons`;
+
+        let status = '';
+        if (completed === 0) status = '(not-started)';
+        else if (completed === total) status = '(complete)';
+        else status = '(in-progress)';
+
+        courseTitleEl.textContent = (courseObj.title || 'Untitled Course') + ' ' + status;
+      }
+
+      updateProgress();
+    }
+
+    function displayLessonContent(lesson) {
+      const lessonContentEl = document.getElementById('lessonContent');
+      lessonContentEl.innerHTML = '';
+
+      const lessonTitle = lesson.title || `Lesson ${lesson.lesson_id}`;
+      const notes = lesson.lecture_notes || '';
+
+      const titleEl = document.createElement('h3');
+      titleEl.textContent = lessonTitle;
+      lessonContentEl.appendChild(titleEl);
+
+      const notesEl = document.createElement('div');
+      notesEl.innerHTML = marked.parse(notes);
+      lessonContentEl.appendChild(notesEl);
+
+      if (lesson.exercises && Array.isArray(lesson.exercises)) {
+        const exHeader = document.createElement('h4');
+        exHeader.textContent = 'Exercises:';
+        lessonContentEl.appendChild(exHeader);
+
+        lesson.exercises.forEach(ex => {
+          const exP = document.createElement('div');
+          exP.innerHTML = marked.parse(`**${ex.name}**: ${ex.prompt}`);
+          lessonContentEl.appendChild(exP);
+        });
+      }
+
+      if (lesson.assignments && Array.isArray(lesson.assignments)) {
+        const asHeader = document.createElement('h4');
+        asHeader.textContent = 'Assignments:';
+        lessonContentEl.appendChild(asHeader);
+
+        lesson.assignments.forEach(a => {
+          const asP = document.createElement('div');
+          asP.innerHTML = marked.parse(`**${a.name}**: ${a.description}`);
+          lessonContentEl.appendChild(asP);
+        });
+      }
+
+      if (lesson.sources && Array.isArray(lesson.sources)) {
+        const sourcesHeader = document.createElement('h4');
+        sourcesHeader.textContent = 'Sources:';
+        lessonContentEl.appendChild(sourcesHeader);
+
+        const sourcesList = document.createElement('ul');
+        lesson.sources.forEach(src => {
+          const li = document.createElement('li');
+          li.innerHTML = marked.parse(src);
+          sourcesList.appendChild(li);
+        });
+        lessonContentEl.appendChild(sourcesList);
+      }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('lessonSidebar');
+      const layout = document.getElementById('lessonLayout');
+      isSidebarCollapsed = !isSidebarCollapsed;
+      if (isSidebarCollapsed) {
+        sidebar.classList.add('collapsed');
+        layout.classList.add('collapsed');
+      } else {
+        sidebar.classList.remove('collapsed');
+        layout.classList.remove('collapsed');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      allCourses = await loadCourses();
+      renderCourses(allCourses);
+      handleViewLessons(defaultGuidePath);
+
+      const searchInput = document.getElementById('courseSearch');
+      searchInput.addEventListener('input', () => {
+        const filtered = filterCourses(allCourses, searchInput.value);
+        renderCourses(filtered);
+      });
+
+      document.addEventListener('click', event => {
+        const target = event.target;
+        if (target.tagName === 'BUTTON' && target.hasAttribute('data-file')) {
+          const filePath = target.getAttribute('data-file');
+          handleViewLessons(filePath);
+        }
+      });
+
+      const homeLink = document.getElementById('homeLink');
+      homeLink.addEventListener('click', event => {
+        event.preventDefault();
+        handleViewLessons(defaultGuidePath);
+      });
+
+      const sidebarToggleIcon = document.getElementById('sidebarToggle');
+      sidebarToggleIcon.addEventListener('click', toggleSidebar);
+    });
+  </script>
 </body>
 </html>
