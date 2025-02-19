@@ -4,12 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>theclassics.school – How to Use This Site</title>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
   <style>
     :root {
       --color-yellow:  #FBAB34;
@@ -26,10 +21,8 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      /* Hide the blinking caret globally */
       caret-color: transparent;
     }
-    /* Restore caret for inputs */
     input, textarea, select {
       caret-color: auto;
     }
@@ -55,10 +48,15 @@
     h2 { font-size: 1.75rem; }
     h3 { font-size: 1.5rem; }
     h4 { font-size: 1.125rem; }
+
+    /* Make header sticky so it stays at the top */
     header {
       background-color: var(--color-beige);
       padding: 1rem;
       text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
     header h1 {
       color: var(--color-red);
@@ -70,11 +68,15 @@
       font-size: 1.125rem;
       line-height: 1.4;
     }
+
     nav {
       background-color: var(--color-orange);
       display: flex;
       justify-content: center;
       padding: 0.5rem;
+      position: sticky;
+      top: 60px; /* adjust if header's height changes */
+      z-index: 999;
     }
     nav a {
       color: var(--color-white);
@@ -84,6 +86,7 @@
       font-size: 1rem;
       cursor: pointer;
     }
+
     .hero {
       background-color: var(--color-yellow);
       color: #fff;
@@ -99,6 +102,7 @@
       font-size: 1.125rem;
       line-height: 1.5;
     }
+
     main {
       width: 100%;
       margin: 2rem 0;
@@ -155,6 +159,7 @@
     .course-card button:hover {
       background-color: #6e7a4b;
     }
+
     .lessons-container {
       display: none;
       margin-top: 2rem;
@@ -172,26 +177,36 @@
     .lesson-layout.collapsed {
       grid-template-columns: 48px 1fr;
     }
+
+    /* The lesson sidebar container */
     .lesson-sidebar {
       background-color: var(--color-beige);
       border-radius: 5px;
-      padding: 1rem;
-      height: fit-content;
-      line-height: 1.5;
       transition: width 0.5s ease-in-out, padding 0.5s ease-in-out;
       position: relative;
-      overflow: hidden;
+      /* We won't scroll .lesson-sidebar itself */
+      /* We'll control scrolling in .lesson-list-wrapper below */
+      margin-left: 5px; /* #1: Give left margin of about 5px */
+      overflow-x: hidden;
+
     }
     .lesson-sidebar.collapsed {
-      width: 48px;
-      padding: 0.5rem;
+      width: 50px;
       text-align: center;
+      overflow-x: hidden;
+
     }
-    /* Sidebar header container for icon and title */
+
+    /* Make the header portion of the sidebar sticky so the toggle button stays pinned */
     .sidebar-header {
       display: flex;
       align-items: center;
       padding: 0.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background-color: var(--color-beige);
+      padding-top: 20px;
     }
     .sidebar-header .sidebar-header-icon {
       color: var(--color-red);
@@ -201,10 +216,8 @@
       transition: margin 0.3s ease-in-out;
       align-self: center;
       line-height: 1;
-      margin-left: 5px;
-}
-
-    /* Adjust margins when sidebar is collapsed */
+      margin-left: 10px;
+    }
     .lesson-sidebar.collapsed .sidebar-header-icon {
       margin-right: 0;
     }
@@ -219,6 +232,16 @@
     .lesson-sidebar.collapsed .hover-checkbox {
       display: none !important;
     }
+
+    /* #2: Keep a fixed height so it doesn't expand when active lesson is clicked */
+    .lesson-list-wrapper {
+      overflow-y: auto;     /* Scroll if content exceeds height */
+      padding-top: 0.5rem;
+    }
+    .lesson-sidebar.collapsed .lesson-list-wrapper {
+      padding: 0;
+    }
+
     #lessonProgress {
       margin-bottom: 1rem;
       font-weight: bold;
@@ -238,8 +261,8 @@
       transition: background-color 0.2s ease-in-out;
       position: relative;
       cursor: pointer;
+      background-color: var(--color-beige);
     }
-    /* When not hovered, collapse the checkbox column so text fills the space */
     .lesson-list li:not(:hover) {
       grid-template-columns: 24px 1fr;
     }
@@ -248,6 +271,10 @@
     }
     .lesson-list li.completed {
       background-color: #d9efd0;
+    }
+    .lesson-list li.active {
+      background-color: #ffeec2;
+      border-left: 4px solid var(--color-green);
     }
     .hover-checkbox {
       display: none;
@@ -272,6 +299,7 @@
     .lesson-sidebar.collapsed li {
       justify-content: center;
     }
+
     .lesson-content {
       border: 1px solid #ccc;
       border-radius: 5px;
@@ -280,22 +308,23 @@
       line-height: 1.6;
       max-width: 60ch;
     }
-    .lesson-content h3 {
-      color: var(--color-orange);
-      font-family: var(--font-classic);
-      margin-bottom: 0.75rem;
-      font-size: 1.25rem;
+    .lesson-content ol {
+      margin-left: 1.5rem;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .lesson-content li {
+      margin-bottom: 0.5rem;
     }
     .lesson-content h4 {
-      color: var(--color-red);
-      margin-bottom: 0.5rem;
-      font-size: 1.125rem;
+      margin: 1rem 0 0.5rem;
     }
     .lesson-content ul {
       list-style-type: disc;
       margin-left: 1.5rem;
       margin-bottom: 1rem;
     }
+
     footer {
       background-color: var(--color-green);
       color: var(--color-white);
@@ -308,13 +337,14 @@
       color: var(--color-white);
       text-decoration: underline;
     }
-    /* Remove focus outline on clickable elements */
+
     .lesson-list li:focus,
     .sidebar-header-icon:focus,
     nav a:focus,
     button:focus {
       outline: none;
     }
+
     @media (max-width: 768px) {
       .course-list {
         grid-template-columns: 1fr 1fr;
@@ -343,10 +373,7 @@
     </div>
     <div class="course-list" id="courseList"></div>
     <div id="lessonsContainer" class="lessons-container">
-      <h2
-        id="selectedCourseTitle"
-        style="color: var(--color-red); font-family: var(--font-classic);"
-      ></h2>
+      <h2 id="selectedCourseTitle" style="color: var(--color-red); font-family: var(--font-classic);"></h2>
       <p id="selectedCourseDesc"></p>
       <h4 id="lessonProgress"></h4>
       <div class="lesson-layout" id="lessonLayout">
@@ -355,7 +382,10 @@
             <i class="fa-solid fa-feather sidebar-header-icon" id="sidebarToggle" title="Toggle Lessons Menu"></i>
             <h3 class="title-text">Lessons</h3>
           </div>
-          <ul id="lessonList" class="lesson-list"></ul>
+          <!-- Separate scroll container for lesson list -->
+          <div class="lesson-list-wrapper">
+            <ul id="lessonList" class="lesson-list"></ul>
+          </div>
         </aside>
         <div id="lessonContent" class="lesson-content">
           <p style="color: #999;">Select a lesson on the left to see details here.</p>
@@ -367,25 +397,18 @@
     <p>© 2025 theclassics.school</p>
     <p>
       For inquiries, email us at
-      <a
-        href="mailto:info@theclassics.school"
-        style="color: #fff; text-decoration: underline;"
-      >
-        info@theclassics.school
-      </a>
+      <a href="mailto:info@theclassics.school" style="color: #fff; text-decoration: underline;">info@theclassics.school</a>
     </p>
   </footer>
-
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     marked.setOptions({
       gfm: true,
       breaks: false,
+      smartLists: true
     });
-  </script>
 
-  <script>
     let allCourses = [];
     let currentCourseData = {};
     const defaultGuidePath = 'lessons/0000_HowToUseThisSite.yaml';
@@ -485,10 +508,8 @@
       const lessonProgressEl = document.getElementById('lessonProgress');
 
       lessonsContainer.style.display = 'block';
-
       courseTitleEl.textContent = courseObj.title || 'Untitled Course';
       courseDescEl.textContent = courseObj.description || '';
-
       lessonListEl.innerHTML = '';
       lessonContentEl.innerHTML = '<p style="color: #999;">Select a lesson on the left to see details here.</p>';
 
@@ -507,6 +528,7 @@
         if (isLessonChecked(filePath, lessonLabel)) {
           li.classList.add('completed');
         }
+
         li.innerHTML = `
           <div class="icon-area">
             ${lesson.type ? getLessonIcon(lesson.type) : '<i class="fas fa-file-alt"></i>'}
@@ -517,14 +539,15 @@
           </div>
         `;
 
-        li.addEventListener('click', (event) => {
-          // If not clicking directly on the checkbox, show the lesson content
+        li.addEventListener('click', function(event) {
           if (!event.target.closest('.hover-checkbox')) {
+            const allItems = document.querySelectorAll('#lessonList li');
+            allItems.forEach(item => item.classList.remove('active'));
+            li.classList.add('active');
             displayLessonContent(lesson);
           }
         });
 
-        // Handle the checkbox status
         const checkbox = li.querySelector('.hover-checkbox input[type="checkbox"]');
         checkbox.addEventListener('change', () => {
           toggleLessonChecked(filePath, lessonLabel, checkbox.checked);
@@ -558,52 +581,56 @@
       lessonContentEl.innerHTML = '';
 
       const lessonTitle = lesson.title || `Lesson ${lesson.lesson_id}`;
-      const notes = lesson.lecture_notes || '';
-
       const titleEl = document.createElement('h3');
       titleEl.textContent = lessonTitle;
       lessonContentEl.appendChild(titleEl);
 
-      const notesEl = document.createElement('div');
-      notesEl.innerHTML = marked.parse(notes);
-      lessonContentEl.appendChild(notesEl);
+      if (lesson.lecture_notes) {
+        const notesEl = document.createElement('div');
+        notesEl.innerHTML = marked.parse(lesson.lecture_notes);
+        lessonContentEl.appendChild(notesEl);
+      }
 
-      if (lesson.exercises && Array.isArray(lesson.exercises)) {
+      if (lesson.exercises && Array.isArray(lesson.exercises) && lesson.exercises.length) {
         const exHeader = document.createElement('h4');
         exHeader.textContent = 'Exercises:';
         lessonContentEl.appendChild(exHeader);
 
-        lesson.exercises.forEach(ex => {
-          const exP = document.createElement('div');
-          exP.innerHTML = marked.parse(`**${ex.name}**: ${ex.prompt}`);
-          lessonContentEl.appendChild(exP);
+        let exMarkdown = '\n';
+        lesson.exercises.forEach((ex, idx) => {
+          exMarkdown += `${idx + 1}. **${ex.name}** – ${ex.prompt}\n`;
         });
+        const exContainer = document.createElement('div');
+        exContainer.innerHTML = marked.parse(exMarkdown);
+        lessonContentEl.appendChild(exContainer);
       }
 
-      if (lesson.assignments && Array.isArray(lesson.assignments)) {
+      if (lesson.assignments && Array.isArray(lesson.assignments) && lesson.assignments.length) {
         const asHeader = document.createElement('h4');
         asHeader.textContent = 'Assignments:';
         lessonContentEl.appendChild(asHeader);
 
-        lesson.assignments.forEach(a => {
-          const asP = document.createElement('div');
-          asP.innerHTML = marked.parse(`**${a.name}**: ${a.description}`);
-          lessonContentEl.appendChild(asP);
+        let asMarkdown = '\n';
+        lesson.assignments.forEach((a, idx) => {
+          asMarkdown += `${idx + 1}. **${a.name}** – ${a.description}\n`;
         });
+        const asContainer = document.createElement('div');
+        asContainer.innerHTML = marked.parse(asMarkdown);
+        lessonContentEl.appendChild(asContainer);
       }
 
-      if (lesson.sources && Array.isArray(lesson.sources)) {
-        const sourcesHeader = document.createElement('h4');
-        sourcesHeader.textContent = 'Sources:';
-        lessonContentEl.appendChild(sourcesHeader);
+      if (lesson.sources && Array.isArray(lesson.sources) && lesson.sources.length) {
+        const srcHeader = document.createElement('h4');
+        srcHeader.textContent = 'Sources:';
+        lessonContentEl.appendChild(srcHeader);
 
-        const sourcesList = document.createElement('ul');
-        lesson.sources.forEach(src => {
-          const li = document.createElement('li');
-          li.innerHTML = marked.parse(src);
-          sourcesList.appendChild(li);
+        let srcMarkdown = '\n';
+        lesson.sources.forEach((src, idx) => {
+          srcMarkdown += `${idx + 1}. ${src}\n`;
         });
-        lessonContentEl.appendChild(sourcesList);
+        const srcContainer = document.createElement('div');
+        srcContainer.innerHTML = marked.parse(srcMarkdown);
+        lessonContentEl.appendChild(srcContainer);
       }
     }
 

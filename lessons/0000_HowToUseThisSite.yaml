@@ -9,7 +9,7 @@ course:
     - lesson_id: 1
       title: "Getting Started"
       lecture_notes: >
-        To begin, simply browse the course list below or use the search bar.
+        To begin, simply browse the course list above or use the search bar.
         When you find a course that interests you, click "View Lessons."
         Use the left sidebar to switch between lessons, and the center panel
         will display each lesson’s details.

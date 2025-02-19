@@ -1,99 +1,722 @@
 course:
-  id: 0001
+  id: "0001"
   title: "How to Read a Book"
   description: >
-    A structured series of lessons designed to develop and refine your reading
-    skills—from basic comprehension to analytical and synoptic reading.
+    A structured series of lessons designed to develop and refine your reading skills—from basic comprehension to analytical and synoptic reading. Always read the chapter before doing the lesson!
   lessons:
     - lesson_id: 1
-      title: "Why Reading Matters"
+      title: "Chapter 1: The Activity and Art of Reading"
       lecture_notes: |
-        This lesson introduces the concept of active reading and explains how
-        it differs from passive reading. It highlights the importance of
-        intentionality: that good reading is done with purpose, alertness,
-        and a willingness to be changed by the text.
+        First, read Chapter 1—“The Activity and Art of Reading”—in Mortimer
+        J. Adler and Charles Van Doren’s *How to Read a Book.* This chapter
+        sets the stage by emphasizing the active nature of reading: rather
+        than passively absorbing words, you engage in a conversation with
+        the author.
 
-        **Key points include:**
-        - Reading as an active pursuit (not just background entertainment)
-        - How reading shapes thought, knowledge, and character
-        - The purpose behind making an effort to read well
+        Once you’ve finished reading, follow the lesson plan below. It is
+        designed to reinforce the key ideas from Chapter 1 and help you
+        apply them in your own reading habits.
 
+        In this first lesson—derived directly from Chapter 1—we’ll explore
+        Adler and Van Doren’s core premise: that reading is an active endeavor.
+        Rather than passively receiving words on a page, you’ll learn that
+        true reading involves attentive engagement with the text.
+
+        Chapter 1 discusses the difference between reading for entertainment,
+        for information, and for understanding. It challenges us to see
+        reading not just as a casual pastime but as an art—one that you
+        can master through deliberate practice. Adler and Van Doren emphasize
+        that to “actively read” means asking questions of both the text and
+        yourself, engaging in a two-way conversation with the author.
+        
+        ## Key Takeaways
+
+        - Reading is considered an active pursuit rather than a passive activity.
+        - There are different reasons for reading: entertainment, information, and understanding.
+        - A demanding approach to reading fosters deeper comprehension.
+        - Developing active reading habits sets the foundation for more advanced reading techniques.
+        
+        ## Key Concepts
+
+        - **Active Reading:** Viewing reading as a dynamic interaction with the text—asking questions, taking notes, and thinking critically about what you’re reading.
+        - **Reading for Entertainment vs. Understanding:** Recognizing that reading “just for fun” differs from reading to learn or to expand your thinking.
+        - **Conversation with the Author:** Viewing reading as a dialogue between writer and reader, where questions and reflections are essential to the process.
+
+        ## Key Terms
+
+        - **Active Reading:** The process of engaging with a text, questioning and reflecting on the material, rather than simply absorbing content passively.
+        - **Passive Reading:** Reading without much attention or interaction, often leading to limited retention or understanding.
+        - **Comprehension:** Understanding the meaning behind the words, concepts, and arguments presented by an author.
       sources:
-        - "Mortimer J. Adler, How to Read a Book, Chapter 1, Section 1"
-        - "Charles Van Doren, How to Read a Book, Preface"
-
+        - "Mortimer J. Adler, How to Read a Book, Chapter 1"
+        - "theclassics.school Curriculum Outline"
+      questions_and_answers:
+        - Q: "Why is reading described as an 'active' pursuit?"
+          A: "Adler and Van Doren note that true reading involves participation. The reader must engage, question, connect ideas, and respond to the text, rather than merely letting words flow by."
+        - Q: "What is meant by 'having a conversation' with the author?"
+          A: "It means treating reading like a dialogue: you 'listen' to the author’s ideas, and you respond through note-taking, questioning, and reflecting on your own understanding."
       exercises:
-        - name: "Reading Reflection"
+        - name: "Identify the Purpose of Reading"
           prompt: >
-            Reflect briefly on your current reading habits. Consider which
-            books or articles you choose to read and why. How much time do
-            you typically devote? Are you mostly browsing for quick info, or
-            reading deeply?
-
-        - name: "Set Your Reading Goals"
+            Reflect on your personal reading habits. Which books do you read purely for fun? Which do you read for facts or information? Are there any you read to gain a deeper understanding of a subject?
+            List two or three titles and categorize them under these different reasons for reading.
+        - name: "A Conversation with the Author"
           prompt: >
-            Write down two or three goals for yourself as a reader. What kinds
-            of materials do you want to tackle? Where do you want to grow in
-            terms of knowledge or ability?
-
+            As you read Chapter 1, jot down any questions that come to mind.
+            What do you wish you could ask Adler and Van Doren directly about
+            their views on active reading? Write these questions in a journal,
+            then briefly propose your own best guess at how the authors might respond.
       assignments:
-        - name: "Reading Habit Tracker"
+        - name: "Complete Chapter 1 Reading"
           description: >
-            For the coming week, track the time and type of reading you
-            do (e.g., social media, novel, textbook). At the end of the week,
-            note any observations about your focus, motivation, and how
-            purposeful your reading felt.
+            Read the entirety of Chapter 1: “The Activity and Art of Reading.”
+            In your notes, summarize the main points. Pay special attention
+            to the idea of reading as a two-way conversation—how do you see
+            it playing out in your own approach to reading?
+        - name: "Prepare for Chapter 2"
+          description: >
+            Consider how the principles introduced in Chapter 1 might apply
+            to different types of books. In anticipation of Chapter 2, reflect
+            on a recent reading challenge—some text you tried to read but
+            found difficult to grasp. Note down what happened and how the
+            active reading approach might help you overcome such challenges
+            in upcoming lessons.
 
-        - name: "Personal Reading Statement"
-          description: >
-            Compose a short statement (one paragraph) about why reading
-            matters to you personally. Identify at least one concrete benefit
-            you hope to gain from more active reading.
     - lesson_id: 2
-      title: "The Levels of Reading"
+      title: "Chapter 2: The Levels of Reading"
       lecture_notes: |
-        This lesson explores the different levels of reading as outlined by Mortimer
-        Adler and Charles Van Doren. The purpose is to recognize that not all reading 
-        is the same and that different approaches are required depending on the depth
-        of engagement with a text.
+        This lesson explores the different levels of reading as outlined by
+        Mortimer Adler and Charles Van Doren. The purpose is to recognize that
+        not all reading is the same and that different approaches are required
+        depending on the depth of engagement with a text.
 
-        The four levels of reading:
-        - **Elementary Reading:** Basic literacy, the ability to understand words and sentences.
-        - **Inspectional Reading:** A systematic skimming or superficial reading to grasp the main ideas quickly.
-        - **Analytical Reading:** A deeper, more engaged reading process that involves questioning and breaking down the text.
-        - **Syntopical Reading:** Comparing multiple texts on the same subject to form an independent analysis.
+        ## The Four Levels of Reading
 
-        **Key takeaways:**
-        - Most people stop at elementary or inspectional reading, but true understanding
-          requires analytical and syntopical reading.
-        - Each level builds upon the previous one.
-        - Effective reading is an active process that demands effort and strategy.
+        1. **Elementary Reading:** Basic literacy, the ability to understand words and sentences.
+        2. **Inspectional Reading:** A systematic skimming or superficial reading to grasp the main ideas quickly.
+        3. **Analytical Reading:** A deeper, more engaged reading process that involves questioning and breaking down the text.
+        4. **Syntopical Reading:** Comparing multiple texts on the same subject to form an independent analysis.
 
+        This chapter underscores that most people stop at elementary or inspectional reading, but genuine understanding typically arises only with analytical and syntopical reading. Each level builds on the previous one, and each requires effort and strategy.
+
+        ## Key Takeaways
+
+        - Most people stop at elementary or inspectional reading, missing deeper insights.
+        - Analytical reading demands a committed effort to ask questions, challenge ideas, and thoroughly explore the text.
+        - Syntopical reading goes even further by relating multiple texts on the same subject.
+
+        ## Key Concepts
+
+        - **Reading as a Spectrum:** From basic comprehension to broad and deep engagement with a text or multiple texts.
+        - **Progressive Difficulty:** Each level of reading requires more skill and more active questioning on the reader’s part.
+        - **Differentiated Approach:** Not all books should be read with the same level of intensity; some books warrant deeper analysis than others.
+
+        ## Key Terms
+
+        - **Elementary Reading:** The first and most basic level of reading, focusing on decoding words and simple comprehension.
+        - **Inspectional Reading:** A high-level skimming process to quickly identify main ideas and decide whether a book warrants deeper reading.
+        - **Analytical Reading:** Thorough, in-depth reading aimed at detailed understanding of the text’s structure and arguments.
+        - **Syntopical Reading:** The comparison and synthesis of ideas from multiple texts, creating a novel analysis of a subject.
       sources:
         - "Mortimer J. Adler, How to Read a Book, Chapter 2, Sections 1-4"
-      
+      questions_and_answers:
+        - Q: "Why isn’t elementary reading enough for deeper understanding?"
+          A: "Elementary reading is just the foundation—decoding words and sentences. To gain deeper insights, you must move beyond comprehension to questioning and analysis."
+        - Q: "What is the primary goal of inspectional reading?"
+          A: "It helps you quickly determine a book’s main theme and decide whether the book is worth more time for further, deeper reading."
+        - Q: "Why do Adler and Van Doren consider syntopical reading the highest level?"
+          A: "It demands the most active effort by the reader—comparing and synthesizing multiple authors’ viewpoints to form new insights."
       exercises:
         - name: "Assess Your Reading Level"
           prompt: >
-            Reflect on your reading habits. Which level of reading do you typically engage
-            in? Do you often stop at understanding the surface of a book, or do you dive
-            deeper into its meaning?
-
+            Reflect on your reading habits. Which level of reading do you
+            typically engage in? Do you often stop at understanding the
+            surface of a book, or do you dive deeper into its meaning?
         - name: "Practice Inspectional Reading"
           prompt: >
-            Choose a non-fiction book and spend 15 minutes practicing inspectional reading.
-            Write a brief summary of what you learned from the table of contents, headings,
-            and first and last paragraphs of chapters.
-
+            Choose a non-fiction book and spend 15 minutes practicing
+            inspectional reading. Write a brief summary of what you
+            learned from the table of contents, headings, and first
+            and last paragraphs of chapters.
       assignments:
         - name: "Reading Level Tracker"
           description: >
-            Over the next week, keep track of how you engage with different texts. 
-            Which level of reading are you using? Do you find yourself engaging more deeply
-            with certain types of books or articles?
-
-        - name: "Compare Two Books"
+            Over the next week, keep track of how you engage with different
+            texts. Which level of reading are you using? Do you find yourself
+            engaging more deeply with certain types of books or articles?
+        - name: "Find and Compare Two Books"
           description: >
-            Select two books on the same subject and compare how they approach the topic.
-            Try to engage in syntopical reading—how do their perspectives differ? What new
-            insights emerge from comparing them?
+            Select two books on the same subject and compare how they approach
+            the topic—this will engage all the levels of reading at once.
+            Try to engage in syntopical reading at a surface level—how do their
+            perspectives differ? What new insights emerge from comparing them?
+
+    - lesson_id: 3
+      title: "Chapter 3: The First Level of Reading - Elementary Reading"
+      lecture_notes: |
+        First, read Chapter 3—“The First Level of Reading: Elementary Reading”
+        in Mortimer J. Adler and Charles Van Doren’s *How to Read a Book.* This
+        chapter focuses on the foundational skills of reading and how they
+        develop over time.
+
+        This lesson explores how elementary reading is learned and the stages
+        of literacy development. Adler and Van Doren emphasize that many people
+        stop improving their reading abilities after reaching basic literacy,
+        but true learning requires progressing beyond this level.
+
+        ## Key Takeaways
+
+        - **Elementary reading** is the first level of reading and consists of mastering basic literacy.
+        - Reading is developed in **stages**, from recognizing words to full comprehension.
+        - Many people remain at this level without advancing to **inspectional, analytical, or syntopical reading**.
+        - Effective reading begins with mastering the mechanics of language, but true understanding comes from engaging more deeply.
+        - Schools often fail to teach **higher reading skills**, leaving many adults stuck in elementary reading habits.
+
+        ## Key Concepts
+
+        **Stages of Learning to Read:**
+
+        1. **Reading Readiness** – Learning letters, sounds, and basic words.
+        2. **Word Mastery** – Recognizing words, sentences, and simple stories.
+        3. **Vocabulary Growth** – Expanding word knowledge and using context clues.
+        4. **Mature Reading** – Reading for meaning and deeper understanding.
+
+        - **Literacy Development:**
+          - The difference between **being able to read** and **reading well**.
+          - Many people stop improving their reading ability after school.
+          - True literacy involves **reading beyond the surface** of a text.
+
+        - **The Problem with Education:**
+          - Schools teach students to read at an elementary level but rarely push beyond it.
+          - Advanced reading is necessary for critical thinking and lifelong learning.
+
+        ## Key Terms
+
+        - **Elementary Reading:** The basic ability to recognize and understand words and sentences.
+        - **Functional Literacy:** The ability to read and write well enough to function in society.
+        - **Comprehension:** Understanding the meaning behind words rather than just recognizing them.
+        - **Stages of Literacy:** The progression from basic reading skills to advanced reading ability.
+      
+      sources:
+        - "Mortimer J. Adler, *How to Read a Book*, Chapter 3"
+      questions_and_answers:
+        - Q: "What is elementary reading?"
+          A: "Elementary reading is the basic ability to recognize and understand words and sentences."
+        - Q: "Why do many people stop developing their reading skills after elementary reading?"
+          A: "Schools focus on literacy basics, but rarely teach higher reading skills like analytical or syntopical reading."
+        - Q: "What are the stages of literacy development?"
+          A: "The four stages are reading readiness, word mastery, vocabulary growth, and mature reading."
+        - Q: "How does vocabulary growth affect reading ability?"
+          A: "A larger vocabulary helps readers understand more complex texts and ideas."
+        - Q: "What is the difference between functional literacy and deep reading?"
+          A: "Functional literacy allows people to read signs and forms, but deep reading involves comprehension, analysis, and critical thinking."
+        - Q: "Why is reading comprehension more important than just recognizing words?"
+          A: "Recognizing words does not guarantee understanding their meaning or how they connect in a text."
+        - Q: "How do schools contribute to the problem of limited reading skills?"
+          A: "Schools focus on basic literacy but often do not teach students how to read beyond an elementary level."
+        - Q: "Can someone become a better reader after childhood?"
+          A: "Yes, reading skills can be improved at any stage of life through active engagement and practice."
+        - Q: "What is the role of critical thinking in reading?"
+          A: "Critical thinking helps readers analyze and interpret texts, rather than just memorizing facts."
+        - Q: "How does elementary reading relate to the higher levels of reading?"
+          A: "Elementary reading is the foundation, but advanced reading skills like analytical and syntopical reading build on it."
+      exercises:
+        - name: "Evaluate Your Reading Stage"
+          prompt: >
+            Reflect on your own reading development. Which stage of literacy
+            do you think you reached? Have you continued to improve your
+            reading skills beyond basic comprehension?
+        - name: "Compare Reading Abilities"
+          prompt: >
+            Observe the reading skills of people around you. Do most people
+            engage in elementary reading, or do you notice anyone practicing
+            deeper levels of reading? Take notes on examples of different
+            reading habits.
+      assignments:
+        - name: "Reading Growth Reflection"
+          description: >
+            Write a one-page reflection on your own reading journey. When did
+            you first learn to read? Have your skills grown since childhood?
+            What challenges have you faced in reading more complex books?
+        - name: "Analyze a Children’s Book"
+          description: >
+            Choose a children’s book and analyze its reading level. What
+            vocabulary is used? What comprehension skills are needed? How does
+            it compare to the types of books you read now?
+
+    - lesson_id: 4
+      title: "Chapter 4: The Second Level of Reading - Inspectional Reading"
+      lecture_notes: |
+        First, read Chapter 4—“The Second Level of Reading: Inspectional
+        Reading”—in Mortimer J. Adler and Charles Van Doren’s *How to Read
+        a Book.* This chapter introduces techniques for **systematic skimming**
+        and **superficial reading**, designed to quickly assess a book before
+        engaging with it deeply.
+
+        This lesson explores how inspectional reading allows you to determine
+        whether a book is worth your time and how to extract essential
+        information efficiently.
+
+        ## Key Takeaways
+
+        - Inspectional reading is a **time-efficient** way to grasp the structure and main points of a book before reading it thoroughly.
+        - There are **two types** of inspectional reading:
+          1. **Systematic Skimming** – Quickly reviewing the title, table of contents, headings, and key paragraphs to get a sense of the book.
+          2. **Superficial Reading** – Reading straight through without stopping for deep comprehension, especially for difficult texts.
+        - Many people **read inefficiently** by treating all books the same, but not all books require deep analytical reading.
+        - Inspectional reading helps identify whether a book **deserves** further reading or should be set aside.
+
+        ## Key Concepts
+
+        - **The Purpose of Inspectional Reading:**
+          - Save time by quickly determining a book’s main ideas.
+          - Avoid wasting time on books that are not useful or relevant.
+        - **Systematic Skimming Techniques:**
+          - Read the **title and subtitle** carefully.
+          - Examine the **table of contents** to understand the book’s structure.
+          - Look at the **index** to identify key topics.
+          - Read the **preface and introduction** for the author’s main argument.
+          - Skim the first and last paragraphs of each chapter.
+        - **Superficial Reading:**
+          - Read through the book without stopping to analyze details.
+          - Focus on the **flow of ideas** rather than full comprehension.
+          - Helps prepare for deeper analytical reading later.
+
+        ## Key Terms
+
+        - **Inspectional Reading:** The process of systematically skimming a book to quickly understand its main ideas.
+        - **Systematic Skimming:** A method of previewing a book’s key components before deciding to read it in-depth.
+        - **Superficial Reading:** A technique where you read straight through without stopping to analyze difficult sections.
+        - **Pre-Reading Techniques:** Strategies to determine a book’s value before committing to reading it fully.
+      sources:
+        - "Mortimer J. Adler, *How to Read a Book*, Chapter 4"
+      questions_and_answers:
+        - Q: "What is the goal of inspectional reading?"
+          A: "To quickly determine a book’s structure, main arguments, and whether it is worth deeper reading."
+        - Q: "What are the two types of inspectional reading?"
+          A: "Systematic skimming and superficial reading."
+        - Q: "Why is systematic skimming useful?"
+          A: "It helps readers quickly assess the key ideas and structure of a book before committing to reading it fully."
+        - Q: "How does superficial reading help with comprehension?"
+          A: "It allows readers to familiarize themselves with a difficult text before engaging with it analytically."
+        - Q: "When should you use inspectional reading?"
+          A: "When deciding whether a book is worth reading and when trying to quickly understand its main points."
+        - Q: "What is a common mistake readers make when approaching books?"
+          A: "Treating all books the same and not adjusting their reading strategy to fit the book’s depth."
+        - Q: "How does inspectional reading save time?"
+          A: "By allowing readers to quickly extract the most important information and decide if further reading is necessary."
+        - Q: "Should all books be read analytically?"
+          A: "No, some books are not worth deep reading, and some only require inspectional reading."
+        - Q: "What should you look for in the table of contents during skimming?"
+          A: "The book’s overall structure, main topics, and chapter organization."
+        - Q: "Why is it useful to read a book’s introduction and conclusion first?"
+          A: "These sections often contain the author’s main argument and summarize key points."
+      exercises:
+        - name: "Practice Systematic Skimming"
+          prompt: >
+            Choose a book you have never read before. Spend 10-15 minutes
+            skimming the title, table of contents, introduction, and key
+            paragraphs. Write a summary of what you think the book is about.
+        - name: "Superficial Reading Test"
+          prompt: >
+            Select a difficult book and read the first 20 pages without stopping
+            to analyze details. Then, reflect on how much you understood. Did
+            reading this way help you grasp the book’s flow?
+      assignments:
+        - name: "Apply Inspectional Reading"
+          description: >
+            Pick a non-fiction book and apply both systematic skimming and
+            superficial reading techniques. Take notes on what you learned
+            from each method and how they affected your understanding.
+        - name: "Evaluate a Book’s Worth"
+          description: >
+            Find a book you were considering reading. After using inspectional
+            reading techniques, decide whether you will read it fully or set
+            it aside. Justify your decision in a one-page reflection.
+
+    - lesson_id: 5
+      title: "Chapter 5: The Third Level of Reading – Analytical Reading"
+      lecture_notes: |
+        First, read Chapter 5—“The Third Level of Reading: Analytical Reading”—in
+        Mortimer J. Adler and Charles Van Doren’s *How to Read a Book.* This chapter
+        expands your reading skills beyond the elementary and inspectional levels,
+        focusing on a more rigorous and engaged form of reading.
+
+        In **analytical reading**, you apply a systematic method to fully understand
+        a book—synthesizing its structure, its main arguments, and its relevance to
+        your broader thinking. This is the stage where you make the most demands
+        both on yourself and on the author. Through analytical reading, you learn
+        not just to extract information, but to deepen your comprehension, ask
+        critical questions, and form intelligent judgments about a text.
+
+        The hallmark of analytical reading is its active nature: you cooperate with
+        the author—asking questions, challenging points, and thinking carefully
+        about implications. You’ll notice a major shift from simpler absorption
+        of facts to a more profound exploration of how the text’s arguments and
+        perspectives relate to each other—and to the world.
+
+        ## Key Takeaways
+
+        - **Analytical Reading as a Higher-Level Skill**: You move from skimming
+          or grasping the general outline of a book to deeply examining the author’s
+          arguments. This level is also called “thorough reading” or “reading for
+          understanding.”
+        - **Active and Systematic Process**: Analytical reading involves structured
+          questioning and note-taking to reveal the text’s deeper meaning and
+          logical flow.
+        - **The Four Basic Questions**: This chapter reminds us that an analytical
+          reader seeks answers to four essential questions:
+          
+          1. *What is the book about as a whole?*
+          2. *What is being said in detail, and how?*
+          3. *Is the book true, in whole or part?* (Evaluating accuracy)
+          4. *What of it?* (Assessing significance)
+          
+          These questions guide you in drawing out the substance of the text.
+        - **Stages of Analytical Reading**:
+          1. **Structural Outlining** (reviewing and elaborating on major and minor
+            divisions of the text)
+          2. **Interpretation** (clarifying the author’s terms, propositions, and
+            arguments)
+          3. **Criticism/Evaluation** (deciding what’s valid, what’s debatable, and
+            how it matters to you)
+
+        ## Key Concepts
+
+        - **Coming to Terms**: Identifying the author’s important words or phrases
+          (terms) and understanding how they are uniquely used in the text.
+        - **Finding Propositions and Arguments**: Recognizing the author’s statements
+          (propositions) and how they fit together to form the book’s overall
+          argument or line of reasoning.
+        - **Cooperation with the Author**: Treating reading as a dialogue. You follow
+          the author’s plan, but also remain critical and engaged, asking questions
+          about definitions, evidence, and conclusions.
+        - **Evaluation vs. Personal Opinion**: True analytical reading demands
+          respect for the text. You suspend immediate judgment until you fully
+          grasp the author’s meaning. Then you can accurately evaluate the text’s
+          truth and relevance.
+
+        ## Key Terms
+
+        - **Analytical Reading**: A thorough, active approach that seeks to fully
+          comprehend the text by identifying structure, clarifying key terms,
+          unpacking arguments, and forming a well-considered judgment.
+        - **Terms**: Special or “loaded” words an author uses in distinct or
+          technical ways. Clarifying these is crucial for correct interpretation.
+        - **Propositions**: Declarative statements—“points”—the author makes.
+          Identifying these points is central to understanding what the author
+          actually argues or concludes.
+        - **Arguments**: Chains of reasons that support the author’s propositions.
+          Learning to recognize how premises link to a conclusion helps you follow
+          (and assess) the logic of the text.
+
+      sources:
+        - "Mortimer J. Adler, *How to Read a Book*, Chapter 5"
+      questions_and_answers:
+        - Q: "What is the main difference between inspectional and analytical reading?"
+          A: "Inspectional reading helps you quickly grasp a book’s structure and
+              main ideas. Analytical reading, however, goes deeper—evaluating the
+              author’s exact use of terms, following arguments, and judging the
+              text’s validity and implications."
+        - Q: "Why is analytical reading described as 'intensely active'?"
+          A: "Because you continuously question, reflect, and challenge both the
+              text and yourself. You make notes on key points, clarify ambiguities,
+              and form reasoned judgments—rather than passively absorbing words."
+        - Q: "What are 'terms,' and why are they important to analytical reading?"
+          A: "Terms are pivotal words or phrases that carry the author’s specialized
+              meaning. Knowing how these terms are used—and noting shifts in meaning—
+              is critical for grasping the author’s arguments accurately."
+        - Q: "How do you identify an author’s arguments in a text?"
+          A: "Look for propositions linked by words like ‘because,’ ‘therefore,’
+              ‘if…then,’ and ‘since….’ These cues show how the author builds support
+              for a conclusion or responds to a question."
+        - Q: "When should you begin critiquing a book’s arguments?"
+          A: "Only after you fully understand them. Adler stresses that you must
+              interpret before you criticize—otherwise, your disagreement may stem
+              from misunderstanding, not genuine reflection."
+
+      exercises:
+        - name: "Identify Key Terms"
+          prompt: >
+            Choose a non-fiction book—or an in-depth article—and skim through to find
+            words the author uses that seem technical or have meanings that are
+            unfamiliar to you. Make a short list of five such terms. Then, as you
+            read more carefully, write down how each term is used—what does it
+            specifically mean in this context?
+        - name: "Propositions and Arguments"
+          prompt: >
+            From the same reading, select one main claim (proposition) that the
+            author makes. Identify the sentences or sections that provide reasons
+            to support that claim. How do these reasons connect logically to the
+            conclusion? Write a paragraph describing the argument in your own words.
+
+      assignments:
+        - name: "Practice Analytical Reading"
+          description: >
+            Choose a challenging book—something you’ve struggled with before or
+            that addresses a complex subject. Read its first chapter analytically.
+            Outline the structure: how is the chapter organized, and what are the
+            major propositions? Also note any key terms you had to look up or
+            clarify. Summarize what you learned about the author’s approach.
+        - name: "Reflect on Critical Engagement"
+          description: >
+            In a short journal entry, reflect on a moment when you realized you
+            disagreed with the text. Were you sure you understood the author’s main
+            point, or might you have disagreed prematurely? Would a second reading
+            and a deeper analysis change your perspective? Explore how analytical
+            reading might refine or reinforce your initial reaction.
+
+    - lesson_id: 6
+      title: "Chapter 6: Interpretation: Terms, Propositions, and Arguments"
+      lecture_notes: |
+        First, read Chapter 6—“Coming to Terms with an Author”—in Mortimer J. Adler
+        and Charles Van Doren’s *How to Read a Book,* and continue through their
+        explanation of how to interpret an author’s message—namely, by identifying
+        how terms, propositions, and arguments function in a text. Building on the
+        principles of analytical reading you studied in the previous lesson, you
+        will deepen your ability to discern precisely what an author is saying and
+        on what grounds it stands or falls.
+
+        At this point in your growth as a reader, you are no longer just identifying
+        the text’s overall structure (as in inspectional reading) or briefly stating
+        its central theme. Instead, you are moving inside the architecture of the
+        text—locating its load-bearing walls and beams. This is where the details of
+        the author’s vocabulary, statements, and logical connections matter. Adler
+        and Van Doren sometimes describe this process as “the second stage of
+        analytical reading”: coming to terms and propositions, and following
+        arguments.
+
+        ## Key Takeaways
+
+        - **From Words to Terms**: Authors typically have a core set of “key words”
+          that need special attention if you are to understand their ideas properly.
+          A “term” is a word used unambiguously. The same word can have multiple
+          meanings in the same text; inversely, different words can convey the same
+          underlying concept (term). Identifying these helps align your
+          interpretation with the author’s.
+        - **From Sentences to Propositions**: Many sentences may sound like claims,
+          but only some assert clear, coherent statements that require or admit a
+          “true-or-false” evaluation. Distinguishing a mere string of words from a
+          definite proposition is key to mapping the text’s real content.
+        - **Identifying Arguments**: When propositions are linked logically—e.g.,
+          “because…therefore…”—they form an argument. Noticing these link words,
+          which indicate reasons and conclusions, allows you to follow and then
+          evaluate the author’s reasoning.
+        - **Grammar vs. Logic**: Awareness of an author’s diction and syntax is
+          essential, but what truly matters is how words and sentences translate
+          into concepts and arguments. While grammar is about language structure,
+          logic is about thought structure. Being clear on the difference prevents
+          literal misunderstandings.
+
+        ## Key Concepts
+
+        - **Technical Vocabulary**: In any serious text, authors have a set of words
+          they use in a specialized, often discipline-specific, way. Learning these
+          helps you “come to terms” with the author, reducing ambiguity.
+        - **Contextual Clues**: Sometimes you spot the meaning of a potentially
+          ambiguous word by how it’s used elsewhere in the text, or by the presence
+          of synonyms or definitions. This detective work helps ensure you follow
+          the author’s single meaning.
+        - **Reasoning Cues**: Pay attention to transitions and conjunctions (e.g.,
+          “because,” “if…then,” “thus,” “consequently,” “unless”) that reveal how
+          the author structures propositions and arrives at conclusions.
+
+        ## Key Terms
+
+        - **Term**: A concept the author uses consistently in a particular sense,
+          even if multiple synonyms or various words are used. Terms are central to
+          the author’s argument.
+        - **Proposition**: A statement that can be judged true or false, expressing
+          a specific point the author claims as valid. In reading, identifying
+          propositions is crucial for understanding and eventual critique.
+        - **Argument**: A chain of propositions linked by reasoning; for example,
+          one or more premises lead to a conclusion. Spotting and following an
+          argument helps you see how the author supports (or fails to support) the
+          main points.
+
+      sources:
+        - "Mortimer J. Adler, *How to Read a Book*, Chapter 6"
+      questions_and_answers:
+        - Q: "Why do Adler and Van Doren insist that one word can represent multiple terms?"
+          A: "Because words often have different meanings depending on context.
+              What seems like a single word might actually carry various
+              concepts—especially if an author doesn't use it uniformly."
+        - Q: "What is the purpose of identifying 'terms' in a text?"
+          A: "By identifying key terms, you ensure that you and the author are
+              effectively 'speaking the same language.' It’s how you overcome
+              ambiguities and clarify exactly what the author means by a crucial
+              concept."
+        - Q: "What is the difference between a sentence and a proposition?"
+          A: "A sentence is a grammatical unit in language, while a proposition is
+              a logical unit of meaning—a claim that can be evaluated as true or
+              false. One sentence can actually express multiple propositions, or
+              several sentences might convey only one."
+        - Q: "How do you recognize an argument in a book?"
+          A: "Look for the premises the author sets out (often with words like
+              ‘since’ or ‘because’) and see how they are said to lead to a
+              conclusion (signaled by words like ‘therefore’ or ‘thus’). This
+              structure reveals the chain of logic."
+        - Q: "Does interpreting a text end with finding the author’s main terms,
+              propositions, and arguments?"
+          A: "Interpretation is crucial, but it’s only part of the process. Once
+              you understand the text accurately, you must still evaluate and judge
+              its validity—whether you agree, disagree, or see limitations. That
+              evaluation is the next stage."
+
+      exercises:
+        - name: "Identify Terms vs. Words"
+          prompt: >
+            Pick a section from a non-fiction book that’s new to you. List five key
+            words that appear important or confusing. For each, write down the
+            different ways the author seems to use it (i.e., the multiple meanings,
+            or synonyms). Note how any ambiguity may affect your understanding.
+        - name: "Map Propositions to Arguments"
+          prompt: >
+            Select a paragraph in the same book that presents an argument. Do the
+            following:
+            1. Extract individual propositions (the claims).
+            2. Label any premises and the main conclusion.
+            3. Look for words or phrases that indicate these relationships.
+            Summarize the argument to see if it’s valid.
+
+      assignments:
+        - name: "Analyzing a Dense Text"
+          description: >
+            Take a particularly “dense” or concept-heavy text (2–3 pages) in
+            philosophy, science, or sociology. Attempt to rewrite each paragraph
+            into simpler language—start by identifying major propositions and
+            explaining their logical connection in your own words. Note your
+            challenges: which words or phrases needed more context? Where did the
+            author’s argument shift or become more complex?
+        - name: "Reflect on Key Terms in Your Profession or Field"
+          description: >
+            In a short reflection, list three or four critical terms in a field you
+            know well (e.g., ‘liability’ in law, ‘market efficiency’ in economics,
+            ‘polymorphism’ in computer science). How do people sometimes
+            misunderstand those terms, and what clarifications might be helpful?
+            Explore how such misunderstandings arise and how to mitigate them using
+            insights from Adler and Van Doren’s approach to coming to terms.
+
+    - lesson_id: 7
+      title: "Chapter 7: Determining an Author’s Message"
+      lecture_notes: |
+        Building on your studies of terms, propositions, and arguments (the basis
+        of **interpretive reading**), you are now ready to address a central goal:
+        determining the author’s overall message or point. In Mortimer Adler and
+        Charles Van Doren’s *How to Read a Book*, this corresponds to moving from
+        individual concepts (terms) and claims (propositions) to examining how the
+        author weaves these together into a cohesive argument. In other words, you
+        need to see how the “main thread” of the book is carried along by arguments,
+        supporting evidence, and transitions from one point to another.
+
+        This chapter teaches you to do something essential yet often overlooked:
+        distinguishing between the language the author uses (grammar) and what the
+        author is actually saying (logic). Grammar and logic are related but not
+        identical. Words and sentences can be ambiguous, but once you untangle them,
+        the author’s message—expressed as an organized sequence of propositions—must
+        stand or fall on the strength of its reasoning.
+
+        ## Key Takeaways
+
+        - **Not All Sentences Contain a Proposition**: An author may include
+          exclamations, rhetorical questions, or transitions. Identify which
+          sentences genuinely state something you can affirm or deny.
+        - **Multiple Propositions in One Sentence**: A sentence can bundle together
+          several claims. Your job is to see whether—and how—they link logically.
+        - **Arguments: A Roadmap of Reasoning**: Once you see what the author
+          asserts (the propositions), look for connectives like “because,” “thus,”
+          or “if…then.” These guide you to see how evidence and reasoning form
+          a conclusion. This is how you determine the “main line” of the book’s
+          argument.
+        - **Creating a Coherent Summary**: After breaking down the parts of the
+          text, you can reconstruct them, explaining the message in simpler terms
+          or an outline. This is crucial for deep comprehension and sets the stage
+          for critical judgment.
+
+        ## Key Concepts
+
+        - **Structural vs. Interpretive Reading**: You’ve learned how to outline
+          the text’s structure (Chapter 4–5), and how to come to terms with the
+          author (Chapter 6). Now you blend these skills to “see” the author’s
+          through-line and how each piece of evidence or claim connects.
+        - **Levels of Abstraction**: Recognize that different propositions may be
+          more general (big ideas) or more specific (examples or explanations).
+          Being clear about the level of abstraction helps you place smaller
+          details in context.
+        - **The Author’s “Voice” vs. The Argument**: Sometimes authors use strong
+          language, humorous anecdotes, or emotional appeals. Don’t let that noise
+          distract you from what they are actually **arguing**. Peel back the
+          rhetorical flourishes to identify core propositions and reasoning.
+
+        ## Key Terms
+
+        - **Declarative vs. Non-Declarative Sentence**: A declarative sentence
+          asserts something (e.g., “The sky is blue”), which can be evaluated as
+          true or false. By contrast, interrogative, imperative, or exclamatory
+          sentences do not strictly present a proposition.
+        - **Coherence**: The logical interlinking of ideas or parts of the text.
+          Coherence is what allows you to see a set of premises leading to a
+          conclusion.
+        - **Reconstruction**: The reader’s own process of putting the author’s
+          message back together after analyzing it. It’s the final step in
+          understanding before you judge.
+
+      sources:
+        - "Mortimer J. Adler, *How to Read a Book*, Chapter 7"
+      questions_and_answers:
+        - Q: "Why do some sentences not express a proposition?"
+          A: "Because they may be questions, directives, or emotional expressions
+              that aren’t true-or-false statements. Propositions must be
+              testable—capable of being affirmed or denied."
+        - Q: "How do I identify multiple propositions within a single sentence?"
+          A: "Look for logical connectors (‘and,’ ‘or,’ ‘if…then,’ ‘because’). Each
+              connector might indicate a separate claim. For instance, ‘If X, then
+              Y, but not if Z’ can embed multiple distinct assertions."
+        - Q: "What if I find a contradiction in the text?"
+          A: "First clarify the author’s terms and context. It may not be a genuine
+              contradiction, but if it is, note it. The text’s coherence might be
+              weaker, or the author may be introducing a paradox deliberately. Keep
+              evaluating how the author resolves it—if at all."
+        - Q: "How do I know whether I’ve captured the main argument accurately?"
+          A: "Try summarizing it in your own words as a connected sequence of
+              premises and a conclusion. If you can’t show how each part leads
+              logically to the final point, you might need to refine your
+              understanding."
+        - Q: "Is determining the author’s message the final step in analytical reading?"
+          A: "Not quite. Once you’re sure you understand the author’s main line
+              of argument, the next step is evaluating its truth, correctness, or
+              significance—i.e., forming a reasoned critique."
+
+      exercises:
+        - name: "Proposition Hunting"
+          prompt: >
+            Return to a previous assignment or any chapter from a non-fiction book
+            that interests you. Highlight five sentences. Identify which ones
+            contain at least one proposition. Do any contain multiple propositions?
+            Write out the distinct claims in each. This ensures you’re training
+            yourself to see the difference between literary flourishes and genuine
+            assertions.
+        - name: "Argument Mapping"
+          prompt: >
+            In a short section of the same text, systematically extract premises
+            (reasons) and the main conclusion. Notice how propositions are strung
+            together. Attempt a visual or written “map” of the argument. This
+            practice helps you verify that you understand how the text’s logic is
+            organized.
+
+      assignments:
+        - name: "Outline the Argument Flow"
+          description: >
+            Select a chapter from a scholarly book or article. Summarize how the
+            author moves from the initial statement of a problem to the conclusion.
+            Identify intermediate steps (sub-conclusions). Write this out clearly,
+            either bulleting or numbering each step of the argument. Reflect on
+            whether you find coherence—does each step build logically on the
+            previous one?
+        - name: "Synthesize in Your Own Words"
+          description: >
+            Once you identify the series of propositions and the overall argument
+            structure in a chapter, try rewriting the chapter’s “story” as a brief
+            outline or summary. Hand this summary to someone unfamiliar with the
+            text to see if they gain a solid sense of the author’s message and logic.
+            Their feedback can reveal if you need to refine your reconstruction.
