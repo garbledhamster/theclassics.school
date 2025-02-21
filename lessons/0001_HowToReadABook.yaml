@@ -17,7 +17,7 @@ course:
 
         ---
 
-        ## **COURSE GOALS**
+        ### **COURSE GOALS**
 
         1. Equip students to **read actively and critically**, progressing through the four levels of reading (Elementary, Inspectional, Analytical, Syntopical).  
         2. Develop the habit of **asking questions**, outlining structures, identifying key terms, and **evaluating arguments**.  
@@ -26,13 +26,13 @@ course:
 
         ---
 
-        ## **WEEK-BY-WEEK SCHEDULE**
+        ### **WEEK-BY-WEEK SCHEDULE**
 
         > **Note**: This schedule uses chapter numbering consistent with the commonly available edition of *How to Read a Book*, which has 23 chapters (as per your outline). Some weeks combine shorter chapters, while others devote more attention to lengthy or complex ones.
 
         ---
 
-        ### **Week 1**
+        #### **Week 1**
         **Chapters to Read**  
         - **Chapter 1: The Activity and Art of Reading**  
 
@@ -56,7 +56,7 @@ course:
 
         ---
 
-        ### **Week 2**
+        #### **Week 2**
         **Chapters to Read**  
         - **Chapter 2: The Levels of Reading**  
         - **Chapter 3: The First Level of Reading: Elementary Reading**  
@@ -79,7 +79,7 @@ course:
 
         ---
 
-        ### **Week 3**
+        #### **Week 3**
         **Chapters to Read**  
         - **Chapter 4: The Second Level of Reading: Inspectional Reading**  
         - **Chapter 5: How to Be a Demanding Reader**  
@@ -107,7 +107,7 @@ course:
 
         ---
 
-        ### **Week 4**
+        #### **Week 4**
         **Chapters to Read**  
         - **Chapter 6: Pigeonholing a Book**  
 
@@ -129,7 +129,7 @@ course:
 
         ---
 
-        ### **Week 5**
+        #### **Week 5**
         **Chapters to Read**  
         - **Chapter 7: X-Raying a Book**  
 
@@ -154,7 +154,7 @@ course:
 
         ---
 
-        ### **Week 6**
+        #### **Week 6**
         **Chapters to Read**  
         - **Chapter 8: Coming to Terms with an Author**  
         - **Chapter 9: Determining an Author’s Message**  
@@ -179,7 +179,7 @@ course:
 
         ---
 
-        ### **Week 7**
+        #### **Week 7**
         **Chapters to Read**  
         - **Chapter 10: Criticizing a Book Fairly**  
         - **Chapter 11: Agreeing or Disagreeing with an Author**  
@@ -206,7 +206,7 @@ course:
 
         ---
 
-        ### **Week 8**
+        #### **Week 8**
         **Chapters to Read**  
         - **Chapter 12: Aids to Reading**  
 
@@ -228,7 +228,7 @@ course:
 
         ---
 
-        ### **Week 9**
+        #### **Week 9**
         **Chapters to Read**  
         - **Chapter 13: The Role of Relevant Experience**  
         - **Chapter 14: The Pyramid of Books**  
@@ -254,7 +254,7 @@ course:
 
         ---
 
-        ### **Week 10**
+        #### **Week 10**
         **Chapters to Read**  
         - **Chapter 15: How to Read Practical Books**  
         - **Chapter 16: How to Read Imaginative Literature**  
@@ -278,7 +278,7 @@ course:
 
         ---
 
-        ### **Week 11**
+        #### **Week 11**
         **Chapters to Read**  
         - **Chapter 17: How to Read Stories, Plays, and Poems**  
 
@@ -304,7 +304,7 @@ course:
 
         ---
 
-        ### **Week 12**
+        #### **Week 12**
         **Chapters to Read**  
         - **Chapter 18: How to Read History**  
         - **Chapter 19: How to Read Science and Mathematics**  
@@ -329,7 +329,7 @@ course:
 
         ---
 
-        ### **Week 13**
+        #### **Week 13**
         **Chapters to Read**  
         - **Chapter 20: How to Read Philosophy**  
         - **Chapter 21: How to Read Social Science**  
@@ -352,7 +352,7 @@ course:
 
         ---
 
-        ### **Week 14**
+        #### **Week 14**
         **Chapters to Read**  
         - **Chapter 22: Syntopical Reading**  
 
@@ -377,7 +377,7 @@ course:
 
         ---
 
-        ### **Week 15**
+        #### **Week 15**
         **Chapters to Read**  
         - **Chapter 23: Reading and the Growth of the Mind**  
 
@@ -400,7 +400,7 @@ course:
 
         ---
 
-        ### **Week 16**
+        #### **Week 16**
         **Final Project & Course Wrap-Up**
 
         No new chapters assigned this week.  
@@ -432,7 +432,7 @@ course:
 
         ---
 
-        ## **ADDITIONAL NOTES**
+        ### **ADDITIONAL NOTES**
 
         - This course is entirely **self-driven**. Each “lesson” is essentially the **assigned chapters** plus the stated exercises and assignment.  
         - Students engage with *How to Read a Book* as their **primary** text, applying each principle **immediately** to other books or articles of their choice.  
@@ -449,7 +449,7 @@ course:
     - lesson_id: 0b
       title: "Chapter Summaries"
       course: |
-        **Part One: The Dimensions of Reading**  
+        ### **Part One: The Dimensions of Reading**  
         1. **The Activity and Art of Reading** – Reading is an active process that requires effort and engagement, not just passive absorption. The goal of reading is to gain understanding, which differs from simply gathering information. To become a better reader, one must approach books with the intention of extracting meaning and applying critical thinking.  
 
         2. **The Levels of Reading** – There are four levels of reading: Elementary (basic literacy), Inspectional (skimming and superficial reading), Analytical (deep, systematic reading), and Syntopical (comparative reading of multiple books). Each level requires different skills and provides increasing levels of comprehension. Mastering these levels allows readers to engage with books more effectively.  
@@ -460,7 +460,7 @@ course:
 
         5. **How to Be a Demanding Reader** – A good reader actively questions the text rather than passively accepting information. Asking four key questions—What is the book about? What is being said in detail? Is it true? What of it?—helps engage critically with a book. Active reading requires marking important points, summarizing ideas, and reflecting on the material.  
 
-        **Part Two: The Third Level of Reading: Analytical Reading**  
+        ### **Part Two: The Third Level of Reading: Analytical Reading**  
         6. **Pigeonholing a Book** – Understanding a book starts with classifying it correctly by subject and type (fiction vs. expository, theoretical vs. practical). Different kinds of books require different reading approaches. Knowing the book’s category helps readers anticipate its structure and main arguments.  
 
         7. **X-Raying a Book** – Every book has a structure, and a good reader must identify its main theme and how its parts contribute to that theme. This involves summarizing the book’s main argument in a sentence and breaking it down into its major sections. Understanding a book’s framework makes it easier to follow the author’s reasoning.  
@@ -475,7 +475,7 @@ course:
 
         12. **Aids to Reading** – External resources like dictionaries, encyclopedias, and commentaries can enhance understanding but should not replace independent thinking. A good reader uses these tools selectively to clarify difficult passages. True comprehension comes from grappling with the text rather than relying too much on outside help.  
 
-        **Part Three: The Fourth Level of Reading: Syntopical Reading**  
+        ### **Part Three: The Fourth Level of Reading: Syntopical Reading**  
         13. **The Role of Relevant Experience** – Prior knowledge and experience influence how a reader interprets a book. A well-read person has a broader frame of reference, making it easier to understand complex material. The best readers connect what they read with their existing knowledge.  
 
         14. **The Pyramid of Books** – Books build upon each other, forming a hierarchy of knowledge where foundational texts lead to more advanced understanding. Mastering basic works in a field is essential before engaging with more complex discussions. Syntopical reading involves comparing multiple books to develop a deeper perspective on a topic.  
@@ -494,7 +494,7 @@ course:
 
         21. **How to Read Social Science** – Social science books, including those on economics, psychology, and politics, mix theory and observation. Readers should examine the author’s assumptions and whether their conclusions are supported by evidence. Since social sciences study human behavior, no single book offers absolute truths, making comparative reading essential.  
 
-        **Part Four: The Ultimate Goals of Reading**  
+        ### **Part Four: The Ultimate Goals of Reading**  
         22. **Syntopical Reading** – This highest level of reading involves analyzing multiple books on the same subject to form an independent understanding. Instead of passively absorbing each author’s arguments, the reader actively compares viewpoints and synthesizes ideas. Syntopical reading leads to deeper insights that no single book alone can provide.  
 
         23. **Reading and the Growth of the Mind** – Reading well is a lifelong endeavor that expands knowledge and intellectual ability. The best books challenge readers to think deeply and refine their understanding of the world. True education is not about acquiring information but about developing the ability to think critically and independently.  
@@ -502,7 +502,7 @@ course:
     - lesson_id: 0c
       title: "Keys"
       course: |
-        **Topics**
+        ### **Topics**
         1. **Reading for Information vs. Understanding** – Understanding the difference between simply recalling facts and gaining deep, critical insight. - ch 1  
         2. **Speed vs. Comprehension** – Managing the trade-off between reading quickly and retaining/processing information effectively. - ch 4  
         3. **Systematic Skimming & Superficial Reading** – Learning how to quickly gauge a text’s scope and worth. - ch 4  
@@ -512,7 +512,7 @@ course:
         7. **Cross-Referencing Multiple Texts (Syntopical Reading)** – Engaging in syntopical reading to compare authors’ viewpoints on a single subject. - ch 22  
         8. **Life-Long Learning** – Embracing reading as an ongoing journey of intellectual and personal growth. - ch 23  
 
-        **Terms**
+        ### **Terms**
         - **Active Reading** – Reading as a dynamic, engaged process. - ch 1, 5  
         - **Understanding** – Grasping not just what the text says but also its significance. - ch 1  
         - **Elementary Reading** – Basic literacy skills, decoding words and sentences. - ch 2, 3  
@@ -545,7 +545,7 @@ course:
         - **Intellectual Maturity** – Developing deeper insight and critical awareness through reading. - ch 23  
         - **Reading Habit** – Regular practice of engaged reading until it becomes second nature. - ch 23  
 
-        **Concepts**
+        ### **Concepts**
         - **Outlining & X-Raying a Book** – Identifying the overarching argument and how chapters fit together. - ch 7  
         - **Fair Critique** – Ensuring you fully understand a text before agreeing or disagreeing. - ch 10  
         - **Using External Aids Wisely** – Researching context or definitions without substituting another’s interpretation for your own. - ch 12  
@@ -560,7 +560,7 @@ course:
     - lesson_id: 1
       title: "Week 1: The Activity and Art of Reading"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson corresponds to Week 1 of the course outline, focusing on Chapter 1 of *How to Read a Book*: "The Activity and Art of Reading." The primary goal is to introduce the concept of active vs. passive reading and explore why effortful, engaged reading leads to deeper understanding.
 
         **Key Takeaways**
@@ -617,7 +617,7 @@ course:
     - lesson_id: 2
       title: "Week 2: The Levels of Reading and Elementary Reading"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson covers Chapters 2 and 3 of *How to Read a Book*: “The Levels of Reading” and “The First Level of Reading: Elementary Reading.” We delve deeper into the four distinct levels—Elementary, Inspectional, Analytical, and Syntopical—and focus on the foundational skills required for Elementary Reading. Understanding these levels helps you pinpoint your current reading habits and set goals for improvement.
 
         **Key Takeaways**
@@ -675,7 +675,7 @@ course:
     - lesson_id: 3
       title: "Week 3: Inspectional Reading & Demanding Readers"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson focuses on Chapters 4 and 5 of *How to Read a Book*:  
         - Chapter 4: "The Second Level of Reading: Inspectional Reading"  
         - Chapter 5: "How to Be a Demanding Reader"
@@ -738,7 +738,7 @@ course:
     - lesson_id: 4
       title: "Week 4: Pigeonholing a Book"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson covers Chapter 6: "Pigeonholing a Book." Proper classification of a book by subject, type (fiction vs. expository), and purpose (theoretical vs. practical) lays the groundwork for more effective reading strategies.
 
         **Key Takeaways**
@@ -791,7 +791,7 @@ course:
     - lesson_id: 5
       title: "Week 5: X-Raying a Book"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson explores Chapter 7: "X-Raying a Book." The emphasis is on discerning the structure of a book—its major theme, how the parts fit together, and how to succinctly state its main argument.
 
         **Key Takeaways**
@@ -843,7 +843,7 @@ course:
     - lesson_id: 6
       title: "Week 6: Coming to Terms & Determining an Author’s Message"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson combines Chapters 8 and 9 of *How to Read a Book*:  
         - Chapter 8: "Coming to Terms with an Author"  
         - Chapter 9: "Determining an Author’s Message"
@@ -898,7 +898,7 @@ course:
     - lesson_id: 7
       title: "Week 7: Criticizing Fairly & Agreeing/Disagreeing"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson delves into Chapters 10 and 11 of *How to Read a Book*:  
         - Chapter 10: "Criticizing a Book Fairly"  
         - Chapter 11: "Agreeing or Disagreeing with an Author"
@@ -955,7 +955,7 @@ course:
     - lesson_id: 8
       title: "Week 8: Aids to Reading"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson addresses Chapter 12: "Aids to Reading." It highlights when and how to use external helps—dictionaries, encyclopedias, and commentaries—without letting them replace your own critical thinking or firsthand engagement with the text.
 
         **Key Takeaways**
@@ -1009,7 +1009,7 @@ course:
     - lesson_id: 9
       title: "Week 9: Relevant Experience & The Pyramid of Books"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson covers Chapters 13 and 14 of *How to Read a Book*:  
         - Chapter 13: "The Role of Relevant Experience"  
         - Chapter 14: "The Pyramid of Books"
@@ -1067,7 +1067,7 @@ course:
     - lesson_id: 10
       title: "Week 10: Reading Practical Books & Imaginative Literature"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson focuses on Chapters 15 and 16:  
         - Chapter 15: "How to Read Practical Books"  
         - Chapter 16: "How to Read Imaginative Literature"
@@ -1123,7 +1123,7 @@ course:
     - lesson_id: 11
       title: "Week 11: Stories, Plays, and Poems"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson zeroes in on Chapter 17: "How to Read Stories, Plays, and Poems." Each literary form has its own unique demands and rewards.
 
         **Key Takeaways**
@@ -1179,7 +1179,7 @@ course:
     - lesson_id: 12
       title: "Week 12: Reading History, Science, and Mathematics"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson explores Chapters 18 and 19:  
         - Chapter 18: "How to Read History"  
         - Chapter 19: "How to Read Science and Mathematics"
@@ -1234,7 +1234,7 @@ course:
     - lesson_id: 13
       title: "Week 13: How to Read Philosophy & Social Science"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson addresses Chapters 20 and 21 of *How to Read a Book*:  
         - Chapter 20: "How to Read Philosophy"  
         - Chapter 21: "How to Read Social Science"
@@ -1291,7 +1291,7 @@ course:
     - lesson_id: 14
       title: "Week 14: Syntopical Reading"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson focuses on Chapter 22: "Syntopical Reading," considered the highest level of reading. You learn to read multiple works on the same subject in parallel, comparing and contrasting views to form your own synthesis.
 
         **Key Takeaways**
@@ -1346,7 +1346,7 @@ course:
     - lesson_id: 15
       title: "Week 15: Reading and the Growth of the Mind"
       course: |
-        **Overview**  
+        ## Overview  
         This lesson covers Chapter 23: "Reading and the Growth of the Mind," which concludes *How to Read a Book*. It ties together the insights from previous chapters, emphasizing that reading is a life-long journey of intellectual expansion.
 
         **Key Takeaways**
@@ -1399,7 +1399,7 @@ course:
     - lesson_id: 16
       title: "Week 16: Final Project & Course Wrap-Up"
       course: |
-        **Overview**  
+        ## Overview  
         This final week has no new chapters assigned. It focuses on completing your final project, showcasing everything you’ve learned about the four levels of reading, from inspectional to syntopical.
 
         **Final Project Options**

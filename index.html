@@ -1,58 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>theclassics.school – How to Use This Site</title>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
-      --color-yellow:  #FBAB34;
-      --color-red:     #E04E19;
-      --color-orange:  #E98839;
-      --color-white:   #FCEFDC;
-      --color-green:   #829559;
-      --color-beige:   #D8C19C;
-      --font-base:     "Helvetica Neue", Arial, sans-serif;
-      --font-classic:  Georgia, serif;
-      font-size: 16px;
+      --color-yellow: #FBAB34;
+      --color-red: #E04E19;
+      --color-orange: #E98839;
+      --color-white: #FCEFDC;
+      --color-green: #829559;
+      --color-beige: #D8C19C;
+      --font-base: "Crimson Pro", Georgia, "Times New Roman", serif;
+      --font-classic: "Crimson Pro", Georgia, "Times New Roman", serif;
+      font-size: 18px;
     }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       caret-color: transparent;
     }
-    input, textarea, select {
+
+    input,
+    textarea,
+    select {
       caret-color: auto;
     }
-    html, body {
+
+    html,
+    body {
       width: 100%;
       height: 100%;
     }
+
     body {
       background-color: var(--color-white);
       font-family: var(--font-base);
       color: #333;
       line-height: 1.6;
+      font-size: 1rem;
     }
+
     p {
       margin-bottom: 10px;
     }
-    h1, h2, h3, h4, h5, h6 {
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       margin-top: 0;
       margin-bottom: 0.75rem;
       line-height: 1.3;
     }
-    h1 { font-size: 2rem; }
-    h2 { font-size: 1.75rem; }
-    h3 { font-size: 1.5rem; }
-    h4 { font-size: 1.125rem; }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+    }
+
+    h4 {
+      font-size: 1.25rem;
+    }
+
     header {
       background-color: var(--color-beige);
       padding: 1rem;
@@ -61,16 +87,19 @@
       top: 0;
       z-index: 1000;
     }
+
     header h1 {
       color: var(--color-red);
       margin-bottom: 0.5rem;
       line-height: 1.2;
     }
+
     header p {
       color: var(--color-green);
       font-size: 1.125rem;
       line-height: 1.4;
     }
+
     nav {
       background-color: var(--color-orange);
       display: flex;
@@ -80,6 +109,7 @@
       top: 60px;
       z-index: 999;
     }
+
     nav a {
       color: var(--color-white);
       text-decoration: none;
@@ -88,30 +118,36 @@
       font-size: 1rem;
       cursor: pointer;
     }
+
     .hero {
       background-color: var(--color-yellow);
       color: #fff;
       text-align: center;
       padding: 2rem 1rem;
     }
+
     .hero h2 {
       margin-bottom: 1rem;
     }
+
     .hero p {
       max-width: 600px;
       margin: 0 auto;
       font-size: 1.125rem;
       line-height: 1.5;
     }
+
     main {
       width: 100%;
       margin: 2rem 0;
       padding: 0 1rem;
     }
+
     .course-search {
       text-align: center;
       margin-bottom: 2rem;
     }
+
     .course-search input[type="text"] {
       width: 60%;
       max-width: 400px;
@@ -121,17 +157,20 @@
       font-size: 1rem;
       line-height: 1.5;
     }
+
     .course-list {
       display: grid;
       grid-template-columns: 1fr;
       gap: 1rem;
     }
+
     .course-card {
       background-color: var(--color-beige);
       border-radius: 5px;
       padding: 1rem;
       line-height: 1.6;
     }
+
     .course-card h3 {
       color: var(--color-red);
       font-family: var(--font-classic);
@@ -139,12 +178,14 @@
       font-size: 1.25rem;
       line-height: 1.3;
     }
+
     .course-card p {
       margin-bottom: 0.5rem;
       color: #555;
       font-size: 1rem;
       line-height: 1.5;
     }
+
     .course-card button {
       background-color: var(--color-green);
       color: #fff;
@@ -156,26 +197,33 @@
       font-size: 1rem;
       line-height: 1.5;
     }
+
     .course-card button:hover {
       background-color: #6e7a4b;
     }
+
     .course-status {
       font-size: 0.875rem;
       margin-top: 0.5rem;
       font-style: italic;
     }
+
     .course-status.not-started {
       color: #999;
     }
+
     .course-status.in-progress {
       color: var(--color-orange);
     }
+
     .course-status.complete {
       color: var(--color-green);
     }
+
     .course-status.n-a {
       color: #ccc;
     }
+
     .lessons-container {
       display: none;
       margin-top: 2rem;
@@ -183,6 +231,7 @@
       padding-top: 1rem;
       transition: all 0.5s ease-in-out;
     }
+
     .lesson-layout {
       display: grid;
       grid-template-columns: 250px 1fr;
@@ -190,9 +239,11 @@
       margin-top: 1rem;
       transition: grid-template-columns 0.5s ease-in-out;
     }
+
     .lesson-layout.collapsed {
       grid-template-columns: 48px 1fr;
     }
+
     .lesson-sidebar {
       background-color: var(--color-beige);
       border-radius: 5px;
@@ -201,11 +252,13 @@
       margin-left: 5px;
       overflow-x: hidden;
     }
+
     .lesson-sidebar.collapsed {
       width: 50px;
       text-align: center;
       overflow-x: hidden;
     }
+
     .sidebar-header {
       display: flex;
       align-items: center;
@@ -216,6 +269,7 @@
       background-color: var(--color-beige);
       padding-top: 20px;
     }
+
     .sidebar-header .sidebar-header-icon {
       color: var(--color-red);
       font-size: 1.5rem;
@@ -226,36 +280,45 @@
       line-height: 1;
       margin-left: 10px;
     }
+
     .lesson-sidebar.collapsed .sidebar-header-icon {
       margin-right: 0;
     }
+
     .title-text {
       transition: opacity 0.5s ease-in-out;
       opacity: 1;
       visibility: visible;
     }
+
     .lesson-sidebar.collapsed .title-text {
       display: none;
     }
+
     .lesson-sidebar.collapsed .hover-checkbox {
       display: none !important;
     }
+
     .lesson-list-wrapper {
       overflow-y: auto;
       padding-top: 0.5rem;
     }
+
     .lesson-sidebar.collapsed .lesson-list-wrapper {
       padding: 0;
     }
+
     #lessonProgress {
       margin-bottom: 1rem;
       font-weight: bold;
     }
+
     .lesson-list {
       list-style-type: none;
       margin: 0;
       padding: 0;
     }
+
     .lesson-list li {
       display: grid;
       grid-template-columns: 24px 1fr auto;
@@ -268,28 +331,36 @@
       cursor: pointer;
       background-color: var(--color-beige);
     }
+
     .lesson-list li:not(:hover) {
       grid-template-columns: 24px 1fr;
     }
+
     .lesson-list li:hover {
       background-color: #f5f0e6;
     }
+
     .lesson-list li.completed {
       background-color: #d9efd0;
     }
+
     .lesson-list li.active {
       background-color: #ffeec2;
       border-left: 4px solid var(--color-green);
     }
+
     .hover-checkbox {
       display: none;
     }
+
     .lesson-list li:hover .hover-checkbox {
       display: inline-block;
     }
+
     .icon-area {
       text-align: center;
     }
+
     .lesson-title {
       font-weight: bold;
       font-size: 1rem;
@@ -298,12 +369,15 @@
       overflow-wrap: break-word;
       margin: 0 0.5rem;
     }
+
     .lesson-sidebar.collapsed .lesson-title {
       display: none;
     }
+
     .lesson-sidebar.collapsed li {
       justify-content: center;
     }
+
     .lesson-content {
       border: 1px solid #ccc;
       border-radius: 5px;
@@ -312,14 +386,17 @@
       line-height: 1.6;
       max-width: 60ch;
     }
+
     .lesson-content ul,
     .lesson-content li {
       margin-left: 1.5rem;
       margin-bottom: 0.5rem;
     }
+
     .lesson-content h4 {
       margin: 1rem 0 0.5rem;
     }
+
     footer {
       background-color: var(--color-green);
       color: var(--color-white);
@@ -328,20 +405,24 @@
       margin-top: 2rem;
       line-height: 1.5;
     }
+
     footer a {
       color: var(--color-white);
       text-decoration: underline;
     }
+
     hr {
       margin-top: 20px;
       margin-bottom: 20px;
     }
+
     .lesson-list li:focus,
     .sidebar-header-icon:focus,
     nav a:focus,
     button:focus {
       outline: none;
     }
+
     @media (max-width: 768px) {
       .course-list {
         grid-template-columns: 1fr 1fr;
@@ -349,6 +430,7 @@
     }
   </style>
 </head>
+
 <body>
   <header>
     <h1>theclassics.school</h1>
@@ -359,10 +441,7 @@
   </nav>
   <section class="hero">
     <h2>Welcome to theclassics.school</h2>
-    <p>
-      Here you’ll find structured lessons inspired by timeless works of literature,
-      philosophy, and beyond.
-    </p>
+    <p>Here you’ll find structured lessons inspired by timeless works of literature, philosophy, and beyond.</p>
   </section>
   <main>
     <div class="course-search">
@@ -391,10 +470,8 @@
   </main>
   <footer>
     <p>© 2025 theclassics.school</p>
-    <p>
-      For inquiries, email us at
-      <a href="mailto:info@theclassics.school" style="color: #fff; text-decoration: underline;">info@theclassics.school</a>
-    </p>
+    <p>For inquiries, email us at <a href="mailto:info@theclassics.school"
+        style="color: #fff; text-decoration: underline;">info@theclassics.school</a></p>
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -425,12 +502,10 @@
       setStoredLessonProgress(store);
     }
     function getLessonIcon(type) {
-      switch(type) {
-        case 'reading': return '<i class="fas fa-book"></i>';
-        case 'quiz': return '<i class="fas fa-question-circle"></i>';
-        case 'video': return '<i class="fas fa-video"></i>';
-        default: return '<i class="fas fa-file-alt"></i>';
-      }
+      if (type === 'reading') return '<i class="fas fa-book"></i>';
+      if (type === 'quiz') return '<i class="fas fa-question-circle"></i>';
+      if (type === 'video') return '<i class="fas fa-video"></i>';
+      return '<i class="fas fa-file-alt"></i>';
     }
     async function loadCourses() {
       try {
@@ -449,14 +524,14 @@
         try {
           const response = await fetch(course.file);
           if (!response.ok) {
-            throw new Error(`Could not load ${course.file}`);
+            throw new Error('Could not load ' + course.file);
           }
           const yamlText = await response.text();
           const data = jsyaml.load(yamlText);
           if (data && data.course && Array.isArray(data.course.lessons)) {
             const total = data.course.lessons.length;
             const completed = data.course.lessons.filter(lesson => {
-              const label = lesson.title || `Lesson ${lesson.lesson_id}`;
+              const label = lesson.title || ('Lesson ' + lesson.lesson_id);
               return isLessonChecked(course.file, label);
             }).length;
             course._status = computeCourseStatus(completed, total);
@@ -480,15 +555,16 @@
       const courseObj = allCourses.find(c => c.file === filePath);
       if (!courseObj || !currentCourseData.course) return;
       const total = (currentCourseData.course.lessons || []).length;
-      const completed = (currentCourseData.course.lessons || []).filter(lesson =>
-        isLessonChecked(filePath, lesson.title || `Lesson ${lesson.lesson_id}`)
-      ).length;
+      const completed = (currentCourseData.course.lessons || []).filter(lesson => {
+        const label = lesson.title || ('Lesson ' + lesson.lesson_id);
+        return isLessonChecked(filePath, label);
+      }).length;
       courseObj._status = computeCourseStatus(completed, total);
-      const courseCard = document.querySelector(`.course-card button[data-file="${filePath}"]`)?.closest('.course-card');
+      const courseCard = document.querySelector('.course-card button[data-file="' + filePath + '"]')?.closest('.course-card');
       if (courseCard) {
         const statusEl = courseCard.querySelector('.course-status');
         if (statusEl) {
-          statusEl.classList.remove('not-started','in-progress','complete','n-a');
+          statusEl.classList.remove('not-started', 'in-progress', 'complete', 'n-a');
           statusEl.textContent = courseObj._status;
           const statusClass = courseObj._status.toLowerCase().replace(/\s+/g, '-');
           statusEl.classList.add(statusClass);
@@ -503,21 +579,14 @@
         card.classList.add('course-card');
         let statusClass = 'n-a';
         if (course._status) {
-          statusClass = course._status.toLowerCase().replace(/\s+/g, '-'); 
+          statusClass = course._status.toLowerCase().replace(/\s+/g, '-');
         }
-        card.innerHTML = `
-          <h3>${course.title}</h3>
-          <p>Course ID: ${course.id}</p>
-          <p class="course-status ${statusClass}">${course._status || 'N/A'}</p>
-          <button data-file="${course.file}">View Lessons</button>
-        `;
+        card.innerHTML = '<h3>' + course.title + '</h3><p>Course ID: ' + course.id + '</p><p class="course-status ' + statusClass + '">' + (course._status || 'N/A') + '</p><button data-file="' + course.file + '">View Lessons</button>';
         courseList.appendChild(card);
       });
     }
     function filterCourses(courses, query) {
-      return courses.filter(course =>
-        course.title.toLowerCase().includes(query.toLowerCase())
-      );
+      return courses.filter(course => course.title.toLowerCase().includes(query.toLowerCase()));
     }
     async function handleViewLessons(filePath) {
       try {
@@ -548,7 +617,7 @@
       lessonListEl.innerHTML = '';
       lessonContentEl.innerHTML = '<p style="color: #999;">Select a lesson on the left to see details here.</p>';
       (courseObj.lessons || []).forEach(lesson => {
-        const lessonLabel = lesson.title || `Lesson ${lesson.lesson_id}`;
+        const lessonLabel = lesson.title || ('Lesson ' + lesson.lesson_id);
         if (lesson.section && !document.getElementById('section-' + lesson.section)) {
           const sectionHeader = document.createElement('h4');
           sectionHeader.id = 'section-' + lesson.section;
@@ -560,16 +629,8 @@
         if (isLessonChecked(filePath, lessonLabel)) {
           li.classList.add('completed');
         }
-        li.innerHTML = `
-          <div class="icon-area">
-            ${lesson.type ? getLessonIcon(lesson.type) : '<i class="fas fa-file-alt"></i>'}
-          </div>
-          <div class="lesson-title">${lessonLabel}</div>
-          <div class="hover-checkbox">
-            <input type="checkbox" ${isLessonChecked(filePath, lessonLabel) ? 'checked' : ''} />
-          </div>
-        `;
-        li.addEventListener('click', function(event) {
+        li.innerHTML = '<div class="icon-area">' + (lesson.type ? getLessonIcon(lesson.type) : '<i class="fas fa-file-alt"></i>') + '</div><div class="lesson-title">' + lessonLabel + '</div><div class="hover-checkbox"><input type="checkbox"' + (isLessonChecked(filePath, lessonLabel) ? ' checked' : '') + ' /></div>';
+        li.addEventListener('click', function (event) {
           if (!event.target.closest('.hover-checkbox')) {
             const allItems = document.querySelectorAll('#lessonList li');
             allItems.forEach(item => item.classList.remove('active'));
@@ -587,10 +648,8 @@
       });
       function updateProgress(_filePath) {
         const total = (courseObj.lessons || []).length;
-        const completed = (courseObj.lessons || []).filter(lesson =>
-          isLessonChecked(_filePath, lesson.title || `Lesson ${lesson.lesson_id}`)
-        ).length;
-        lessonProgressEl.textContent = `Completed ${completed} / ${total} lessons`;
+        const completed = (courseObj.lessons || []).filter(lesson => isLessonChecked(_filePath, lesson.title || ('Lesson ' + lesson.lesson_id))).length;
+        lessonProgressEl.textContent = 'Completed ' + completed + ' / ' + total + ' lessons';
         let status = '';
         if (completed === 0) status = '(not-started)';
         else if (completed === total) status = '(complete)';
@@ -603,46 +662,49 @@
     function displayLessonContent(lesson) {
       const lessonContentEl = document.getElementById('lessonContent');
       lessonContentEl.innerHTML = '';
-      const lessonTitle = lesson.title || `Lesson ${lesson.lesson_id}`;
-      const titleEl = document.createElement('h3');
+      const lessonTitle = lesson.title || ('Lesson ' + lesson.lesson_id);
+      const titleEl = document.createElement('h1');
       titleEl.textContent = lessonTitle;
       lessonContentEl.appendChild(titleEl);
+      const hrEl = document.createElement('hr');
+      lessonContentEl.appendChild(hrEl);
+
       if (lesson.course) {
         const notesEl = document.createElement('div');
         notesEl.innerHTML = marked.parse(lesson.course);
         lessonContentEl.appendChild(notesEl);
       }
       if (lesson.exercises && Array.isArray(lesson.exercises) && lesson.exercises.length) {
-        const exHeader = document.createElement('h4');
+        const exHeader = document.createElement('h2');
         exHeader.textContent = 'Exercises:';
         lessonContentEl.appendChild(exHeader);
         let exMarkdown = '\n';
         lesson.exercises.forEach((ex, idx) => {
-          exMarkdown += `${idx + 1}. **${ex.name}** – ${ex.prompt}\n`;
+          exMarkdown += (idx + 1) + '. **' + ex.name + '** – ' + ex.prompt + '\n';
         });
         const exContainer = document.createElement('div');
         exContainer.innerHTML = marked.parse(exMarkdown);
         lessonContentEl.appendChild(exContainer);
       }
       if (lesson.assignments && Array.isArray(lesson.assignments) && lesson.assignments.length) {
-        const asHeader = document.createElement('h4');
+        const asHeader = document.createElement('h2');
         asHeader.textContent = 'Assignments:';
         lessonContentEl.appendChild(asHeader);
         let asMarkdown = '\n';
         lesson.assignments.forEach((a, idx) => {
-          asMarkdown += `${idx + 1}. **${a.name}** – ${a.description}\n`;
+          asMarkdown += (idx + 1) + '. **' + a.name + '** – ' + a.description + '\n';
         });
         const asContainer = document.createElement('div');
         asContainer.innerHTML = marked.parse(asMarkdown);
         lessonContentEl.appendChild(asContainer);
       }
       if (lesson.sources && Array.isArray(lesson.sources) && lesson.sources.length) {
-        const srcHeader = document.createElement('h4');
+        const srcHeader = document.createElement('h2');
         srcHeader.textContent = 'Sources:';
         lessonContentEl.appendChild(srcHeader);
         let srcMarkdown = '\n';
         lesson.sources.forEach((src, idx) => {
-          srcMarkdown += `${idx + 1}. ${src}\n`;
+          srcMarkdown += (idx + 1) + '. ' + src + '\n';
         });
         const srcContainer = document.createElement('div');
         srcContainer.innerHTML = marked.parse(srcMarkdown);
@@ -688,4 +750,5 @@
     });
   </script>
 </body>
+
 </html>
