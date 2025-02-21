@@ -4,7 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>theclassics.school – How to Use This Site</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
   <style>
     :root {
       --color-yellow:  #FBAB34;
@@ -48,8 +53,6 @@
     h2 { font-size: 1.75rem; }
     h3 { font-size: 1.5rem; }
     h4 { font-size: 1.125rem; }
-
-    /* Make header sticky so it stays at the top */
     header {
       background-color: var(--color-beige);
       padding: 1rem;
@@ -68,14 +71,13 @@
       font-size: 1.125rem;
       line-height: 1.4;
     }
-
     nav {
       background-color: var(--color-orange);
       display: flex;
       justify-content: center;
       padding: 0.5rem;
       position: sticky;
-      top: 60px; /* adjust if header's height changes */
+      top: 60px;
       z-index: 999;
     }
     nav a {
@@ -86,7 +88,6 @@
       font-size: 1rem;
       cursor: pointer;
     }
-
     .hero {
       background-color: var(--color-yellow);
       color: #fff;
@@ -102,7 +103,6 @@
       font-size: 1.125rem;
       line-height: 1.5;
     }
-
     main {
       width: 100%;
       margin: 2rem 0;
@@ -159,7 +159,23 @@
     .course-card button:hover {
       background-color: #6e7a4b;
     }
-
+    .course-status {
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+    .course-status.not-started {
+      color: #999;
+    }
+    .course-status.in-progress {
+      color: var(--color-orange);
+    }
+    .course-status.complete {
+      color: var(--color-green);
+    }
+    .course-status.n-a {
+      color: #ccc;
+    }
     .lessons-container {
       display: none;
       margin-top: 2rem;
@@ -177,27 +193,19 @@
     .lesson-layout.collapsed {
       grid-template-columns: 48px 1fr;
     }
-
-    /* The lesson sidebar container */
     .lesson-sidebar {
       background-color: var(--color-beige);
       border-radius: 5px;
       transition: width 0.5s ease-in-out, padding 0.5s ease-in-out;
       position: relative;
-      /* We won't scroll .lesson-sidebar itself */
-      /* We'll control scrolling in .lesson-list-wrapper below */
-      margin-left: 5px; /* #1: Give left margin of about 5px */
+      margin-left: 5px;
       overflow-x: hidden;
-
     }
     .lesson-sidebar.collapsed {
       width: 50px;
       text-align: center;
       overflow-x: hidden;
-
     }
-
-    /* Make the header portion of the sidebar sticky so the toggle button stays pinned */
     .sidebar-header {
       display: flex;
       align-items: center;
@@ -232,16 +240,13 @@
     .lesson-sidebar.collapsed .hover-checkbox {
       display: none !important;
     }
-
-    /* #2: Keep a fixed height so it doesn't expand when active lesson is clicked */
     .lesson-list-wrapper {
-      overflow-y: auto;     /* Scroll if content exceeds height */
+      overflow-y: auto;
       padding-top: 0.5rem;
     }
     .lesson-sidebar.collapsed .lesson-list-wrapper {
       padding: 0;
     }
-
     #lessonProgress {
       margin-bottom: 1rem;
       font-weight: bold;
@@ -299,7 +304,6 @@
     .lesson-sidebar.collapsed li {
       justify-content: center;
     }
-
     .lesson-content {
       border: 1px solid #ccc;
       border-radius: 5px;
@@ -308,23 +312,14 @@
       line-height: 1.6;
       max-width: 60ch;
     }
-    .lesson-content ol {
-      margin-left: 1.5rem;
-      padding-left: 1.5rem;
-      margin-bottom: 1rem;
-    }
+    .lesson-content ul,
     .lesson-content li {
+      margin-left: 1.5rem;
       margin-bottom: 0.5rem;
     }
     .lesson-content h4 {
       margin: 1rem 0 0.5rem;
     }
-    .lesson-content ul {
-      list-style-type: disc;
-      margin-left: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
     footer {
       background-color: var(--color-green);
       color: var(--color-white);
@@ -337,14 +332,16 @@
       color: var(--color-white);
       text-decoration: underline;
     }
-
+    hr {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
     .lesson-list li:focus,
     .sidebar-header-icon:focus,
     nav a:focus,
     button:focus {
       outline: none;
     }
-
     @media (max-width: 768px) {
       .course-list {
         grid-template-columns: 1fr 1fr;
@@ -382,7 +379,6 @@
             <i class="fa-solid fa-feather sidebar-header-icon" id="sidebarToggle" title="Toggle Lessons Menu"></i>
             <h3 class="title-text">Lessons</h3>
           </div>
-          <!-- Separate scroll container for lesson list -->
           <div class="lesson-list-wrapper">
             <ul id="lessonList" class="lesson-list"></ul>
           </div>
@@ -403,33 +399,23 @@
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-    marked.setOptions({
-      gfm: true,
-      breaks: false,
-      smartLists: true
-    });
-
     let allCourses = [];
     let currentCourseData = {};
     const defaultGuidePath = 'lessons/0000_HowToUseThisSite.yaml';
     const LESSON_CHECK_KEY = 'lessonProgress';
     let isSidebarCollapsed = false;
-
     function getStoredLessonProgress() {
       const data = localStorage.getItem(LESSON_CHECK_KEY);
       return data ? JSON.parse(data) : {};
     }
-
     function setStoredLessonProgress(progressObj) {
       localStorage.setItem(LESSON_CHECK_KEY, JSON.stringify(progressObj));
     }
-
     function isLessonChecked(filePath, lessonTitle) {
       const store = getStoredLessonProgress();
       if (!store[filePath]) return false;
       return !!store[filePath][lessonTitle];
     }
-
     function toggleLessonChecked(filePath, lessonTitle, isChecked) {
       const store = getStoredLessonProgress();
       if (!store[filePath]) {
@@ -438,7 +424,6 @@
       store[filePath][lessonTitle] = isChecked;
       setStoredLessonProgress(store);
     }
-
     function getLessonIcon(type) {
       switch(type) {
         case 'reading': return '<i class="fas fa-book"></i>';
@@ -447,7 +432,6 @@
         default: return '<i class="fas fa-file-alt"></i>';
       }
     }
-
     async function loadCourses() {
       try {
         const response = await fetch('lessons.json');
@@ -460,28 +444,81 @@
         return [];
       }
     }
-
+    async function updateAllCourseStatuses(courses) {
+      const promises = courses.map(async (course) => {
+        try {
+          const response = await fetch(course.file);
+          if (!response.ok) {
+            throw new Error(`Could not load ${course.file}`);
+          }
+          const yamlText = await response.text();
+          const data = jsyaml.load(yamlText);
+          if (data && data.course && Array.isArray(data.course.lessons)) {
+            const total = data.course.lessons.length;
+            const completed = data.course.lessons.filter(lesson => {
+              const label = lesson.title || `Lesson ${lesson.lesson_id}`;
+              return isLessonChecked(course.file, label);
+            }).length;
+            course._status = computeCourseStatus(completed, total);
+          } else {
+            course._status = 'N/A';
+          }
+        } catch (err) {
+          console.error('Error fetching YAML for', course.file, err);
+          course._status = 'N/A';
+        }
+      });
+      await Promise.all(promises);
+    }
+    function computeCourseStatus(completed, total) {
+      if (total === 0) return 'N/A';
+      if (completed === 0) return 'Not Started';
+      if (completed === total) return 'Complete';
+      return 'In Progress';
+    }
+    function updateCourseCardStatus(filePath) {
+      const courseObj = allCourses.find(c => c.file === filePath);
+      if (!courseObj || !currentCourseData.course) return;
+      const total = (currentCourseData.course.lessons || []).length;
+      const completed = (currentCourseData.course.lessons || []).filter(lesson =>
+        isLessonChecked(filePath, lesson.title || `Lesson ${lesson.lesson_id}`)
+      ).length;
+      courseObj._status = computeCourseStatus(completed, total);
+      const courseCard = document.querySelector(`.course-card button[data-file="${filePath}"]`)?.closest('.course-card');
+      if (courseCard) {
+        const statusEl = courseCard.querySelector('.course-status');
+        if (statusEl) {
+          statusEl.classList.remove('not-started','in-progress','complete','n-a');
+          statusEl.textContent = courseObj._status;
+          const statusClass = courseObj._status.toLowerCase().replace(/\s+/g, '-');
+          statusEl.classList.add(statusClass);
+        }
+      }
+    }
     function renderCourses(courses) {
       const courseList = document.getElementById('courseList');
       courseList.innerHTML = '';
       courses.forEach(course => {
         const card = document.createElement('div');
         card.classList.add('course-card');
+        let statusClass = 'n-a';
+        if (course._status) {
+          statusClass = course._status.toLowerCase().replace(/\s+/g, '-'); 
+        }
         card.innerHTML = `
           <h3>${course.title}</h3>
           <p>Course ID: ${course.id}</p>
+          <p class="course-status ${statusClass}">${course._status || 'N/A'}</p>
           <button data-file="${course.file}">View Lessons</button>
         `;
         courseList.appendChild(card);
       });
     }
-
     function filterCourses(courses, query) {
       return courses.filter(course =>
         course.title.toLowerCase().includes(query.toLowerCase())
       );
     }
-
     async function handleViewLessons(filePath) {
       try {
         const response = await fetch(filePath);
@@ -496,7 +533,6 @@
         console.error('Error fetching YAML:', error);
       }
     }
-
     function showCourseContent(courseData, filePath) {
       if (!courseData || !courseData.course) return;
       const courseObj = courseData.course;
@@ -506,16 +542,13 @@
       const lessonListEl = document.getElementById('lessonList');
       const lessonContentEl = document.getElementById('lessonContent');
       const lessonProgressEl = document.getElementById('lessonProgress');
-
       lessonsContainer.style.display = 'block';
       courseTitleEl.textContent = courseObj.title || 'Untitled Course';
       courseDescEl.textContent = courseObj.description || '';
       lessonListEl.innerHTML = '';
       lessonContentEl.innerHTML = '<p style="color: #999;">Select a lesson on the left to see details here.</p>';
-
       (courseObj.lessons || []).forEach(lesson => {
         const lessonLabel = lesson.title || `Lesson ${lesson.lesson_id}`;
-
         if (lesson.section && !document.getElementById('section-' + lesson.section)) {
           const sectionHeader = document.createElement('h4');
           sectionHeader.id = 'section-' + lesson.section;
@@ -523,12 +556,10 @@
           sectionHeader.textContent = lesson.section;
           lessonListEl.appendChild(sectionHeader);
         }
-
         const li = document.createElement('li');
         if (isLessonChecked(filePath, lessonLabel)) {
           li.classList.add('completed');
         }
-
         li.innerHTML = `
           <div class="icon-area">
             ${lesson.type ? getLessonIcon(lesson.type) : '<i class="fas fa-file-alt"></i>'}
@@ -538,7 +569,6 @@
             <input type="checkbox" ${isLessonChecked(filePath, lessonLabel) ? 'checked' : ''} />
           </div>
         `;
-
         li.addEventListener('click', function(event) {
           if (!event.target.closest('.hover-checkbox')) {
             const allItems = document.querySelectorAll('#lessonList li');
@@ -547,55 +577,45 @@
             displayLessonContent(lesson);
           }
         });
-
         const checkbox = li.querySelector('.hover-checkbox input[type="checkbox"]');
         checkbox.addEventListener('change', () => {
           toggleLessonChecked(filePath, lessonLabel, checkbox.checked);
           li.classList.toggle('completed', checkbox.checked);
-          updateProgress();
+          updateProgress(filePath);
         });
-
         lessonListEl.appendChild(li);
       });
-
-      function updateProgress() {
+      function updateProgress(_filePath) {
         const total = (courseObj.lessons || []).length;
         const completed = (courseObj.lessons || []).filter(lesson =>
-          isLessonChecked(filePath, lesson.title || `Lesson ${lesson.lesson_id}`)
+          isLessonChecked(_filePath, lesson.title || `Lesson ${lesson.lesson_id}`)
         ).length;
         lessonProgressEl.textContent = `Completed ${completed} / ${total} lessons`;
-
         let status = '';
         if (completed === 0) status = '(not-started)';
         else if (completed === total) status = '(complete)';
         else status = '(in-progress)';
-
         courseTitleEl.textContent = (courseObj.title || 'Untitled Course') + ' ' + status;
+        updateCourseCardStatus(_filePath);
       }
-
-      updateProgress();
+      updateProgress(filePath);
     }
-
     function displayLessonContent(lesson) {
       const lessonContentEl = document.getElementById('lessonContent');
       lessonContentEl.innerHTML = '';
-
       const lessonTitle = lesson.title || `Lesson ${lesson.lesson_id}`;
       const titleEl = document.createElement('h3');
       titleEl.textContent = lessonTitle;
       lessonContentEl.appendChild(titleEl);
-
-      if (lesson.lecture_notes) {
+      if (lesson.course) {
         const notesEl = document.createElement('div');
-        notesEl.innerHTML = marked.parse(lesson.lecture_notes);
+        notesEl.innerHTML = marked.parse(lesson.course);
         lessonContentEl.appendChild(notesEl);
       }
-
       if (lesson.exercises && Array.isArray(lesson.exercises) && lesson.exercises.length) {
         const exHeader = document.createElement('h4');
         exHeader.textContent = 'Exercises:';
         lessonContentEl.appendChild(exHeader);
-
         let exMarkdown = '\n';
         lesson.exercises.forEach((ex, idx) => {
           exMarkdown += `${idx + 1}. **${ex.name}** – ${ex.prompt}\n`;
@@ -604,12 +624,10 @@
         exContainer.innerHTML = marked.parse(exMarkdown);
         lessonContentEl.appendChild(exContainer);
       }
-
       if (lesson.assignments && Array.isArray(lesson.assignments) && lesson.assignments.length) {
         const asHeader = document.createElement('h4');
         asHeader.textContent = 'Assignments:';
         lessonContentEl.appendChild(asHeader);
-
         let asMarkdown = '\n';
         lesson.assignments.forEach((a, idx) => {
           asMarkdown += `${idx + 1}. **${a.name}** – ${a.description}\n`;
@@ -618,12 +636,10 @@
         asContainer.innerHTML = marked.parse(asMarkdown);
         lessonContentEl.appendChild(asContainer);
       }
-
       if (lesson.sources && Array.isArray(lesson.sources) && lesson.sources.length) {
         const srcHeader = document.createElement('h4');
         srcHeader.textContent = 'Sources:';
         lessonContentEl.appendChild(srcHeader);
-
         let srcMarkdown = '\n';
         lesson.sources.forEach((src, idx) => {
           srcMarkdown += `${idx + 1}. ${src}\n`;
@@ -633,7 +649,6 @@
         lessonContentEl.appendChild(srcContainer);
       }
     }
-
     function toggleSidebar() {
       const sidebar = document.getElementById('lessonSidebar');
       const layout = document.getElementById('lessonLayout');
@@ -646,18 +661,16 @@
         layout.classList.remove('collapsed');
       }
     }
-
     document.addEventListener('DOMContentLoaded', async () => {
       allCourses = await loadCourses();
+      await updateAllCourseStatuses(allCourses);
       renderCourses(allCourses);
       handleViewLessons(defaultGuidePath);
-
       const searchInput = document.getElementById('courseSearch');
       searchInput.addEventListener('input', () => {
         const filtered = filterCourses(allCourses, searchInput.value);
         renderCourses(filtered);
       });
-
       document.addEventListener('click', event => {
         const target = event.target;
         if (target.tagName === 'BUTTON' && target.hasAttribute('data-file')) {
@@ -665,13 +678,11 @@
           handleViewLessons(filePath);
         }
       });
-
       const homeLink = document.getElementById('homeLink');
       homeLink.addEventListener('click', event => {
         event.preventDefault();
         handleViewLessons(defaultGuidePath);
       });
-
       const sidebarToggleIcon = document.getElementById('sidebarToggle');
       sidebarToggleIcon.addEventListener('click', toggleSidebar);
     });

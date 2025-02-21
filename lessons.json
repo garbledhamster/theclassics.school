@@ -3,6 +3,11 @@
       "id": "0001",
       "title": "How to Read a Book",
       "file": "lessons/0001_HowToReadABook.yaml"
+    },
+    {
+      "id": "0002",
+      "title": "On Writing Well",
+      "file": "lessons/0002_OnWritingWell.yaml"
     }
   ]
   
