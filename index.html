@@ -18,123 +18,226 @@
       --font-classic: "Crimson Pro", Georgia, "Times New Roman", serif;
       font-size: 18px;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; caret-color: transparent; }
-    input,textarea,select { caret-color: auto; }
-    html,body { width: 100%; height: 100%; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      caret-color: transparent;
+    }
+    input,textarea,select {
+      caret-color: auto;
+    }
+    html,body {
+      width: 100%;
+      height: 100%;
+    }
     body {
       background-color: var(--color-white);
       font-family: var(--font-base);
-      color: #333; line-height: 1.6; font-size: 1rem;
+      color: #333;
+      line-height: 1.6;
+      font-size: 1rem;
     }
-    p { margin-bottom: 10px; }
+    p {
+      margin-bottom: 10px;
+    }
     h1,h2,h3,h4,h5,h6 {
-      margin-top: 0; margin-bottom: 0.75rem; line-height: 1.3;
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
     }
-    h1 { font-size: 2rem; }
-    h2 { font-size: 1.75rem; }
-    h3 { font-size: 1.5rem; }
-    h4 { font-size: 1.25rem; }
+    h1 {
+      font-size: 2rem;
+    }
+    h2 {
+      font-size: 1.75rem;
+    }
+    h3 {
+      font-size: 1.5rem;
+    }
+    h4 {
+      font-size: 1.25rem;
+    }
     header {
       background-color: var(--color-beige);
-      padding: 1rem; text-align: center; position: sticky; top: 0; z-index: 1000;
+      padding: 1rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
     header h1 {
-      color: var(--color-red); margin-bottom: 0.5rem; line-height: 1.2;
+      color: var(--color-red);
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
     }
     header p {
       color: var(--color-green);
-      font-size: 1.125rem; line-height: 1.4;
+      font-size: 1.125rem;
+      line-height: 1.4;
     }
     nav {
       background-color: var(--color-orange);
-      display: flex; justify-content: center;
-      padding: 0.5rem; position: sticky; top: 60px; z-index: 999;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem;
+      position: sticky;
+      top: 60px;
+      z-index: 999;
     }
     nav a {
-      color: var(--color-white); text-decoration: none;
-      margin: 0 1rem; font-weight: bold; font-size: 1rem; cursor: pointer;
+      color: var(--color-white);
+      text-decoration: none;
+      margin: 0 1rem;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
     }
     .hero {
       background-color: var(--color-yellow);
-      color: #fff; text-align: center; padding: 2rem 1rem;
+      color: #fff;
+      text-align: center;
+      padding: 2rem 1rem;
     }
-    .hero h2 { margin-bottom: 1rem; }
+    .hero h2 {
+      margin-bottom: 1rem;
+    }
     .hero p {
-      max-width: 600px; margin: 0 auto;
-      font-size: 1.125rem; line-height: 1.5;
+      max-width: 600px;
+      margin: 0 auto;
+      font-size: 1.125rem;
+      line-height: 1.5;
     }
     main {
-      width: 100%; margin: 2rem 0; padding: 0 1rem;
+      width: 100%;
+      margin: 2rem 0;
+      padding: 0 1rem;
     }
     .course-search {
-      text-align: center; margin-bottom: 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
     }
     .course-search input[type="text"] {
-      width: 60%; max-width: 400px;
-      padding: 0.5rem; border: 2px solid var(--color-green);
-      border-radius: 4px; font-size: 1rem; line-height: 1.5;
+      width: 60%;
+      max-width: 400px;
+      padding: 0.5rem;
+      border: 2px solid var(--color-green);
+      border-radius: 4px;
+      font-size: 1rem;
+      line-height: 1.5;
     }
-    .course-list { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    .course-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
     .course-card {
       background-color: var(--color-beige);
-      border-radius: 5px; padding: 1rem; line-height: 1.6;
+      border-radius: 5px;
+      padding: 1rem;
+      line-height: 1.6;
     }
     .course-card h3 {
-      color: var(--color-red); font-family: var(--font-classic);
-      margin-bottom: 0.5rem; font-size: 1.25rem; line-height: 1.3;
+      color: var(--color-red);
+      font-family: var(--font-classic);
+      margin-bottom: 0.5rem;
+      font-size: 1.25rem;
+      line-height: 1.3;
     }
     .course-card p {
-      margin-bottom: 0.5rem; color: #555; font-size: 1rem; line-height: 1.5;
+      margin-bottom: 0.5rem;
+      color: #555;
+      font-size: 1rem;
+      line-height: 1.5;
     }
     .course-card button {
       background-color: var(--color-green);
-      color: #fff; border: none; padding: 0.5rem 1rem;
-      border-radius: 4px; cursor: pointer; font-weight: bold;
-      font-size: 1rem; line-height: 1.5;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      line-height: 1.5;
     }
     .course-card button:hover {
       background-color: #6e7a4b;
     }
     .course-status {
-      font-size: 0.875rem; margin-top: 0.5rem; font-style: italic;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+      font-style: italic;
     }
-    .course-status.not-started { color: #999; }
-    .course-status.in-progress { color: var(--color-orange); }
-    .course-status.complete { color: var(--color-green); }
-    .course-status.n-a { color: #ccc; }
+    .course-status.not-started {
+      color: #999;
+    }
+    .course-status.in-progress {
+      color: var(--color-orange);
+    }
+    .course-status.complete {
+      color: var(--color-green);
+    }
+    .course-status.n-a {
+      color: #ccc;
+    }
     .lessons-container {
-      display: none; margin-top: 2rem;
-      border-top: 1px solid #ccc; padding-top: 1rem;
+      display: none;
+      margin-top: 2rem;
+      border-top: 1px solid #ccc;
+      padding-top: 1rem;
       transition: all 0.5s ease-in-out;
     }
     .lesson-layout {
-      display: grid; grid-template-columns: 250px 1fr;
-      gap: 1rem; margin-top: 1rem;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
       transition: grid-template-columns 0.5s ease-in-out;
     }
-    .lesson-layout.collapsed { grid-template-columns: 48px 1fr; }
+    .lesson-layout.collapsed {
+      grid-template-columns: 48px 1fr;
+    }
     .lesson-sidebar {
-      background-color: var(--color-beige); border-radius: 5px;
+      background-color: var(--color-beige);
+      border-radius: 5px;
       transition: width 0.5s ease-in-out, padding 0.5s ease-in-out;
-      position: relative; margin-left: 5px; overflow-x: hidden;
+      position: relative;
+      margin-left: 5px;
+      overflow-x: hidden;
     }
     .lesson-sidebar.collapsed {
-      width: 50px; text-align: center; overflow-x: hidden;
+      width: 50px;
+      text-align: center;
+      overflow-x: hidden;
     }
     .sidebar-header {
-      display: flex; align-items: center; padding: 0.5rem 0;
-      position: sticky; top: 0; z-index: 10;
-      background-color: var(--color-beige); padding-top: 20px;
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background-color: var(--color-beige);
+      padding-top: 20px;
     }
     .sidebar-header .sidebar-header-icon {
       color: var(--color-red);
-      font-size: 1.5rem; cursor: pointer; margin-right: 0.5rem;
-      transition: margin 0.3s ease-in-out; align-self: center; line-height: 1;
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      transition: margin 0.3s ease-in-out;
+      align-self: center;
+      line-height: 1;
       margin-left: 10px;
     }
-    .lesson-sidebar.collapsed .sidebar-header-icon { margin-right: 0; }
+    .lesson-sidebar.collapsed .sidebar-header-icon {
+      margin-right: 0;
+    }
     .title-text {
-      transition: opacity 0.5s ease-in-out; opacity: 1; visibility: visible;
+      transition: opacity 0.5s ease-in-out;
+      opacity: 1;
+      visibility: visible;
     }
     .lesson-sidebar.collapsed .title-text {
       display: none;
@@ -143,82 +246,141 @@
       display: none !important;
     }
     .lesson-list-wrapper {
-      overflow-y: auto; padding-top: 0.5rem;
+      overflow-y: auto;
+      padding-top: 0.5rem;
     }
     .lesson-sidebar.collapsed .lesson-list-wrapper {
       padding: 0;
     }
     #lessonProgress {
-      margin-bottom: 1rem; font-weight: bold;
+      margin-bottom: 1rem;
+      font-weight: bold;
     }
-    .lesson-list { list-style-type: none; margin: 0; padding: 0; }
+    .lesson-list {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
     .lesson-list li {
-      display: grid; grid-template-columns: 24px 1fr auto;
-      align-items: center; padding: 0.5rem 0.75rem;
-      margin-bottom: 0.25rem; border-radius: 5px;
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 0.25rem;
+      border-radius: 5px;
       transition: background-color 0.2s ease-in-out;
-      position: relative; cursor: pointer;
+      position: relative;
+      cursor: pointer;
       background-color: var(--color-beige);
     }
     .lesson-list li:not(:hover) {
       grid-template-columns: 24px 1fr;
     }
-    .lesson-list li:hover { background-color: #f5f0e6; }
-    .lesson-list li.completed { background-color: #d9efd0; }
-    .lesson-list li.active {
-      background-color: #ffeec2; border-left: 4px solid var(--color-green);
+    .lesson-list li:hover {
+      background-color: #f5f0e6;
     }
-    .hover-checkbox { display: none; }
+    .lesson-list li.completed {
+      background-color: #d9efd0;
+    }
+    .lesson-list li.active {
+      background-color: #ffeec2;
+      border-left: 4px solid var(--color-green);
+    }
+    .hover-checkbox {
+      display: none;
+    }
     .lesson-list li:hover .hover-checkbox {
       display: inline-block;
     }
-    .icon-area { text-align: center; }
+    .icon-area {
+      text-align: center;
+    }
     .lesson-title {
-      font-weight: bold; font-size: 1rem;
-      white-space: normal; line-height: 1.4; overflow-wrap: break-word;
+      font-weight: bold;
+      font-size: 1rem;
+      white-space: normal;
+      line-height: 1.4;
+      overflow-wrap: break-word;
       margin: 0 0.5rem;
     }
-    .lesson-sidebar.collapsed .lesson-title { display: none; }
-    .lesson-sidebar.collapsed li { justify-content: center; }
+    .lesson-sidebar.collapsed .lesson-title {
+      display: none;
+    }
+    .lesson-sidebar.collapsed li {
+      justify-content: center;
+    }
     .lesson-content {
-      border: 1px solid #ccc; border-radius: 5px;
-      padding: 1rem; min-height: 300px; line-height: 1.6; max-width: 60ch;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 1rem;
+      min-height: 300px;
+      line-height: 1.6;
+      max-width: 60ch;
     }
     .lesson-content ul, .lesson-content li {
-      margin-left: 1.5rem; margin-bottom: 0.5rem;
+      margin-left: 1.5rem;
+      margin-bottom: 0.5rem;
     }
     .lesson-content h4 {
       margin: 1rem 0 0.5rem;
     }
     footer {
-      background-color: var(--color-green); color: var(--color-white);
-      text-align: center; padding: 1rem; margin-top: 2rem; line-height: 1.5;
+      background-color: var(--color-green);
+      color: var(--color-white);
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+      line-height: 1.5;
     }
     footer a {
-      color: var(--color-white); text-decoration: underline;
+      color: var(--color-white);
+      text-decoration: underline;
     }
-    hr { margin-top: 20px; margin-bottom: 20px; }
-    .lesson-list li:focus, .sidebar-header-icon:focus, nav a:focus, button:focus { outline: none; }
+    hr {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .lesson-list li:focus,
+    .sidebar-header-icon:focus,
+    nav a:focus,
+    button:focus {
+      outline: none;
+    }
     @media (max-width: 768px) {
-      .course-list { grid-template-columns: 1fr 1fr; }
+      .course-list {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     /* Extra for the sign-in / buy UI */
     .auth-section {
-      text-align: center; margin-top: 1rem; margin-bottom: 2rem;
+      text-align: center;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
     }
     #emailForSignIn {
-      padding: 0.5rem; border: 2px solid var(--color-green);
-      border-radius: 4px; font-family: var(--font-base);
-      width: 280px; margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      border: 2px solid var(--color-green);
+      border-radius: 4px;
+      font-family: var(--font-base);
+      width: 280px;
+      margin-bottom: 0.5rem;
     }
-    #sendSignInLink, #buyButton {
+    #sendSignInLink,
+    #buyButton {
       background-color: var(--color-green);
-      color: #fff; border: none; padding: 0.5rem 1rem;
-      border-radius: 4px; cursor: pointer; font-weight: bold;
-      font-size: 1rem; line-height: 1.5; margin: 0.5rem;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      line-height: 1.5;
+      margin: 0.5rem;
     }
-    #sendSignInLink:hover, #buyButton:hover {
+    #sendSignInLink:hover,
+    #buyButton:hover {
       background-color: #6e7a4b;
     }
   </style>
@@ -283,9 +445,21 @@
   <script src="https://js.stripe.com/v3"></script>
   <!-- Firebase (ES Modules) -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"
-    import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"
-    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js"
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"
+    import {
+      getAuth,
+      isSignInWithEmailLink,
+      sendSignInLinkToEmail,
+      signInWithEmailLink,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"
+    import {
+      getFunctions,
+      httpsCallable
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js"
 
     const firebaseConfig = {
       apiKey: "AIzaSyAOFHZbn02JpIlSHNxNdvBnfdYv08tZMJs",
@@ -297,85 +471,105 @@
       measurementId: "G-08W3C50VF6"
     };
 
-    const app = initializeApp(firebaseConfig)
-    const auth = getAuth(app)
-    const functions = getFunctions(app)
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const functions = getFunctions(app);
 
     // 2. Replace this with your actual Stripe publishable key:
-    const stripe = Stripe('StripePublishableKeyHere')
+    const stripe = Stripe('StripePublishableKeyHere');
 
     // Passwordless sign-in link config:
     const actionCodeSettings = {
       url: 'https://theclassics.school', // or your GitHub Pages URL if you prefer
       handleCodeInApp: true
-    }
+    };
 
     // UI Elements:
-    const emailField = document.getElementById('emailForSignIn')
-    const sendLinkBtn = document.getElementById('sendSignInLink')
-    const loginStatus = document.getElementById('loginStatus')
-    const buyButton = document.getElementById('buyButton')
+    const emailField = document.getElementById('emailForSignIn');
+    const sendLinkBtn = document.getElementById('sendSignInLink');
+    const loginStatus = document.getElementById('loginStatus');
+    const buyButton = document.getElementById('buyButton');
 
-    // Send passwordless email link:
-    sendLinkBtn.onclick = async () => {
-      const email = emailField.value
-      if (!email) {
-        alert('Please enter an email address.')
-        return
-      }
-      try {
-        await sendSignInLinkToEmail(auth, email, actionCodeSettings)
-        window.localStorage.setItem('emailForSignIn', email)
-        alert('Check your email for the sign-in link!')
-      } catch (err) {
-        console.error(err)
-        alert('Error sending sign-in link.')
+    // 1. If not logged in, send passwordless link.
+    // 2. If logged in, sign out.
+    async function handleSignInOrOut() {
+      if (!auth.currentUser) {
+        // Not signed in: attempt to send sign-in link
+        const email = emailField.value;
+        if (!email) {
+          alert('Please enter an email address.');
+          return;
+        }
+        try {
+          await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+          window.localStorage.setItem('emailForSignIn', email);
+          alert('Check your email for the sign-in link!');
+        } catch (err) {
+          console.error(err);
+          alert('Error sending sign-in link.');
+        }
+      } else {
+        // If user is signed in, sign out.
+        try {
+          await signOut(auth);
+        } catch (err) {
+          console.error(err);
+        }
       }
     }
+
+    sendLinkBtn.onclick = handleSignInOrOut;
 
     // When page loads, if there's a sign-in link in the URL, complete sign-in:
     if (isSignInWithEmailLink(auth, window.location.href)) {
-      let storedEmail = window.localStorage.getItem('emailForSignIn')
+      let storedEmail = window.localStorage.getItem('emailForSignIn');
       if (!storedEmail) {
-        storedEmail = prompt('Please provide your email for confirmation')
+        storedEmail = prompt('Please provide your email for confirmation');
       }
       signInWithEmailLink(auth, storedEmail, window.location.href)
         .then(() => {
-          window.localStorage.removeItem('emailForSignIn')
-          alert('You are now signed in!')
+          window.localStorage.removeItem('emailForSignIn');
+          alert('You are now signed in!');
         })
-        .catch(err => console.error(err))
+        .catch(err => console.error(err));
     }
 
-    // Display login status in real time:
-    onAuthStateChanged(auth, user => {
+    // Display login status & switch sign-in button text if user is logged in
+    onAuthStateChanged(auth, async user => {
       if (user) {
-        loginStatus.textContent = `Signed in as: ${user.email}`
+        loginStatus.textContent = `Signed in as: ${user.email}`;
+        // Hide the email field & change button text to "Logout"
+        emailField.style.display = 'none';
+        sendLinkBtn.textContent = 'Logout';
       } else {
-        loginStatus.textContent = 'Not signed in'
+        loginStatus.textContent = 'Not signed in';
+        // Show email field & revert button text
+        emailField.style.display = 'inline-block';
+        emailField.value = '';
+        sendLinkBtn.textContent = 'Send Sign-In Link';
       }
-    })
+    });
 
     // Handle "Buy Lifetime Access" button:
     buyButton.onclick = async () => {
       if (!auth.currentUser) {
-        alert('Please sign in first!')
-        return
+        alert('Please sign in first!');
+        return;
       }
       try {
-        const createSession = httpsCallable(functions, 'createCheckoutSession')
-        const { data } = await createSession({})
+        const createSession = httpsCallable(functions, 'createCheckoutSession');
+        const { data } = await createSession({});
         if (data.error) {
-          alert(data.error)
-          return
+          alert(data.error);
+          return;
         }
         // redirect user to Stripe checkout
-        await stripe.redirectToCheckout({ sessionId: data.sessionId })
+        await stripe.redirectToCheckout({ sessionId: data.sessionId });
       } catch (err) {
-        console.error(err)
-        alert('Error creating Checkout session.')
+        console.error(err);
+        alert('Error creating Checkout session.');
       }
-    }
+    };
   </script>
 
   <!-- Original Script (Course / Lesson code) -->
@@ -465,7 +659,9 @@
         return isLessonChecked(filePath, label);
       }).length;
       courseObj._status = computeCourseStatus(completed, total);
-      const courseCard = document.querySelector('.course-card button[data-file="' + filePath + '"]')?.closest('.course-card');
+      const courseCard = document.querySelector(
+        '.course-card button[data-file="' + filePath + '"]'
+      )?.closest('.course-card');
       if (courseCard) {
         const statusEl = courseCard.querySelector('.course-status');
         if (statusEl) {
@@ -486,7 +682,12 @@
         if (course._status) {
           statusClass = course._status.toLowerCase().replace(/\s+/g, '-');
         }
-        card.innerHTML = '<h3>' + course.title + '</h3><p>Course ID: ' + course.id + '</p><p class="course-status ' + statusClass + '">' + (course._status || 'N/A') + '</p><button data-file="' + course.file + '">View Lessons</button>';
+        card.innerHTML =
+          '<h3>' + course.title + '</h3>' +
+          '<p>Course ID: ' + course.id + '</p>' +
+          '<p class="course-status ' + statusClass + '">' +
+          (course._status || 'N/A') + '</p>' +
+          '<button data-file="' + course.file + '">View Lessons</button>';
         courseList.appendChild(card);
       });
     }
@@ -536,7 +737,12 @@
         if (isLessonChecked(filePath, lessonLabel)) {
           li.classList.add('completed');
         }
-        li.innerHTML = '<div class="icon-area">' + (lesson.type ? getLessonIcon(lesson.type) : '<i class="fas fa-file-alt"></i>') + '</div><div class="lesson-title">' + lessonLabel + '</div><div class="hover-checkbox"><input type="checkbox"' + (isLessonChecked(filePath, lessonLabel) ? ' checked' : '') + ' /></div>';
+        li.innerHTML =
+          '<div class="icon-area">' +
+          (lesson.type ? getLessonIcon(lesson.type) : '<i class="fas fa-file-alt"></i>') +
+          '</div>' +
+          '<div class="lesson-title">' + lessonLabel + '</div>' +
+          '<div class="hover-checkbox"><input type="checkbox"' + (isLessonChecked(filePath, lessonLabel) ? ' checked' : '') + ' /></div>';
         li.addEventListener('click', function (event) {
           if (!event.target.closest('.hover-checkbox')) {
             const allItems = document.querySelectorAll('#lessonList li');
@@ -556,7 +762,9 @@
 
       function updateProgress(_filePath) {
         const total = (courseObj.lessons || []).length;
-        const completed = (courseObj.lessons || []).filter(lesson => isLessonChecked(_filePath, lesson.title || ('Lesson ' + lesson.lesson_id))).length;
+        const completed = (courseObj.lessons || []).filter(lesson =>
+          isLessonChecked(_filePath, lesson.title || ('Lesson ' + lesson.lesson_id))
+        ).length;
         lessonProgressEl.textContent = 'Completed ' + completed + ' / ' + total + ' lessons';
         let status = '';
         if (completed === 0) status = '(not-started)';
