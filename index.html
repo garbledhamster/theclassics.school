@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>theclassics.school – How to Use This Site</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&display=swap" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&display=swap"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
   <style>
     :root {
       --color-yellow: #FBAB34;
@@ -20,417 +18,211 @@
       --font-classic: "Crimson Pro", Georgia, "Times New Roman", serif;
       font-size: 18px;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      caret-color: transparent;
-    }
-
-    input,
-    textarea,
-    select {
-      caret-color: auto;
-    }
-
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; caret-color: transparent; }
+    input,textarea,select { caret-color: auto; }
+    html,body { width: 100%; height: 100%; }
     body {
       background-color: var(--color-white);
       font-family: var(--font-base);
-      color: #333;
-      line-height: 1.6;
-      font-size: 1rem;
+      color: #333; line-height: 1.6; font-size: 1rem;
     }
-
-    p {
-      margin-bottom: 10px;
+    p { margin-bottom: 10px; }
+    h1,h2,h3,h4,h5,h6 {
+      margin-top: 0; margin-bottom: 0.75rem; line-height: 1.3;
     }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      margin-top: 0;
-      margin-bottom: 0.75rem;
-      line-height: 1.3;
-    }
-
-    h1 {
-      font-size: 2rem;
-    }
-
-    h2 {
-      font-size: 1.75rem;
-    }
-
-    h3 {
-      font-size: 1.5rem;
-    }
-
-    h4 {
-      font-size: 1.25rem;
-    }
-
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.5rem; }
+    h4 { font-size: 1.25rem; }
     header {
       background-color: var(--color-beige);
-      padding: 1rem;
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+      padding: 1rem; text-align: center; position: sticky; top: 0; z-index: 1000;
     }
-
     header h1 {
-      color: var(--color-red);
-      margin-bottom: 0.5rem;
-      line-height: 1.2;
+      color: var(--color-red); margin-bottom: 0.5rem; line-height: 1.2;
     }
-
     header p {
       color: var(--color-green);
-      font-size: 1.125rem;
-      line-height: 1.4;
+      font-size: 1.125rem; line-height: 1.4;
     }
-
     nav {
       background-color: var(--color-orange);
-      display: flex;
-      justify-content: center;
-      padding: 0.5rem;
-      position: sticky;
-      top: 60px;
-      z-index: 999;
+      display: flex; justify-content: center;
+      padding: 0.5rem; position: sticky; top: 60px; z-index: 999;
     }
-
     nav a {
-      color: var(--color-white);
-      text-decoration: none;
-      margin: 0 1rem;
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
+      color: var(--color-white); text-decoration: none;
+      margin: 0 1rem; font-weight: bold; font-size: 1rem; cursor: pointer;
     }
-
     .hero {
       background-color: var(--color-yellow);
-      color: #fff;
-      text-align: center;
-      padding: 2rem 1rem;
+      color: #fff; text-align: center; padding: 2rem 1rem;
     }
-
-    .hero h2 {
-      margin-bottom: 1rem;
-    }
-
+    .hero h2 { margin-bottom: 1rem; }
     .hero p {
-      max-width: 600px;
-      margin: 0 auto;
-      font-size: 1.125rem;
-      line-height: 1.5;
+      max-width: 600px; margin: 0 auto;
+      font-size: 1.125rem; line-height: 1.5;
     }
-
     main {
-      width: 100%;
-      margin: 2rem 0;
-      padding: 0 1rem;
+      width: 100%; margin: 2rem 0; padding: 0 1rem;
     }
-
     .course-search {
-      text-align: center;
-      margin-bottom: 2rem;
+      text-align: center; margin-bottom: 2rem;
     }
-
     .course-search input[type="text"] {
-      width: 60%;
-      max-width: 400px;
-      padding: 0.5rem;
-      border: 2px solid var(--color-green);
-      border-radius: 4px;
-      font-size: 1rem;
-      line-height: 1.5;
+      width: 60%; max-width: 400px;
+      padding: 0.5rem; border: 2px solid var(--color-green);
+      border-radius: 4px; font-size: 1rem; line-height: 1.5;
     }
-
-    .course-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-
+    .course-list { display: grid; grid-template-columns: 1fr; gap: 1rem; }
     .course-card {
       background-color: var(--color-beige);
-      border-radius: 5px;
-      padding: 1rem;
-      line-height: 1.6;
+      border-radius: 5px; padding: 1rem; line-height: 1.6;
     }
-
     .course-card h3 {
-      color: var(--color-red);
-      font-family: var(--font-classic);
-      margin-bottom: 0.5rem;
-      font-size: 1.25rem;
-      line-height: 1.3;
+      color: var(--color-red); font-family: var(--font-classic);
+      margin-bottom: 0.5rem; font-size: 1.25rem; line-height: 1.3;
     }
-
     .course-card p {
-      margin-bottom: 0.5rem;
-      color: #555;
-      font-size: 1rem;
-      line-height: 1.5;
+      margin-bottom: 0.5rem; color: #555; font-size: 1rem; line-height: 1.5;
     }
-
     .course-card button {
       background-color: var(--color-green);
-      color: #fff;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 1rem;
-      line-height: 1.5;
+      color: #fff; border: none; padding: 0.5rem 1rem;
+      border-radius: 4px; cursor: pointer; font-weight: bold;
+      font-size: 1rem; line-height: 1.5;
     }
-
     .course-card button:hover {
       background-color: #6e7a4b;
     }
-
     .course-status {
-      font-size: 0.875rem;
-      margin-top: 0.5rem;
-      font-style: italic;
+      font-size: 0.875rem; margin-top: 0.5rem; font-style: italic;
     }
-
-    .course-status.not-started {
-      color: #999;
-    }
-
-    .course-status.in-progress {
-      color: var(--color-orange);
-    }
-
-    .course-status.complete {
-      color: var(--color-green);
-    }
-
-    .course-status.n-a {
-      color: #ccc;
-    }
-
+    .course-status.not-started { color: #999; }
+    .course-status.in-progress { color: var(--color-orange); }
+    .course-status.complete { color: var(--color-green); }
+    .course-status.n-a { color: #ccc; }
     .lessons-container {
-      display: none;
-      margin-top: 2rem;
-      border-top: 1px solid #ccc;
-      padding-top: 1rem;
+      display: none; margin-top: 2rem;
+      border-top: 1px solid #ccc; padding-top: 1rem;
       transition: all 0.5s ease-in-out;
     }
-
     .lesson-layout {
-      display: grid;
-      grid-template-columns: 250px 1fr;
-      gap: 1rem;
-      margin-top: 1rem;
+      display: grid; grid-template-columns: 250px 1fr;
+      gap: 1rem; margin-top: 1rem;
       transition: grid-template-columns 0.5s ease-in-out;
     }
-
-    .lesson-layout.collapsed {
-      grid-template-columns: 48px 1fr;
-    }
-
+    .lesson-layout.collapsed { grid-template-columns: 48px 1fr; }
     .lesson-sidebar {
-      background-color: var(--color-beige);
-      border-radius: 5px;
+      background-color: var(--color-beige); border-radius: 5px;
       transition: width 0.5s ease-in-out, padding 0.5s ease-in-out;
-      position: relative;
-      margin-left: 5px;
-      overflow-x: hidden;
+      position: relative; margin-left: 5px; overflow-x: hidden;
     }
-
     .lesson-sidebar.collapsed {
-      width: 50px;
-      text-align: center;
-      overflow-x: hidden;
+      width: 50px; text-align: center; overflow-x: hidden;
     }
-
     .sidebar-header {
-      display: flex;
-      align-items: center;
-      padding: 0.5rem 0;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background-color: var(--color-beige);
-      padding-top: 20px;
+      display: flex; align-items: center; padding: 0.5rem 0;
+      position: sticky; top: 0; z-index: 10;
+      background-color: var(--color-beige); padding-top: 20px;
     }
-
     .sidebar-header .sidebar-header-icon {
       color: var(--color-red);
-      font-size: 1.5rem;
-      cursor: pointer;
-      margin-right: 0.5rem;
-      transition: margin 0.3s ease-in-out;
-      align-self: center;
-      line-height: 1;
+      font-size: 1.5rem; cursor: pointer; margin-right: 0.5rem;
+      transition: margin 0.3s ease-in-out; align-self: center; line-height: 1;
       margin-left: 10px;
     }
-
-    .lesson-sidebar.collapsed .sidebar-header-icon {
-      margin-right: 0;
-    }
-
+    .lesson-sidebar.collapsed .sidebar-header-icon { margin-right: 0; }
     .title-text {
-      transition: opacity 0.5s ease-in-out;
-      opacity: 1;
-      visibility: visible;
+      transition: opacity 0.5s ease-in-out; opacity: 1; visibility: visible;
     }
-
     .lesson-sidebar.collapsed .title-text {
       display: none;
     }
-
     .lesson-sidebar.collapsed .hover-checkbox {
       display: none !important;
     }
-
     .lesson-list-wrapper {
-      overflow-y: auto;
-      padding-top: 0.5rem;
+      overflow-y: auto; padding-top: 0.5rem;
     }
-
     .lesson-sidebar.collapsed .lesson-list-wrapper {
       padding: 0;
     }
-
     #lessonProgress {
-      margin-bottom: 1rem;
-      font-weight: bold;
+      margin-bottom: 1rem; font-weight: bold;
     }
-
-    .lesson-list {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
-
+    .lesson-list { list-style-type: none; margin: 0; padding: 0; }
     .lesson-list li {
-      display: grid;
-      grid-template-columns: 24px 1fr auto;
-      align-items: center;
-      padding: 0.5rem 0.75rem;
-      margin-bottom: 0.25rem;
-      border-radius: 5px;
+      display: grid; grid-template-columns: 24px 1fr auto;
+      align-items: center; padding: 0.5rem 0.75rem;
+      margin-bottom: 0.25rem; border-radius: 5px;
       transition: background-color 0.2s ease-in-out;
-      position: relative;
-      cursor: pointer;
+      position: relative; cursor: pointer;
       background-color: var(--color-beige);
     }
-
     .lesson-list li:not(:hover) {
       grid-template-columns: 24px 1fr;
     }
-
-    .lesson-list li:hover {
-      background-color: #f5f0e6;
-    }
-
-    .lesson-list li.completed {
-      background-color: #d9efd0;
-    }
-
+    .lesson-list li:hover { background-color: #f5f0e6; }
+    .lesson-list li.completed { background-color: #d9efd0; }
     .lesson-list li.active {
-      background-color: #ffeec2;
-      border-left: 4px solid var(--color-green);
+      background-color: #ffeec2; border-left: 4px solid var(--color-green);
     }
-
-    .hover-checkbox {
-      display: none;
-    }
-
+    .hover-checkbox { display: none; }
     .lesson-list li:hover .hover-checkbox {
       display: inline-block;
     }
-
-    .icon-area {
-      text-align: center;
-    }
-
+    .icon-area { text-align: center; }
     .lesson-title {
-      font-weight: bold;
-      font-size: 1rem;
-      white-space: normal;
-      line-height: 1.4;
-      overflow-wrap: break-word;
+      font-weight: bold; font-size: 1rem;
+      white-space: normal; line-height: 1.4; overflow-wrap: break-word;
       margin: 0 0.5rem;
     }
-
-    .lesson-sidebar.collapsed .lesson-title {
-      display: none;
-    }
-
-    .lesson-sidebar.collapsed li {
-      justify-content: center;
-    }
-
+    .lesson-sidebar.collapsed .lesson-title { display: none; }
+    .lesson-sidebar.collapsed li { justify-content: center; }
     .lesson-content {
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 1rem;
-      min-height: 300px;
-      line-height: 1.6;
-      max-width: 60ch;
+      border: 1px solid #ccc; border-radius: 5px;
+      padding: 1rem; min-height: 300px; line-height: 1.6; max-width: 60ch;
     }
-
-    .lesson-content ul,
-    .lesson-content li {
-      margin-left: 1.5rem;
-      margin-bottom: 0.5rem;
+    .lesson-content ul, .lesson-content li {
+      margin-left: 1.5rem; margin-bottom: 0.5rem;
     }
-
     .lesson-content h4 {
       margin: 1rem 0 0.5rem;
     }
-
     footer {
-      background-color: var(--color-green);
-      color: var(--color-white);
-      text-align: center;
-      padding: 1rem;
-      margin-top: 2rem;
-      line-height: 1.5;
+      background-color: var(--color-green); color: var(--color-white);
+      text-align: center; padding: 1rem; margin-top: 2rem; line-height: 1.5;
     }
-
     footer a {
-      color: var(--color-white);
-      text-decoration: underline;
+      color: var(--color-white); text-decoration: underline;
     }
-
-    hr {
-      margin-top: 20px;
-      margin-bottom: 20px;
-    }
-
-    .lesson-list li:focus,
-    .sidebar-header-icon:focus,
-    nav a:focus,
-    button:focus {
-      outline: none;
-    }
-
+    hr { margin-top: 20px; margin-bottom: 20px; }
+    .lesson-list li:focus, .sidebar-header-icon:focus, nav a:focus, button:focus { outline: none; }
     @media (max-width: 768px) {
-      .course-list {
-        grid-template-columns: 1fr 1fr;
-      }
+      .course-list { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Extra for the sign-in / buy UI */
+    .auth-section {
+      text-align: center; margin-top: 1rem; margin-bottom: 2rem;
+    }
+    #emailForSignIn {
+      padding: 0.5rem; border: 2px solid var(--color-green);
+      border-radius: 4px; font-family: var(--font-base);
+      width: 280px; margin-bottom: 0.5rem;
+    }
+    #sendSignInLink, #buyButton {
+      background-color: var(--color-green);
+      color: #fff; border: none; padding: 0.5rem 1rem;
+      border-radius: 4px; cursor: pointer; font-weight: bold;
+      font-size: 1rem; line-height: 1.5; margin: 0.5rem;
+    }
+    #sendSignInLink:hover, #buyButton:hover {
+      background-color: #6e7a4b;
     }
   </style>
 </head>
-
 <body>
   <header>
     <h1>theclassics.school</h1>
@@ -444,10 +236,21 @@
     <p>Here you’ll find structured lessons inspired by timeless works of literature, philosophy, and beyond.</p>
   </section>
   <main>
+    <!-- Passwordless sign-in UI -->
+    <div class="auth-section">
+      <div>
+        <input id="emailForSignIn" type="email" placeholder="Enter your email"/>
+      </div>
+      <button id="sendSignInLink">Send Sign-In Link</button>
+      <button id="buyButton">Buy Lifetime Access ($99)</button>
+      <p id="loginStatus" style="margin-top: 0.5rem; color: var(--color-orange);"></p>
+    </div>
+
     <div class="course-search">
       <input type="text" id="courseSearch" placeholder="Search for a course...">
     </div>
     <div class="course-list" id="courseList"></div>
+
     <div id="lessonsContainer" class="lessons-container">
       <h2 id="selectedCourseTitle" style="color: var(--color-red); font-family: var(--font-classic);"></h2>
       <p id="selectedCourseDesc"></p>
@@ -470,17 +273,119 @@
   </main>
   <footer>
     <p>© 2025 theclassics.school</p>
-    <p>For inquiries, email us at <a href="mailto:info@theclassics.school"
-        style="color: #fff; text-decoration: underline;">info@theclassics.school</a></p>
+    <p>For inquiries, email us at <a href="mailto:info@theclassics.school" style="color: #fff; text-decoration: underline;">info@theclassics.school</a></p>
   </footer>
+
+  <!-- Additional Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Stripe.js -->
+  <script src="https://js.stripe.com/v3"></script>
+  <!-- Firebase (ES Modules) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"
+    import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"
+    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js"
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAOFHZbn02JpIlSHNxNdvBnfdYv08tZMJs",
+      authDomain: "the-classics-befd2.firebaseapp.com",
+      projectId: "the-classics-befd2",
+      storageBucket: "the-classics-befd2.firebasestorage.app",
+      messagingSenderId: "171500319429",
+      appId: "1:171500319429:web:2f67b006048191fa6036ac",
+      measurementId: "G-08W3C50VF6"
+    };
+
+    const app = initializeApp(firebaseConfig)
+    const auth = getAuth(app)
+    const functions = getFunctions(app)
+
+    // 2. Replace this with your actual Stripe publishable key:
+    const stripe = Stripe('StripePublishableKeyHere')
+
+    // Passwordless sign-in link config:
+    const actionCodeSettings = {
+      url: 'https://theclassics.school', // or your GitHub Pages URL if you prefer
+      handleCodeInApp: true
+    }
+
+    // UI Elements:
+    const emailField = document.getElementById('emailForSignIn')
+    const sendLinkBtn = document.getElementById('sendSignInLink')
+    const loginStatus = document.getElementById('loginStatus')
+    const buyButton = document.getElementById('buyButton')
+
+    // Send passwordless email link:
+    sendLinkBtn.onclick = async () => {
+      const email = emailField.value
+      if (!email) {
+        alert('Please enter an email address.')
+        return
+      }
+      try {
+        await sendSignInLinkToEmail(auth, email, actionCodeSettings)
+        window.localStorage.setItem('emailForSignIn', email)
+        alert('Check your email for the sign-in link!')
+      } catch (err) {
+        console.error(err)
+        alert('Error sending sign-in link.')
+      }
+    }
+
+    // When page loads, if there's a sign-in link in the URL, complete sign-in:
+    if (isSignInWithEmailLink(auth, window.location.href)) {
+      let storedEmail = window.localStorage.getItem('emailForSignIn')
+      if (!storedEmail) {
+        storedEmail = prompt('Please provide your email for confirmation')
+      }
+      signInWithEmailLink(auth, storedEmail, window.location.href)
+        .then(() => {
+          window.localStorage.removeItem('emailForSignIn')
+          alert('You are now signed in!')
+        })
+        .catch(err => console.error(err))
+    }
+
+    // Display login status in real time:
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        loginStatus.textContent = `Signed in as: ${user.email}`
+      } else {
+        loginStatus.textContent = 'Not signed in'
+      }
+    })
+
+    // Handle "Buy Lifetime Access" button:
+    buyButton.onclick = async () => {
+      if (!auth.currentUser) {
+        alert('Please sign in first!')
+        return
+      }
+      try {
+        const createSession = httpsCallable(functions, 'createCheckoutSession')
+        const { data } = await createSession({})
+        if (data.error) {
+          alert(data.error)
+          return
+        }
+        // redirect user to Stripe checkout
+        await stripe.redirectToCheckout({ sessionId: data.sessionId })
+      } catch (err) {
+        console.error(err)
+        alert('Error creating Checkout session.')
+      }
+    }
+  </script>
+
+  <!-- Original Script (Course / Lesson code) -->
   <script>
     let allCourses = [];
     let currentCourseData = {};
     const defaultGuidePath = 'lessons/0000_HowToUseThisSite.yaml';
     const LESSON_CHECK_KEY = 'lessonProgress';
     let isSidebarCollapsed = false;
+
     function getStoredLessonProgress() {
       const data = localStorage.getItem(LESSON_CHECK_KEY);
       return data ? JSON.parse(data) : {};
@@ -611,11 +516,13 @@
       const lessonListEl = document.getElementById('lessonList');
       const lessonContentEl = document.getElementById('lessonContent');
       const lessonProgressEl = document.getElementById('lessonProgress');
+
       lessonsContainer.style.display = 'block';
       courseTitleEl.textContent = courseObj.title || 'Untitled Course';
       courseDescEl.textContent = courseObj.description || '';
       lessonListEl.innerHTML = '';
       lessonContentEl.innerHTML = '<p style="color: #999;">Select a lesson on the left to see details here.</p>';
+
       (courseObj.lessons || []).forEach(lesson => {
         const lessonLabel = lesson.title || ('Lesson ' + lesson.lesson_id);
         if (lesson.section && !document.getElementById('section-' + lesson.section)) {
@@ -646,6 +553,7 @@
         });
         lessonListEl.appendChild(li);
       });
+
       function updateProgress(_filePath) {
         const total = (courseObj.lessons || []).length;
         const completed = (courseObj.lessons || []).filter(lesson => isLessonChecked(_filePath, lesson.title || ('Lesson ' + lesson.lesson_id))).length;
@@ -728,11 +636,13 @@
       await updateAllCourseStatuses(allCourses);
       renderCourses(allCourses);
       handleViewLessons(defaultGuidePath);
+
       const searchInput = document.getElementById('courseSearch');
       searchInput.addEventListener('input', () => {
         const filtered = filterCourses(allCourses, searchInput.value);
         renderCourses(filtered);
       });
+
       document.addEventListener('click', event => {
         const target = event.target;
         if (target.tagName === 'BUTTON' && target.hasAttribute('data-file')) {
@@ -740,15 +650,16 @@
           handleViewLessons(filePath);
         }
       });
+
       const homeLink = document.getElementById('homeLink');
       homeLink.addEventListener('click', event => {
         event.preventDefault();
         handleViewLessons(defaultGuidePath);
       });
+
       const sidebarToggleIcon = document.getElementById('sidebarToggle');
       sidebarToggleIcon.addEventListener('click', toggleSidebar);
     });
   </script>
 </body>
-
 </html>
