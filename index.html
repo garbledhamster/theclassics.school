@@ -383,6 +383,11 @@
     #buyButton:hover {
       background-color: #6e7a4b;
     }
+
+    /* Hiding the main content by default: */
+    #lockedContent {
+      display: none; /* we toggle this after auth check */
+    }
   </style>
 </head>
 <body>
@@ -408,27 +413,30 @@
       <p id="loginStatus" style="margin-top: 0.5rem; color: var(--color-orange);"></p>
     </div>
 
-    <div class="course-search">
-      <input type="text" id="courseSearch" placeholder="Search for a course...">
-    </div>
-    <div class="course-list" id="courseList"></div>
+    <!-- All locked content goes here -->
+    <div id="lockedContent">
+      <div class="course-search">
+        <input type="text" id="courseSearch" placeholder="Search for a course...">
+      </div>
+      <div class="course-list" id="courseList"></div>
 
-    <div id="lessonsContainer" class="lessons-container">
-      <h2 id="selectedCourseTitle" style="color: var(--color-red); font-family: var(--font-classic);"></h2>
-      <p id="selectedCourseDesc"></p>
-      <h4 id="lessonProgress"></h4>
-      <div class="lesson-layout" id="lessonLayout">
-        <aside class="lesson-sidebar" id="lessonSidebar">
-          <div class="sidebar-header">
-            <i class="fa-solid fa-feather sidebar-header-icon" id="sidebarToggle" title="Toggle Lessons Menu"></i>
-            <h3 class="title-text">Lessons</h3>
+      <div id="lessonsContainer" class="lessons-container">
+        <h2 id="selectedCourseTitle" style="color: var(--color-red); font-family: var(--font-classic);"></h2>
+        <p id="selectedCourseDesc"></p>
+        <h4 id="lessonProgress"></h4>
+        <div class="lesson-layout" id="lessonLayout">
+          <aside class="lesson-sidebar" id="lessonSidebar">
+            <div class="sidebar-header">
+              <i class="fa-solid fa-feather sidebar-header-icon" id="sidebarToggle" title="Toggle Lessons Menu"></i>
+              <h3 class="title-text">Lessons</h3>
+            </div>
+            <div class="lesson-list-wrapper">
+              <ul id="lessonList" class="lesson-list"></ul>
+            </div>
+          </aside>
+          <div id="lessonContent" class="lesson-content">
+            <p style="color: #999;">Select a lesson on the left to see details here.</p>
           </div>
-          <div class="lesson-list-wrapper">
-            <ul id="lessonList" class="lesson-list"></ul>
-          </div>
-        </aside>
-        <div id="lessonContent" class="lesson-content">
-          <p style="color: #999;">Select a lesson on the left to see details here.</p>
         </div>
       </div>
     </div>
@@ -489,9 +497,8 @@
     const sendLinkBtn = document.getElementById('sendSignInLink');
     const loginStatus = document.getElementById('loginStatus');
     const buyButton = document.getElementById('buyButton');
+    const lockedContent = document.getElementById('lockedContent');
 
-    // 1. If not logged in, send passwordless link.
-    // 2. If logged in, sign out.
     async function handleSignInOrOut() {
       if (!auth.currentUser) {
         // Not signed in: attempt to send sign-in link
@@ -509,7 +516,7 @@
           alert('Error sending sign-in link.');
         }
       } else {
-        // If user is signed in, sign out.
+        // If user is signed in, sign out
         try {
           await signOut(auth);
         } catch (err) {
@@ -518,6 +525,7 @@
       }
     }
 
+    // Assign click handler
     sendLinkBtn.onclick = handleSignInOrOut;
 
     // When page loads, if there's a sign-in link in the URL, complete sign-in:
@@ -534,19 +542,23 @@
         .catch(err => console.error(err));
     }
 
-    // Display login status & switch sign-in button text if user is logged in
+    // Display login status & lock/unlock content as needed
     onAuthStateChanged(auth, async user => {
       if (user) {
+        // Signed in
         loginStatus.textContent = `Signed in as: ${user.email}`;
-        // Hide the email field & change button text to "Logout"
         emailField.style.display = 'none';
         sendLinkBtn.textContent = 'Logout';
+        // Show locked content
+        lockedContent.style.display = 'block';
       } else {
+        // Not signed in
         loginStatus.textContent = 'Not signed in';
-        // Show email field & revert button text
         emailField.style.display = 'inline-block';
         emailField.value = '';
         sendLinkBtn.textContent = 'Send Sign-In Link';
+        // Hide locked content
+        lockedContent.style.display = 'none';
       }
     });
 
@@ -843,7 +855,10 @@
       allCourses = await loadCourses();
       await updateAllCourseStatuses(allCourses);
       renderCourses(allCourses);
-      handleViewLessons(defaultGuidePath);
+
+      // By default, do not show lessons container. 
+      // We’ll show the “HowToUseThisSite” course only when user is signed in.
+      // handleViewLessons(defaultGuidePath) can remain if you want it to load by default after login.
 
       const searchInput = document.getElementById('courseSearch');
       searchInput.addEventListener('input', () => {
