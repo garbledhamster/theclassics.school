@@ -1,266 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>theclassics.school – How to Use This Site</title>
-
-  <!-- Fonts / Icons / Micromodal CSS -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&display=swap"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
   <link rel="stylesheet" href="https://unpkg.com/micromodal/dist/micromodal.min.css"/>
-
   <style>
-    :root {
-      --color-yellow: #FBAB34;
-      --color-red: #E04E19;
-      --color-orange: #E98839;
-      --color-white: #FCEFDC;
-      --color-green: #829559;
-      --color-beige: #D8C19C;
-      --font-base: "Crimson Pro", Georgia, "Times New Roman", serif;
-      --font-classic: "Crimson Pro", Georgia, "Times New Roman", serif;
-      font-size: 18px;
-    }
-    * {
-      margin: 0; padding: 0; box-sizing: border-box; caret-color: transparent;
-    }
-    input, textarea, select {
-      caret-color: auto;
-    }
-    html, body {
-      width: 100%; height: 100%;
-    }
-    body {
-      background-color: var(--color-white);
-      font-family: var(--font-base);
-      color: #333; line-height: 1.6; font-size: 1rem;
-    }
-    p { margin-bottom: 10px; }
-    h1,h2,h3,h4,h5,h6 {
-      margin-top: 0; margin-bottom: 0.75rem; line-height: 1.3;
-    }
-    h1 { font-size: 2rem; }
-    h2 { font-size: 1.75rem; }
-    h3 { font-size: 1.5rem; }
-    h4 { font-size: 1.25rem; }
-    header {
-      background-color: var(--color-beige);
-      padding: 1rem; text-align: center; position: sticky; top: 0; z-index: 1000;
-    }
-    header h1 {
-      color: var(--color-red); margin-bottom: 0.5rem; line-height: 1.2;
-    }
-    header p {
-      color: var(--color-green);
-      font-size: 1.125rem; line-height: 1.4;
-    }
-    nav {
-      background-color: var(--color-orange);
-      display: flex; justify-content: center;
-      padding: 0.5rem; position: sticky; top: 60px; z-index: 999;
-    }
-    nav a {
-      color: var(--color-white); text-decoration: none;
-      margin: 0 1rem; font-weight: bold; font-size: 1rem; cursor: pointer;
-    }
-    .hero {
-      background-color: var(--color-yellow);
-      color: #fff; text-align: center; padding: 2rem 1rem;
-    }
-    .hero h2 { margin-bottom: 1rem; }
-    .hero p {
-      max-width: 600px; margin: 0 auto;
-      font-size: 1.125rem; line-height: 1.5;
-    }
-    main {
-      width: 100%; margin: 2rem 0; padding: 0 1rem;
-    }
-    .course-search {
-      text-align: center; margin-bottom: 2rem;
-    }
-    .course-search input[type="text"] {
-      width: 60%; max-width: 400px;
-      padding: 0.5rem; border: 2px solid var(--color-green);
-      border-radius: 4px; font-size: 1rem; line-height: 1.5;
-    }
-    .course-list {
-      display: grid; grid-template-columns: 1fr; gap: 1rem;
-    }
-    .course-card {
-      background-color: var(--color-beige);
-      border-radius: 5px; padding: 1rem; line-height: 1.6;
-    }
-    .course-card h3 {
-      color: var(--color-red); font-family: var(--font-classic);
-      margin-bottom: 0.5rem; font-size: 1.25rem; line-height: 1.3;
-    }
-    .course-card p {
-      margin-bottom: 0.5rem; color: #555; font-size: 1rem; line-height: 1.5;
-    }
-    .course-card button {
-      background-color: var(--color-green); color: #fff;
-      border: none; padding: 0.5rem 1rem;
-      border-radius: 4px; cursor: pointer; font-weight: bold;
-      font-size: 1rem; line-height: 1.5;
-    }
-    .course-card button:hover {
-      background-color: #6e7a4b;
-    }
-    .course-status {
-      font-size: 0.875rem; margin-top: 0.5rem; font-style: italic;
-    }
-    .course-status.not-started { color: #999; }
-    .course-status.in-progress { color: var(--color-orange); }
-    .course-status.complete { color: var(--color-green); }
-    .course-status.n-a { color: #ccc; }
-    .lessons-container {
-      display: none; margin-top: 2rem;
-      border-top: 1px solid #ccc; padding-top: 1rem;
-      transition: all 0.5s ease-in-out;
-    }
-    .lesson-layout {
-      display: grid; grid-template-columns: 250px 1fr;
-      gap: 1rem; margin-top: 1rem;
-      transition: grid-template-columns 0.5s ease-in-out;
-    }
-    .lesson-layout.collapsed { grid-template-columns: 48px 1fr; }
-    .lesson-sidebar {
-      background-color: var(--color-beige);
-      border-radius: 5px; transition: width 0.5s ease-in-out, padding 0.5s ease-in-out;
-      position: relative; margin-left: 5px; overflow-x: hidden;
-    }
-    .lesson-sidebar.collapsed {
-      width: 50px; text-align: center; overflow-x: hidden;
-    }
-    .sidebar-header {
-      display: flex; align-items: center; padding: 0.5rem 0;
-      position: sticky; top: 0; z-index: 10;
-      background-color: var(--color-beige); padding-top: 20px;
-    }
-    .sidebar-header .sidebar-header-icon {
-      color: var(--color-red);
-      font-size: 1.5rem; cursor: pointer; margin-right: 0.5rem;
-      transition: margin 0.3s ease-in-out; align-self: center; line-height: 1;
-      margin-left: 10px;
-    }
-    .lesson-sidebar.collapsed .sidebar-header-icon { margin-right: 0; }
-    .title-text {
-      transition: opacity 0.5s ease-in-out; opacity: 1; visibility: visible;
-    }
-    .lesson-sidebar.collapsed .title-text { display: none; }
-    .lesson-sidebar.collapsed .hover-checkbox { display: none !important; }
-    .lesson-list-wrapper {
-      overflow-y: auto; padding-top: 0.5rem;
-    }
-    .lesson-sidebar.collapsed .lesson-list-wrapper { padding: 0; }
-    #lessonProgress {
-      margin-bottom: 1rem; font-weight: bold;
-    }
-    .lesson-list {
-      list-style-type: none; margin: 0; padding: 0;
-    }
-    .lesson-list li {
-      display: grid; grid-template-columns: 24px 1fr auto;
-      align-items: center; padding: 0.5rem 0.75rem;
-      margin-bottom: 0.25rem; border-radius: 5px;
-      transition: background-color 0.2s ease-in-out;
-      position: relative; cursor: pointer;
-      background-color: var(--color-beige);
-    }
-    .lesson-list li:not(:hover) {
-      grid-template-columns: 24px 1fr;
-    }
-    .lesson-list li:hover { background-color: #f5f0e6; }
-    .lesson-list li.completed { background-color: #d9efd0; }
-    .lesson-list li.active {
-      background-color: #ffeec2; border-left: 4px solid var(--color-green);
-    }
-    .hover-checkbox { display: none; }
-    .lesson-list li:hover .hover-checkbox { display: inline-block; }
-    .icon-area { text-align: center; }
-    .lesson-title {
-      font-weight: bold; font-size: 1rem;
-      white-space: normal; line-height: 1.4; overflow-wrap: break-word;
-      margin: 0 0.5rem;
-    }
-    .lesson-sidebar.collapsed .lesson-title { display: none; }
-    .lesson-sidebar.collapsed li { justify-content: center; }
-    .lesson-content {
-      border: 1px solid #ccc; border-radius: 5px;
-      padding: 1rem; min-height: 300px; line-height: 1.6; max-width: 60ch;
-    }
-    .lesson-content ul, .lesson-content li {
-      margin-left: 1.5rem; margin-bottom: 0.5rem;
-    }
-    .lesson-content h4 {
-      margin: 1rem 0 0.5rem;
-    }
-    footer {
-      background-color: var(--color-green); color: var(--color-white);
-      text-align: center; padding: 1rem; margin-top: 2rem; line-height: 1.5;
-    }
-    footer a {
-      color: var(--color-white); text-decoration: underline;
-    }
-    hr { margin-top: 20px; margin-bottom: 20px; }
-    .lesson-list li:focus, .sidebar-header-icon:focus, nav a:focus, button:focus {
-      outline: none;
-    }
-    @media (max-width: 768px) {
-      .course-list { grid-template-columns: 1fr 1fr; }
-    }
-    .auth-section {
-      text-align: center; margin-top: 1rem; margin-bottom: 2rem;
-    }
-    #emailForSignIn {
-      padding: 0.5rem; border: 2px solid var(--color-green);
-      border-radius: 4px; font-family: var(--font-base);
-      width: 280px; margin-bottom: 0.5rem;
-    }
-    #sendSignInLink, #buyButton {
-      background-color: var(--color-green);
-      color: #fff; border: none; padding: 0.5rem 1rem;
-      border-radius: 4px; cursor: pointer; font-weight: bold;
-      font-size: 1rem; line-height: 1.5; margin: 0.5rem;
-    }
-    #sendSignInLink:hover, #buyButton:hover {
-      background-color: #6e7a4b;
-    }
-    #lockedContent { display: none; }
-    .locked {
-      opacity: 0.4; pointer-events: none;
-      position: relative;
-    }
-    .modal {
-      display: none;
-    }
-    .modal.is-open {
-      display: block;
-    }
-    .modal__overlay {
-      background: rgba(0,0,0,0.5);
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .modal__container {
-      background: white; padding: 1rem; border-radius: 4px;
-      width: 90%; max-width: 500px;
-    }
-    .modal__header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 0.5rem;
-    }
-    .modal__title { font-size: 1.25rem; margin: 0; }
-    .modal__close {
-      background: none; border: none; cursor: pointer; font-size: 1.25rem;
-    }
-    .modal__footer { text-align: right; margin-top: 1rem; }
-    .modal__btn {
-      background: var(--color-green); color: #fff; border: none; padding: 0.5rem 1rem;
-      cursor: pointer; border-radius: 4px;
-    }
+    :root{--color-yellow:#FBAB34;--color-red:#E04E19;--color-orange:#E98839;--color-white:#FCEFDC;--color-green:#829559;--color-beige:#D8C19C;--font-base:"Crimson Pro",Georgia,"Times New Roman",serif;--font-classic:"Crimson Pro",Georgia,"Times New Roman",serif;font-size:18px}
+    *{margin:0;padding:0;box-sizing:border-box;caret-color:transparent}
+    input,textarea,select{caret-color:auto}
+    html,body{width:100%;height:100%}
+    body{background-color:var(--color-white);font-family:var(--font-base);color:#333;line-height:1.6;font-size:1rem}
+    p{margin-bottom:10px}
+    h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:0.75rem;line-height:1.3}
+    h1{font-size:2rem}h2{font-size:1.75rem}h3{font-size:1.5rem}h4{font-size:1.25rem}
+    header{background-color:var(--color-beige);padding:1rem;text-align:center;position:sticky;top:0;z-index:1000}
+    header h1{color:var(--color-red);margin-bottom:0.5rem;line-height:1.2}
+    header p{color:var(--color-green);font-size:1.125rem;line-height:1.4}
+    nav{background-color:var(--color-orange);display:flex;justify-content:center;padding:0.5rem;position:sticky;top:60px;z-index:999}
+    nav a{color:var(--color-white);text-decoration:none;margin:0 1rem;font-weight:bold;font-size:1rem;cursor:pointer}
+    .hero{background-color:var(--color-yellow);color:#fff;text-align:center;padding:2rem 1rem}
+    .hero h2{margin-bottom:1rem}
+    .hero p{max-width:600px;margin:0 auto;font-size:1.125rem;line-height:1.5}
+    main{width:100%;margin:2rem 0;padding:0 1rem}
+    .course-search{text-align:center;margin-bottom:2rem}
+    .course-search input[type=text]{width:60%;max-width:400px;padding:0.5rem;border:2px solid var(--color-green);border-radius:4px;font-size:1rem;line-height:1.5}
+    .course-list{display:grid;grid-template-columns:1fr;gap:1rem}
+    .course-card{background-color:var(--color-beige);border-radius:5px;padding:1rem;line-height:1.6}
+    .course-card h3{color:var(--color-red);font-family:var(--font-classic);margin-bottom:0.5rem;font-size:1.25rem;line-height:1.3}
+    .course-card p{margin-bottom:0.5rem;color:#555;font-size:1rem;line-height:1.5}
+    .course-card button{background-color:var(--color-green);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-weight:bold;font-size:1rem;line-height:1.5}
+    .course-card button:hover{background-color:#6e7a4b}
+    .course-status{font-size:0.875rem;margin-top:0.5rem;font-style:italic}
+    .course-status.not-started{color:#999}.course-status.in-progress{color:var(--color-orange)}.course-status.complete{color:var(--color-green)}.course-status.n-a{color:#ccc}
+    .lessons-container{display:none;margin-top:2rem;border-top:1px solid #ccc;padding-top:1rem;transition:all .5s ease-in-out}
+    .lesson-layout{display:grid;grid-template-columns:250px 1fr;gap:1rem;margin-top:1rem;transition:grid-template-columns .5s ease-in-out}
+    .lesson-layout.collapsed{grid-template-columns:48px 1fr}
+    .lesson-sidebar{background-color:var(--color-beige);border-radius:5px;transition:width .5s ease-in-out,padding .5s ease-in-out;position:relative;margin-left:5px;overflow-x:hidden}
+    .lesson-sidebar.collapsed{width:50px;text-align:center;overflow-x:hidden}
+    .sidebar-header{display:flex;align-items:center;padding:0.5rem 0;position:sticky;top:0;z-index:10;background-color:var(--color-beige);padding-top:20px}
+    .sidebar-header-icon{color:var(--color-red);font-size:1.5rem;cursor:pointer;margin-right:0.5rem;transition:margin .3s ease-in-out;align-self:center;line-height:1;margin-left:10px}
+    .lesson-sidebar.collapsed .sidebar-header-icon{margin-right:0}
+    .title-text{transition:opacity .5s ease-in-out;opacity:1;visibility:visible}
+    .lesson-sidebar.collapsed .title-text{display:none}
+    .lesson-sidebar.collapsed .hover-checkbox{display:none!important}
+    .lesson-list-wrapper{overflow-y:auto;padding-top:0.5rem}
+    .lesson-sidebar.collapsed .lesson-list-wrapper{padding:0}
+    #lessonProgress{margin-bottom:1rem;font-weight:bold}
+    .lesson-list{list-style-type:none;margin:0;padding:0}
+    .lesson-list li{display:grid;grid-template-columns:24px 1fr auto;align-items:center;padding:0.5rem 0.75rem;margin-bottom:0.25rem;border-radius:5px;transition:background-color .2s ease-in-out;position:relative;cursor:pointer;background-color:var(--color-beige)}
+    .lesson-list li:not(:hover){grid-template-columns:24px 1fr}
+    .lesson-list li:hover{background-color:#f5f0e6}
+    .lesson-list li.completed{background-color:#d9efd0}
+    .lesson-list li.active{background-color:#ffeec2;border-left:4px solid var(--color-green)}
+    .hover-checkbox{display:none}
+    .lesson-list li:hover .hover-checkbox{display:inline-block}
+    .icon-area{text-align:center}
+    .lesson-title{font-weight:bold;font-size:1rem;white-space:normal;line-height:1.4;overflow-wrap:break-word;margin:0 0.5rem}
+    .lesson-sidebar.collapsed .lesson-title{display:none}
+    .lesson-sidebar.collapsed li{justify-content:center}
+    .lesson-content{border:1px solid #ccc;border-radius:5px;padding:1rem;min-height:300px;line-height:1.6;max-width:60ch}
+    .lesson-content ul,.lesson-content li{margin-left:1.5rem;margin-bottom:0.5rem}
+    .lesson-content h4{margin:1rem 0 0.5rem}
+    footer{background-color:var(--color-green);color:var(--color-white);text-align:center;padding:1rem;margin-top:2rem;line-height:1.5}
+    footer a{color:var(--color-white);text-decoration:underline}
+    hr{margin-top:20px;margin-bottom:20px}
+    .lesson-list li:focus,.sidebar-header-icon:focus,nav a:focus,button:focus{outline:none}
+    @media(max-width:768px){.course-list{grid-template-columns:1fr 1fr}}
+    .auth-section{text-align:center;margin-top:1rem;margin-bottom:2rem}
+    #emailForSignIn{padding:0.5rem;border:2px solid var(--color-green);border-radius:4px;font-family:var(--font-base);width:280px;margin-bottom:0.5rem}
+    #sendSignInLink,#buyButton,#devBypass{background-color:var(--color-green);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-weight:bold;font-size:1rem;line-height:1.5;margin:0.5rem}
+    #devBypass{background-color:#ccc;color:#333}
+    #sendSignInLink:hover,#buyButton:hover{background-color:#6e7a4b}
+    #devBypass:hover{background-color:#bbb}
+    #lockedContent{display:none}
+    .locked{opacity:.4;pointer-events:none;position:relative}
+    .modal{display:none}.modal.is-open{display:block}
+    .modal__overlay{background:rgba(0,0,0,.5);position:fixed;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+    .modal__container{background:#fff;padding:1rem;border-radius:4px;width:90%;max-width:500px}
+    .modal__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem}
+    .modal__title{font-size:1.25rem;margin:0}
+    .modal__close{background:none;border:none;cursor:pointer;font-size:1.25rem}
+    .modal__footer{text-align:right;margin-top:1rem}
+    .modal__btn{background:var(--color-green);color:#fff;border:none;padding:0.5rem 1rem;cursor:pointer;border-radius:4px}
+    table{width:100%;border-collapse:collapse;margin:1rem 0;overflow-x:auto;display:block}
+    th,td{padding:0.75rem;border:1px solid #ddd;text-align:left}
+    thead{background-color:var(--color-orange);color:var(--color-white)}
+    tbody tr:nth-child(even){background-color:#f5f0e6}
   </style>
 </head>
 <body>
@@ -268,9 +96,7 @@
     <h1>theclassics.school</h1>
     <p>A Place to Read, Discover, and Grow</p>
   </header>
-  <nav>
-    <a href="#" id="homeLink">Home</a>
-  </nav>
+  <nav><a href="#" id="homeLink">Home</a></nav>
   <section class="hero">
     <h2>Welcome to theclassics.school</h2>
     <p>Here you’ll find structured lessons inspired by timeless works of literature, philosophy, and beyond.</p>
@@ -280,12 +106,11 @@
       <div><input id="emailForSignIn" type="email" placeholder="Enter your email"/></div>
       <button id="sendSignInLink">Send Sign-In Link</button>
       <button id="buyButton">Buy Lifetime Access ($99)</button>
+      <button id="devBypass">Dev Bypass</button>
       <p id="loginStatus" style="margin-top:0.5rem;color:var(--color-orange);"></p>
     </div>
     <div id="lockedContent">
-      <div class="course-search">
-        <input type="text" id="courseSearch" placeholder="Search for a course...">
-      </div>
+      <div class="course-search"><input type="text" id="courseSearch" placeholder="Search for a course..."></div>
       <div class="course-list" id="courseList"></div>
       <div id="lessonsContainer" class="lessons-container">
         <h2 id="selectedCourseTitle" style="color:var(--color-red);font-family:var(--font-classic);"></h2>
@@ -297,13 +122,9 @@
               <i class="fa-solid fa-feather sidebar-header-icon" id="sidebarToggle" title="Toggle Lessons Menu"></i>
               <h3 class="title-text">Lessons</h3>
             </div>
-            <div class="lesson-list-wrapper">
-              <ul id="lessonList" class="lesson-list"></ul>
-            </div>
+            <div class="lesson-list-wrapper"><ul id="lessonList" class="lesson-list"></ul></div>
           </aside>
-          <div id="lessonContent" class="lesson-content">
-            <p style="color:#999;">Select a lesson on the left to see details here.</p>
-          </div>
+          <div id="lessonContent" class="lesson-content"><p style="color:#999;">Select a lesson on the left to see details here.</p></div>
         </div>
       </div>
     </div>
@@ -315,408 +136,83 @@
   <div class="modal micromodal-slide" id="modal-locked" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
       <div class="modal__container" role="dialog" aria-modal="true">
-        <header class="modal__header">
-          <h2 class="modal__title">Lesson Locked</h2>
-          <button class="modal__close" data-micromodal-close></button>
-        </header>
-        <main class="modal__content">
-          <p>Please sign in to access this lesson.</p>
-        </main>
-        <footer class="modal__footer">
-          <button class="modal__btn" data-micromodal-close>Close</button>
-        </footer>
+        <header class="modal__header"><h2 class="modal__title">Lesson Locked</h2><button class="modal__close" data-micromodal-close></button></header>
+        <main class="modal__content"><p>Please sign in to access this lesson.</p></main>
+        <footer class="modal__footer"><button class="modal__btn" data-micromodal-close>Close</button></footer>
       </div>
     </div>
   </div>
-
   <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://js.stripe.com/v3"></script>
-
-  <!-- All logic in one type="module" block -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"
     import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"
     import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js"
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAOFHZbn02JpIlSHNxNdvBnfdYv08tZMJs",
-      authDomain: "the-classics-befd2.firebaseapp.com",
-      projectId: "the-classics-befd2",
-      storageBucket: "the-classics-befd2.firebasestorage.app",
-      messagingSenderId: "171500319429",
-      appId: "1:171500319429:web:2f67b006048191fa6036ac",
-      measurementId: "G-08W3C50VF6"
-    };
+    const firebaseConfig={apiKey:"AIzaSyAOFHZbn02JpIlSHNxNdvBnfdYv08tZMJs",authDomain:"the-classics-befd2.firebaseapp.com",projectId:"the-classics-befd2",storageBucket:"the-classics-befd2.firebasestorage.app",messagingSenderId:"171500319429",appId:"1:171500319429:web:2f67b006048191fa6036ac",measurementId:"G-08W3C50VF6"}
+    const app=initializeApp(firebaseConfig)
+    const auth=getAuth(app)
+    const functions=getFunctions(app)
+    const actionCodeSettings={url:"https://theclassics.school",handleCodeInApp:true}
+    let DEV_BYPASS=false
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const functions = getFunctions(app);
+    const emailField=document.getElementById("emailForSignIn")
+    const sendLinkBtn=document.getElementById("sendSignInLink")
+    const loginStatus=document.getElementById("loginStatus")
+    const buyButton=document.getElementById("buyButton")
+    const devBypassBtn=document.getElementById("devBypass")
+    const lockedContent=document.getElementById("lockedContent")
 
-    const actionCodeSettings = {
-      url: 'https://theclassics.school',
-      handleCodeInApp: true
-    };
+    if(location.hostname==="localhost"||location.hostname.startsWith("127.")){devBypassBtn.style.display="inline-block"}
+    setTimeout(()=>{if(devBypassBtn.style.display===""||devBypassBtn.style.display==="none"){devBypassBtn.style.display="inline-block"}},1000)
 
-    const emailField = document.getElementById('emailForSignIn');
-    const sendLinkBtn = document.getElementById('sendSignInLink');
-    const loginStatus = document.getElementById('loginStatus');
-    const buyButton = document.getElementById('buyButton');
-    const lockedContent = document.getElementById('lockedContent');
+    devBypassBtn.onclick=()=>{DEV_BYPASS=true;loginStatus.textContent="Dev mode: unlocked";emailField.style.display="none";sendLinkBtn.style.display="none";buyButton.style.display="none";devBypassBtn.style.display="none";lockedContent.style.display="block"}
 
-    sendLinkBtn.onclick = async () => {
-      if(auth.currentUser) {
-        await signOut(auth);
-        return;
-      }
-      const email = emailField.value;
-      if(!email) {
-        alert('Please enter your email.');
-        return;
-      }
-      try {
-        await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-        localStorage.setItem('emailForSignIn', email);
-        alert('Sign-in link sent! Check your email.');
-      } catch(e) {
-        console.error(e);
-        alert('Error sending link.');
-      }
-    };
+    sendLinkBtn.onclick=async()=>{if(auth.currentUser){await signOut(auth);return}const email=emailField.value;if(!email){alert("Please enter your email.");return}try{await sendSignInLinkToEmail(auth,email,actionCodeSettings);localStorage.setItem("emailForSignIn",email);alert("Sign-in link sent! Check your email.")}catch(e){console.error(e);alert("Error sending link.")}}
 
-    if(isSignInWithEmailLink(auth, window.location.href)) {
-      let storedEmail = localStorage.getItem('emailForSignIn');
-      if(storedEmail) {
-        signInWithEmailLink(auth, storedEmail, window.location.href)
-          .then(() => {
-            localStorage.removeItem('emailForSignIn');
-            alert('You are now signed in!');
-            window.history.replaceState({}, document.title, "/");
-          })
-          .catch(e => console.error(e));
-      }
-    }
+    if(isSignInWithEmailLink(auth,window.location.href)){const storedEmail=localStorage.getItem("emailForSignIn");if(storedEmail){signInWithEmailLink(auth,storedEmail,window.location.href).then(()=>{localStorage.removeItem("emailForSignIn");alert("You are now signed in!");window.history.replaceState({},document.title,"/")}).catch(e=>console.error(e))}}
 
-    onAuthStateChanged(auth, user => {
-      if(user) {
-        loginStatus.textContent = `Signed in as: ${user.email}`;
-        sendLinkBtn.textContent = 'Logout';
-        emailField.style.display = 'none';
-        lockedContent.style.display = 'block';
-      } else {
-        loginStatus.textContent = 'Not signed in';
-        sendLinkBtn.textContent = 'Send Sign-In Link';
-        emailField.style.display = 'inline-block';
-        emailField.value = '';
-        lockedContent.style.display = 'none';
-      }
-    });
+    onAuthStateChanged(auth,user=>{if(user||DEV_BYPASS){loginStatus.textContent=user?`Signed in as: ${user.email}`:"Dev mode: unlocked";sendLinkBtn.textContent="Logout";emailField.style.display="none";lockedContent.style.display="block";devBypassBtn.style.display="none"}else{loginStatus.textContent="Not signed in";sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="inline-block";emailField.value="";lockedContent.style.display="none";devBypassBtn.style.display="inline-block"}})
 
-    buyButton.onclick = async () => {
-      if(!auth.currentUser) {
-        alert('Please sign in first!');
-        return;
-      }
-      try {
-        const createSession = httpsCallable(functions, 'createCheckoutSession');
-        const { data } = await createSession({});
-        if(data.error) {
-          alert(data.error);
-          return;
-        }
-        const stripe = Stripe('StripePublishableKeyHere');
-        await stripe.redirectToCheckout({ sessionId: data.sessionId });
-      } catch(e) {
-        console.error(e);
-        alert('Error creating Checkout session.');
-      }
-    };
+    buyButton.onclick=async()=>{if(!(auth.currentUser||DEV_BYPASS)){alert("Please sign in first!");return}try{const createSession=httpsCallable(functions,"createCheckoutSession");const{data}=await createSession({});if(data.error){alert(data.error);return}const stripe=Stripe("StripePublishableKeyHere");await stripe.redirectToCheckout({sessionId:data.sessionId})}catch(e){console.error(e);alert("Error creating Checkout session.")}}
 
-    MicroModal.init();
+    MicroModal.init()
 
-    let allCourses = [];
-    let currentCourseData = {};
-    const defaultGuidePath = 'lessons/0000_HowToUseThisSite.yaml';
-    const LESSON_CHECK_KEY = 'lessonProgress';
-    let isSidebarCollapsed = false;
+    let allCourses=[]
+    let currentCourseData={}
+    const defaultGuidePath="lessons/0000_HowToUseThisSite.yaml"
+    const LESSON_CHECK_KEY="lessonProgress"
+    let isSidebarCollapsed=false
 
-    function getStoredLessonProgress(){
-      const d = localStorage.getItem(LESSON_CHECK_KEY);
-      return d ? JSON.parse(d) : {};
-    }
-    function setStoredLessonProgress(obj){
-      localStorage.setItem(LESSON_CHECK_KEY, JSON.stringify(obj));
-    }
-    function isLessonChecked(path, title){
-      const store = getStoredLessonProgress();
-      if(!store[path]) return false;
-      return !!store[path][title];
-    }
-    function toggleLessonChecked(path, title, val){
-      const store = getStoredLessonProgress();
-      if(!store[path]) store[path] = {};
-      store[path][title] = val;
-      setStoredLessonProgress(store);
-    }
-    function getLessonIcon(type){
-      if(type==='reading') return '<i class="fas fa-book"></i>';
-      if(type==='quiz') return '<i class="fas fa-question-circle"></i>';
-      if(type==='video') return '<i class="fas fa-video"></i>';
-      return '<i class="fas fa-file-alt"></i>';
-    }
-    async function loadCourses(){
-      try {
-        const r = await fetch('lessons.json');
-        if(!r.ok) throw new Error('Could not load lessons.json');
-        return await r.json();
-      } catch(e){
-        console.error('Error fetching lessons.json:', e);
-        return [];
-      }
-    }
-    async function updateAllCourseStatuses(courses){
-      const tasks = courses.map(async c => {
-        try {
-          const resp = await fetch(c.file);
-          if(!resp.ok) throw new Error('Could not load ' + c.file);
-          const yText = await resp.text();
-          const data = jsyaml.load(yText);
-          if(data && data.course && Array.isArray(data.course.lessons)){
-            const total = data.course.lessons.length;
-            const completed = data.course.lessons.filter(lesson => {
-              const lbl = lesson.title || ('Lesson ' + lesson.lesson_id);
-              return isLessonChecked(c.file, lbl);
-            }).length;
-            c._status = computeCourseStatus(completed, total);
-          } else {
-            c._status = 'N/A';
-          }
-        } catch(err){
-          console.error('Error fetching YAML for', c.file, err);
-          c._status = 'N/A';
-        }
-      });
-      await Promise.all(tasks);
-    }
-    function computeCourseStatus(completed, total){
-      if(total===0) return 'N/A';
-      if(completed===0) return 'Not Started';
-      if(completed===total) return 'Complete';
-      return 'In Progress';
-    }
-    function updateCourseCardStatus(path){
-      const co = allCourses.find(c => c.file===path);
-      if(!co || !currentCourseData.course) return;
-      const total = (currentCourseData.course.lessons||[]).length;
-      const completed = (currentCourseData.course.lessons||[]).filter(ln => {
-        const lbl = ln.title || ('Lesson ' + ln.lesson_id);
-        return isLessonChecked(path, lbl);
-      }).length;
-      co._status = computeCourseStatus(completed, total);
-      const card = document.querySelector('.course-card button[data-file="'+path+'"]')?.closest('.course-card');
-      if(card){
-        const statEl = card.querySelector('.course-status');
-        if(statEl){
-          statEl.classList.remove('not-started','in-progress','complete','n-a');
-          statEl.textContent = co._status;
-          const newCls = co._status.toLowerCase().replace(/\s+/g, '-');
-          statEl.classList.add(newCls);
-        }
-      }
-    }
-    function renderCourses(courses){
-      const courseList = document.getElementById('courseList');
-      courseList.innerHTML = '';
-      courses.forEach(crs => {
-        const div = document.createElement('div');
-        div.classList.add('course-card');
-        let st = 'n-a';
-        if(crs._status) {
-          st = crs._status.toLowerCase().replace(/\s+/g, '-');
-        }
-        div.innerHTML = '<h3>' + crs.title + '</h3><p>Course ID: ' + crs.id + '</p>'
-          + '<p class="course-status ' + st + '">' + (crs._status || 'N/A') + '</p>'
-          + '<button data-file="' + crs.file + '">View Lessons</button>';
-        courseList.appendChild(div);
-      });
-    }
-    function filterCourses(courses, q){
-      return courses.filter(c => c.title.toLowerCase().includes(q.toLowerCase()));
-    }
-    async function handleViewLessons(path){
-      try {
-        const resp = await fetch(path);
-        if(!resp.ok) throw new Error('Unable to load YAML file: ' + path);
-        const yamlText = await resp.text();
-        const courseData = jsyaml.load(yamlText);
-        currentCourseData = courseData;
-        showCourseContent(courseData, path);
-      } catch(e){
-        console.error('Error fetching YAML:', e);
-      }
-    }
-    function showCourseContent(cData, filePath){
-      if(!cData || !cData.course) return;
-      const cObj = cData.course;
-      const container = document.getElementById('lessonsContainer');
-      const cTitle = document.getElementById('selectedCourseTitle');
-      const cDesc = document.getElementById('selectedCourseDesc');
-      const lList = document.getElementById('lessonList');
-      const lContent = document.getElementById('lessonContent');
-      const lProgress = document.getElementById('lessonProgress');
+    function getStoredLessonProgress(){const d=localStorage.getItem(LESSON_CHECK_KEY);return d?JSON.parse(d):{}}
+    function setStoredLessonProgress(o){localStorage.setItem(LESSON_CHECK_KEY,JSON.stringify(o))}
+    function isLessonChecked(p,t){const s=getStoredLessonProgress();if(!s[p])return false;return!!s[p][t]}
+    function toggleLessonChecked(p,t,v){const s=getStoredLessonProgress();if(!s[p])s[p]={};s[p][t]=v;setStoredLessonProgress(s)}
+    function getLessonIcon(t){if(t==="reading")return'<i class="fas fa-book"></i>';if(t==="quiz")return'<i class="fas fa-question-circle"></i>';if(t==="video")return'<i class="fas fa-video"></i>';return'<i class="fas fa-file-alt"></i>'}
 
-      container.style.display = 'block';
-      cTitle.textContent = cObj.title || 'Untitled Course';
-      cDesc.textContent = cObj.description || '';
-      lList.innerHTML = '';
-      lContent.innerHTML = '<p style="color:#999;">Select a lesson on the left to see details here.</p>';
+    async function loadCourses(){try{const r=await fetch("lessons.json");if(!r.ok)throw new Error("Could not load lessons.json");return await r.json()}catch(e){console.error("Error fetching lessons.json:",e);return[]}}
 
-      (cObj.lessons||[]).forEach(lesson => {
-        const lessonLabel = lesson.title || ('Lesson ' + lesson.lesson_id);
-        if(lesson.section && !document.getElementById('section-' + lesson.section)){
-          const secH4 = document.createElement('h4');
-          secH4.id = 'section-' + lesson.section;
-          secH4.classList.add('title-text');
-          secH4.textContent = lesson.section;
-          lList.appendChild(secH4);
-        }
-        const li = document.createElement('li');
-        if(isLessonChecked(filePath, lessonLabel)){
-          li.classList.add('completed');
-        }
-        const iconHtml = lesson.type ? getLessonIcon(lesson.type) : '<i class="fas fa-file-alt"></i>';
-        li.innerHTML = '<div class="icon-area">' + iconHtml + '</div>'
-          + '<div class="lesson-title">' + lessonLabel + '</div>'
-          + '<div class="hover-checkbox"><input type="checkbox"' + (isLessonChecked(filePath, lessonLabel) ? ' checked' : '') + ' /></div>';
-        li.addEventListener('click', e => {
-          if(!e.target.closest('.hover-checkbox')){
-            if(!auth.currentUser && filePath!==defaultGuidePath && lessonLabel!=='Getting Started'){
-              MicroModal.show('modal-locked');
-              return;
-            }
-            document.querySelectorAll('#lessonList li').forEach(ln => ln.classList.remove('active'));
-            li.classList.add('active');
-            displayLessonContent(lesson);
-          }
-        });
-        const cb = li.querySelector('.hover-checkbox input[type="checkbox"]');
-        cb.addEventListener('change', () => {
-          toggleLessonChecked(filePath, lessonLabel, cb.checked);
-          li.classList.toggle('completed', cb.checked);
-          updateProgress(filePath);
-        });
-        if(!auth.currentUser && filePath!==defaultGuidePath && lessonLabel!=='Getting Started'){
-          li.classList.add('locked');
-        }
-        lList.appendChild(li);
-      });
+    async function updateAllCourseStatuses(cs){const tasks=cs.map(async c=>{try{const resp=await fetch(c.file);if(!resp.ok)throw new Error("Could not load "+c.file);const yText=await resp.text();const data=jsyaml.load(yText);if(data&&data.course&&Array.isArray(data.course.lessons)){const total=data.course.lessons.length;const completed=data.course.lessons.filter(l=>{const lbl=l.title||"Lesson "+l.lesson_id;return isLessonChecked(c.file,lbl)}).length;c._status=computeCourseStatus(completed,total)}else c._status="N/A"}catch(err){console.error("Error fetching YAML for",c.file,err);c._status="N/A"}});await Promise.all(tasks)}
 
-      function updateProgress(fp){
-        const tot = (cObj.lessons||[]).length;
-        const comp = (cObj.lessons||[]).filter(ls => {
-          return isLessonChecked(fp, ls.title || ('Lesson ' + ls.lesson_id));
-        }).length;
-        lProgress.textContent = 'Completed ' + comp + ' / ' + tot + ' lessons';
-        let status = '';
-        if(comp===0) status='(not-started)';
-        else if(comp===tot) status='(complete)';
-        else status='(in-progress)';
-        cTitle.textContent = (cObj.title||'Untitled Course') + ' ' + status;
-        updateCourseCardStatus(fp);
-      }
-      updateProgress(filePath);
-    }
-    function displayLessonContent(lsn){
-      const contentEl = document.getElementById('lessonContent');
-      contentEl.innerHTML = '';
-      const title = lsn.title || ('Lesson ' + lsn.lesson_id);
-      const h1 = document.createElement('h1');
-      h1.textContent = title;
-      contentEl.appendChild(h1);
-      const hr = document.createElement('hr');
-      contentEl.appendChild(hr);
+    function computeCourseStatus(cmp,tot){if(tot===0)return"N/A";if(cmp===0)return"Not Started";if(cmp===tot)return"Complete";return"In Progress"}
 
-      if(lsn.course){
-        const notesDiv = document.createElement('div');
-        notesDiv.innerHTML = marked.parse(lsn.course);
-        contentEl.appendChild(notesDiv);
-      }
-      if(lsn.exercises && Array.isArray(lsn.exercises) && lsn.exercises.length){
-        const exH2 = document.createElement('h2');
-        exH2.textContent = 'Exercises:';
-        contentEl.appendChild(exH2);
-        let exMd = '\n';
-        lsn.exercises.forEach((ex, idx) => {
-          exMd += (idx+1) + '. **' + ex.name + '** – ' + ex.prompt + '\n';
-        });
-        const exDiv = document.createElement('div');
-        exDiv.innerHTML = marked.parse(exMd);
-        contentEl.appendChild(exDiv);
-      }
-      if(lsn.assignments && Array.isArray(lsn.assignments) && lsn.assignments.length){
-        const asH2 = document.createElement('h2');
-        asH2.textContent = 'Assignments:';
-        contentEl.appendChild(asH2);
-        let asMd = '\n';
-        lsn.assignments.forEach((as, idx) => {
-          asMd += (idx+1) + '. **' + as.name + '** – ' + as.description + '\n';
-        });
-        const asDiv = document.createElement('div');
-        asDiv.innerHTML = marked.parse(asMd);
-        contentEl.appendChild(asDiv);
-      }
-      if(lsn.sources && Array.isArray(lsn.sources) && lsn.sources.length){
-        const srcH2 = document.createElement('h2');
-        srcH2.textContent = 'Sources:';
-        contentEl.appendChild(srcH2);
-        let srcMd = '\n';
-        lsn.sources.forEach((sr, idx) => {
-          srcMd += (idx+1) + '. ' + sr + '\n';
-        });
-        const srcDiv = document.createElement('div');
-        srcDiv.innerHTML = marked.parse(srcMd);
-        contentEl.appendChild(srcDiv);
-      }
-    }
-    function toggleSidebar(){
-      const sidebar = document.getElementById('lessonSidebar');
-      const layout = document.getElementById('lessonLayout');
-      isSidebarCollapsed = !isSidebarCollapsed;
-      if(isSidebarCollapsed){
-        sidebar.classList.add('collapsed');
-        layout.classList.add('collapsed');
-      } else {
-        sidebar.classList.remove('collapsed');
-        layout.classList.remove('collapsed');
-      }
-    }
+    function renderCourses(cs){const cl=document.getElementById("courseList");cl.innerHTML="";cs.forEach(cr=>{const d=document.createElement("div");d.classList.add("course-card");let st="n-a";if(cr._status)st=cr._status.toLowerCase().replace(/\s+/g,"-");d.innerHTML="<h3>"+cr.title+"</h3><p>Course ID: "+cr.id+"</p><p class='course-status "+st+"'>"+(cr._status||"N/A")+"</p><button data-file='"+cr.file+"'>View Lessons</button>";cl.appendChild(d)})}
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      allCourses = await loadCourses();
-      await updateAllCourseStatuses(allCourses);
-      renderCourses(allCourses);
+    function filterCourses(cs,q){return cs.filter(c=>c.title.toLowerCase().includes(q.toLowerCase()))}
 
-      handleViewLessons(defaultGuidePath);
+    async function handleViewLessons(p){try{const resp=await fetch(p);if(!resp.ok)throw new Error("Unable to load YAML file: "+p);const y=await resp.text();const cd=jsyaml.load(y);currentCourseData=cd;showCourseContent(cd,p)}catch(e){console.error("Error fetching YAML:",e)}}
 
-      document.getElementById('courseSearch').addEventListener('input', e => {
-        const filtered = filterCourses(allCourses, e.target.value);
-        renderCourses(filtered);
-      });
+    function showCourseContent(cd,fp){if(!cd||!cd.course)return;const cObj=cd.course;const container=document.getElementById("lessonsContainer");const cTitle=document.getElementById("selectedCourseTitle");const cDesc=document.getElementById("selectedCourseDesc");const lList=document.getElementById("lessonList");const lContent=document.getElementById("lessonContent");const lProgress=document.getElementById("lessonProgress");container.style.display="block";cTitle.textContent=cObj.title||"Untitled Course";cDesc.textContent=cObj.description||"";lList.innerHTML="";lContent.innerHTML="<p style='color:#999;'>Select a lesson on the left to see details here.</p>";(cObj.lessons||[]).forEach(lesson=>{const lbl=lesson.title||"Lesson "+lesson.lesson_id;if(lesson.section&&!document.getElementById("section-"+lesson.section)){const s=document.createElement("h4");s.id="section-"+lesson.section;s.classList.add("title-text");s.textContent=lesson.section;lList.appendChild(s)}const li=document.createElement("li");if(isLessonChecked(fp,lbl))li.classList.add("completed");const icon=lesson.type?getLessonIcon(lesson.type):'<i class="fas fa-file-alt"></i>';li.innerHTML="<div class='icon-area'>"+icon+"</div><div class='lesson-title'>"+lbl+"</div><div class='hover-checkbox'><input type='checkbox'"+(isLessonChecked(fp,lbl)?" checked":"")+" /></div>";li.addEventListener("click",e=>{if(!e.target.closest(".hover-checkbox")){if(!(auth.currentUser||DEV_BYPASS)&&fp!==defaultGuidePath&&lbl!=="Getting Started"){MicroModal.show("modal-locked");return}document.querySelectorAll("#lessonList li").forEach(n=>n.classList.remove("active"));li.classList.add("active");displayLessonContent(lesson)}});const cb=li.querySelector(".hover-checkbox input[type='checkbox']");cb.addEventListener("change",()=>{toggleLessonChecked(fp,lbl,cb.checked);li.classList.toggle("completed",cb.checked);updateProgress(fp)});if(!(auth.currentUser||DEV_BYPASS)&&fp!==defaultGuidePath&&lbl!=="Getting Started")li.classList.add("locked");lList.appendChild(li)});function updateProgress(path){const tot=(cObj.lessons||[]).length;const comp=(cObj.lessons||[]).filter(ls=>isLessonChecked(path,ls.title||"Lesson "+ls.lesson_id)).length;lProgress.textContent="Completed "+comp+" / "+tot+" lessons";let status="";if(comp===0)status="(not-started)";else if(comp===tot)status="(complete)";else status="(in-progress)";cTitle.textContent=(cObj.title||"Untitled Course")+" "+status;updateCourseCardStatus(path)}updateProgress(fp)}
 
-      document.addEventListener('click', e => {
-        const btn = e.target;
-        if(btn.tagName==='BUTTON' && btn.hasAttribute('data-file')){
-          const path = btn.getAttribute('data-file');
-          handleViewLessons(path);
-        }
-      });
-      document.getElementById('homeLink').addEventListener('click', e => {
-        e.preventDefault();
-        handleViewLessons(defaultGuidePath);
-      });
-      document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
-    });
+    function displayLessonContent(lsn){const el=document.getElementById("lessonContent");el.innerHTML="";const title=lsn.title||"Lesson "+lsn.lesson_id;const h=document.createElement("h1");h.textContent=title;el.appendChild(h);const hr=document.createElement("hr");el.appendChild(hr);if(lsn.course){const n=document.createElement("div");n.innerHTML=marked.parse(lsn.course);el.appendChild(n)}if(lsn.exercises&&Array.isArray(lsn.exercises)&&lsn.exercises.length){const exH=document.createElement("h2");exH.textContent="Exercises:";el.appendChild(exH);let m="\n";lsn.exercises.forEach((ex,i)=>{m+=(i+1)+". **"+ex.name+"** – "+ex.prompt+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.assignments&&Array.isArray(lsn.assignments)&&lsn.assignments.length){const asH=document.createElement("h2");asH.textContent="Assignments:";el.appendChild(asH);let m="\n";lsn.assignments.forEach((a,i)=>{m+=(i+1)+". **"+a.name+"** – "+a.description+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.sources&&Array.isArray(lsn.sources)&&lsn.sources.length){const srcH=document.createElement("h2");srcH.textContent="Sources:";el.appendChild(srcH);let m="\n";lsn.sources.forEach((s,i)=>{m+=(i+1)+". "+s+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}}
+
+    function updateCourseCardStatus(p){const co=allCourses.find(c=>c.file===p);if(!co||!currentCourseData.course)return;const tot=(currentCourseData.course.lessons||[]).length;const comp=(currentCourseData.course.lessons||[]).filter(l=>isLessonChecked(p,l.title||"Lesson "+l.lesson_id)).length;co._status=computeCourseStatus(comp,tot);const card=document.querySelector(".course-card button[data-file='"+p+"']")?.closest(".course-card");if(card){const st=card.querySelector(".course-status");if(st){st.classList.remove("not-started","in-progress","complete","n-a");st.textContent=co._status;const cls=co._status.toLowerCase().replace(/\s+/g,"-");st.classList.add(cls)}}}
+
+    function toggleSidebar(){const sb=document.getElementById("lessonSidebar");const lo=document.getElementById("lessonLayout");isSidebarCollapsed=!isSidebarCollapsed;if(isSidebarCollapsed){sb.classList.add("collapsed");lo.classList.add("collapsed")}else{sb.classList.remove("collapsed");lo.classList.remove("collapsed")}}
+
+    document.addEventListener("DOMContentLoaded",async()=>{allCourses=await loadCourses();await updateAllCourseStatuses(allCourses);renderCourses(allCourses);handleViewLessons(defaultGuidePath);document.getElementById("courseSearch").addEventListener("input",e=>{renderCourses(filterCourses(allCourses,e.target.value))});document.addEventListener("click",e=>{const b=e.target;if(b.tagName==="BUTTON"&&b.hasAttribute("data-file"))handleViewLessons(b.getAttribute("data-file"))});document.getElementById("homeLink").addEventListener("click",e=>{e.preventDefault();handleViewLessons(defaultGuidePath)});document.getElementById("sidebarToggle").addEventListener("click",toggleSidebar)})
   </script>
 </body>
 </html>

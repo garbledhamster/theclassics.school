@@ -2,493 +2,900 @@ course:
   id: "0002"
   title: "On Writing Well"
   description: >
-    A structured approach to becoming a more prolific writer and thinker!
+    A 16-week writing course using William Zinsser’s *On Writing Well* to help learners develop their voice, clarify their ideas, and become confident nonfiction writers. Weekly writing assignments are shared publicly using #theclassicsschool to build accountability and community through practice.
   lessons:
     - lesson_id: 0a
       title: "Course Outline"
       course: |
-        ### COURSE GOALS
-        - Develop clarity, simplicity, and precision in writing.
-        - Strengthen personal style and authentic voice.
-        - Master essential nonfiction forms: interviews, memoirs, travel writing, business writing, sports, arts criticism, and more.
-        - Understand key principles of structure, unity, conciseness, and revision.
-        - Gain confidence in the process of rewriting and editing.
-
-        ---
-
-        ### WEEK 1: THE TRANSACTION & SIMPLICITY
-        
-        **Chapters to Read**  
-        - Chapter 1: The Transaction  
-        - Chapter 2: Simplicity  
-
-        **Key Topics**  
-        - Writing as a personal transaction between writer and reader  
-        - Stripping away clutter for greater clarity  
-
-        **Exercises**  
-        1. **Clarity Check (Easy)**  
-          - Take a cluttered paragraph (from any source or your own writing).  
-          - Eliminate repetitive words and irrelevant details.  
-          - Compare before and after to see how clarity improves.  
-
-        2. **Reader Connection (Medium)**  
-          - Write a short anecdote (200–300 words) about a recent experience.  
-          - Imagine telling it to a friend; focus on honesty, warmth, and authenticity.  
-
-        3. **Simplicity in Action (Challenging)**  
-          - Take a 250-word passage and cut it down to half its length without losing essential meaning.  
-          - Reflect on which words or sentences were unnecessary.  
-
-        **Weekly Assignment (1 hour)**  
-        - Write a short personal essay (400–600 words) about an event or moment that mattered to you.  
-        - Use direct language and simple sentence structure.
-
-        ---
-        
-        ### WEEK 2: CLUTTER & STYLE
-        
-        **Chapters to Read**  
-        - Chapter 3: Clutter  
-        - Chapter 4: Style  
-
-        **Key Topics**  
-        - Identifying and removing clutter  
-        - Allowing your personal style to emerge naturally  
-
-        **Exercises**  
-        1. **Decluttering (Easy)**  
-          - Take a 300-word passage (yours or someone else’s) and remove filler phrases (“kind of,” “sort of,” “in a sense,” etc.).  
-          - Compare how the piece reads afterward.  
-
-        2. **Style Exploration (Medium)**  
-          - Write a single paragraph in three distinct styles: formal, conversational, and humorous.  
-          - Notice which voice feels more “you.”  
-
-        3. **Personal Style Assessment (Challenging)**  
-          - Free-write for 10 minutes about a topic you’re passionate about.  
-          - Read it aloud and highlight the sentences that sound most authentic.  
-          - Revise the piece to emphasize that natural voice.  
-
-        **Weekly Assignment (1 hour)**  
-        - Write a 500-word article on a topic of your choice.  
-        - Then cut it down to 250 words while maintaining your personal style and clarity.
-
-        ---
-        
-        ### WEEK 3: THE AUDIENCE & WORDS
-        
-        **Chapters to Read**  
-        - Chapter 5: The Audience  
-        - Chapter 6: Words  
-
-        **Key Topics**  
-        - Balancing writing for yourself with respect for the reader  
-        - Selecting precise and vivid words; avoiding jargon and clichés  
-
-        **Exercises**  
-        1. **Know Your Audience (Easy)**  
-          - Write three one-paragraph pitches for the same story, each aimed at a different audience (children, college students, industry professionals).  
-
-        2. **Word Selection (Medium)**  
-          - Rewrite a short piece using stronger verbs and more concrete nouns.  
-          - Eliminate vague words like “interesting,” “amazing,” and “beautiful,” replacing them with specifics.  
-
-        3. **Cliché Elimination (Challenging)**  
-          - List 15 common clichés (e.g., “think outside the box,” “time will tell,” “bite off more than you can chew”).  
-          - Write fresh sentences that convey the same ideas in original ways.  
-
-        **Weekly Assignment (1 hour)**  
-        - Write a short blog post (300–500 words) about a topic you feel strongly about.  
-        - Then refine it to replace dull words with sharper, more precise choices.
-
-        ---
-        
-        ### WEEK 4: USAGE & UNITY
-        
-        **Chapters to Read**  
-        - Chapter 7: Usage  
-        - Chapter 8: Unity  
-
-        **Key Topics**  
-        - Managing evolving language usage while maintaining clarity  
-        - Ensuring consistency in pronoun, tense, and tone  
-
-        **Exercises**  
-        1. **Grammar & Usage Quiz (Easy)**  
-          - Gather 8–10 sentences with common usage errors (e.g., “less” vs. “fewer,” “it’s” vs. “its”).  
-          - Correct each one and briefly explain why.  
-
-        2. **Rewriting for Unity (Medium)**  
-          - Take a short draft that jumps around in tense or point of view.  
-          - Revise so the final piece is consistent and seamless.  
-
-        3. **Editing for Flow (Challenging)**  
-          - Rearrange the paragraphs of a short piece to ensure logical progression.  
-          - Add transitions or mood-changers (“But,” “Yet,” “Still,” etc.) for smoother reading.  
-
-        **Weekly Assignment (1 hour)**  
-        - Write a 750-word nonfiction article (local event, personal experience, or opinion piece).  
-        - Pay close attention to consistent tense, pronouns, and style.
-
-        ---
-        
-        ### WEEK 5: THE LEAD AND THE ENDING
-        
-        **Chapters to Read**  
-        - Chapter 9: The Lead and the Ending  
-
-        **Key Topics**  
-        - Grabbing the reader’s attention with a strong opening  
-        - Leaving a memorable impression with a well-crafted ending  
-
-        **Exercises**  
-        **1. Hooks & Leads (Easy)**  
-          - Write three potential opening sentences for the same piece.  
-          - Share them with a friend to see which is most compelling.  
-        **2. Effective Conclusions (Medium)**  
-          - Take a dull or abrupt ending (from an old piece or a sample).  
-          - Rewrite it to provide a satisfying conclusion or a neat “full circle” feeling.  
-        **3. Storytelling Challenge (Challenging)**  
-          - Write a one-page narrative that starts with a vivid lead, sustains interest, and ends with an echo or twist.  
-
-        **Weekly Assignment (1 hour)**  
-        - Write a 500-word article (about a personal experience or local event).  
-        - Focus on a compelling lead and an ending that resonates.
-
-        ---
-        
-        ### WEEK 6: BITS & PIECES
-        
-        **Chapters to Read**  
-        - Chapter 10: Bits & Pieces  
-
-        **Key Topics**  
-        - The power of strong verbs  
-        - Concise sentences and purposeful punctuation  
-        - Fine-tuning paragraphs, transitions, and word order  
-
-        **Exercises**  
-        1. **Verb Selection (Easy)**  
-          - Replace 10 “to be” or passive verbs in a short passage with more active verbs.  
-          - Read it aloud to hear the difference.  
-
-        2. **Conciseness Exercise (Medium)**  
-          - Take a 300-word paragraph and reduce it to 150 words by cutting redundancies.  
-          - Compare clarity and impact.  
-
-        3. **Punctuation Mastery (Challenging)**  
-          - Write half a page focusing on careful use of colons, semicolons, and dashes.  
-          - Ensure each punctuation choice serves a deliberate purpose.  
-
-        **Weekly Assignment (1 hour)**  
-        - Edit an older piece (300–500 words) to strengthen verbs, tighten sentences, and refine punctuation.
-
-        ---
-        
-        ### WEEK 7: NONFICTION AS LITERATURE
-        
-        **Chapters to Read**  
-        - Chapter 11: Nonfiction as Literature  
-
-        **Key Topics**  
-        - Approaching nonfiction with the same artistry as fiction  
-        - Integrating factual detail with narrative flair  
-
-        **Exercises**  
-        1. **Style Comparison (Easy)**  
-          - Read two short nonfiction articles on a similar topic (e.g., two travel pieces).  
-          - Note which literary elements (imagery, metaphor, dialogue) each uses to keep readers engaged.  
-
-        2. **Literary Nonfiction (Medium)**  
-          - Write a scene from real life (300 words), using techniques like scene-setting, tension, or foreshadowing.  
-          - Keep it fact-based but craft it like a story.  
-
-        3. **Storytelling in Nonfiction (Challenging)**  
-          - Take a dry factual text (e.g., a Wikipedia entry) and rewrite it as a narrative, retaining its accuracy but adding vivid language and structure.  
-
-        **Weekly Assignment (1 hour)**  
-        - Write a 750-word piece about a real event in your life or community, employing narrative strategies (dialogue, scenes, pacing).
-
-        ---
-        
-        ### WEEK 8: WRITING ABOUT PEOPLE (THE INTERVIEW)
-        
-        **Chapters to Read**  
-        - Chapter 12: Writing About People: The Interview  
-
-        **Key Topics**  
-        - Conducting insightful interviews  
-        - Organizing quotes and weaving them into a compelling narrative  
-        - Ethical editing to honor the subject’s voice  
-
-        **Exercises**  
-        1. **Question Building (Easy)**  
-          - Draft 10 targeted interview questions for a hypothetical subject (e.g., a local entrepreneur).  
-          - Aim for open-ended questions that prompt storytelling.  
-
-        2. **Interview Practice (Medium)**  
-          - Interview a friend or family member on a topic you don’t usually discuss.  
-          - Take notes or record; focus on drawing out genuine insights.  
-
-        3. **Editing for Impact (Challenging)**  
-          - Transcribe a key portion (400–500 words) of the interview.  
-          - Edit it into a polished Q&A or narrative while maintaining the speaker’s unique voice.  
-
-        **Weekly Assignment (1 hour)**  
-        - Produce a 500–750 word profile or Q&A based on an interview.  
-        - Highlight what makes the person’s story interesting or relevant.
-
-        ---
-        
-        ### WEEK 9: WRITING ABOUT PLACES (THE TRAVEL ARTICLE)
-        
-        **Chapters to Read**  
-        - Chapter 13: Writing About Places  
-
-        **Key Topics**  
-        - Describing a location vividly without resorting to clichés  
-        - Weaving in cultural, historical, or personal elements  
-        - Painting a sensory portrait for the reader  
-
-        **Exercises**  
-        1. **Descriptive Writing (Easy)**  
-          - Write a single paragraph (100–150 words) describing a local spot.  
-          - Use at least three senses (sight, smell, sound).  
-
-        2. **Eliminating Travel Clichés (Medium)**  
-          - Take a cliché-ridden travel description (“breathtaking views,” “quaint village,” etc.) and rewrite it with fresh language.  
-
-        3. **Immersive Travel Writing (Challenging)**  
-          - Write a 300-word account of a place you’ve visited.  
-          - Include a brief cultural or historical note to enrich the description.  
-
-        **Weekly Assignment (1 hour)**  
-        - Write a 750-word travel article about a location (local or distant) that’s special to you.  
-        - Avoid stale descriptors; focus on specific, telling details.
-
-        ---
-        
-        ### WEEK 10: MEMOIR WRITING
-        
-        **Chapter to Read**  
-        - Chapter 14: Writing About Yourself: The Memoir  
-
-        **Key Topics**  
-        - Honest self-reflection without self-indulgence  
-        - Selecting meaningful anecdotes that resonate with others  
-
-        **Exercises**  
-        1. **Memory Mining (Easy)**  
-          - List five personal memories that stand out in your life.  
-          - Free-write a 150-word sketch of one that still feels vivid.  
-
-        2. **Shaping a Narrative (Medium)**  
-          - Expand your 150-word sketch to 300–400 words.  
-          - Provide a clear beginning, middle, and end; identify the lesson or insight.  
-
-        3. **Candor and Universality (Challenging)**  
-          - Ask a friend to read your expanded piece.  
-          - Determine where you might be too guarded or too detailed.  
-          - Revise to show more honest vulnerability and universal appeal.  
-
-        **Weekly Assignment (1 hour)**  
-        - Draft a short memoir piece (300–500 words) about a pivotal event.  
-        - Revise it for candor, structure, and emotional resonance.
-
-        ---
-        
-        ### WEEK 11: SCIENCE AND TECHNOLOGY
-        
-        **Chapter to Read**  
-        - Chapter 15: Science and Technology  
-
-        **Key Topics**  
-        - Simplifying complex ideas  
-        - Making specialized topics accessible  
-        - Maintaining accuracy and a sense of wonder  
-
-        **Exercises**  
-        1. **Key Concept Summaries (Easy)**  
-          - Select a scientific or technical concept (e.g., photosynthesis, machine learning, climate change).  
-          - Write a 100-word explanation for a general audience.  
-
-        2. **Layered Explanations (Medium)**  
-          - Expand your 100-word summary to 300 words, adding moderate technical detail.  
-          - Keep it understandable for non-experts.  
-
-        3. **Engaging the Reader (Challenging)**  
-          - Include a real-world example or anecdote illustrating the concept’s relevance.  
-          - Maintain an inviting tone while staying factually correct.  
-
-        **Weekly Assignment (1 hour)**  
-        - Write a 400–600 word explainer on a scientific or technical topic for lay readers.  
-        - Balance clarity, accuracy, and an element of wonder.
-
-        ---
-        
-        ### WEEK 12: BUSINESS WRITING
-        
-        **Chapter to Read**  
-        - Chapter 16: Business Writing: Writing in Your Job  
-
-        **Key Topics**  
-        - Clarity and directness in workplace communication  
-        - Structuring emails, memos, and proposals  
-        - Avoiding “corporate jargon”  
-
-        **Exercises**  
-        1. **Plain-Language Audit (Easy)**  
-          - Take a paragraph of typical “corporate speak.”  
-          - Rewrite it in plain English, focusing on the main point and removing buzzwords.  
-
-        2. **Effective Email (Medium)**  
-          - Draft an email (150–200 words) proposing a change at your workplace or school.  
-          - Use a concise subject line, clear headings (if needed), and a direct call to action.  
-
-        3. **Proposal Outline (Challenging)**  
-          - Outline a short proposal with these sections:  
-            1. Objective  
-            2. Background  
-            3. Benefits  
-            4. Costs/Resources  
-            5. Timeline  
-          - Keep it succinct and accessible.  
-
-        **Weekly Assignment (1 hour)**  
-        - Compose or revise a professional email, memo, or short proposal (250–500 words).  
-        - Ensure concise language, logical structure, and clear next steps.
-
-        ---
-        
-        ### WEEK 13: SPORTS WRITING
-        
-        **Chapter to Read**  
-        - Chapter 17: Sports  
-
-        **Key Topics**  
-        - Highlighting human drama in sports  
-        - Avoiding recycled sports clichés  
-        - Balancing game details with personal stories  
-
-        **Exercises**  
-        1. **Event Recap (Easy)**  
-          - Write a 100–150 word summary of a recent sporting event you watched or followed.  
-          - Focus on the who, what, where, when, why.  
-
-        2. **Personalities and Stakes (Medium)**  
-          - Expand the recap by 200 words, adding context on a key athlete’s challenges or motivations.  
-          - Show how these details raise the stakes for the event.  
-
-        3. **Beyond the Score (Challenging)**  
-          - Introduce a cultural or social angle that broadens the story.  
-          - Integrate it smoothly without overshadowing the main event.  
-
-        **Weekly Assignment (1 hour)**  
-        - Write a 400–600 word sports article capturing the human story behind a game or athlete.  
-        - Aim for depth and color over mere stats.
-
-        ---
-        
-        ### WEEK 14: WRITING ABOUT THE ARTS & HUMOR
-        
-        **Chapters to Read**  
-        - Chapters 18–19: Writing About the Arts, Humor  
-
-        **Key Topics**  
-        - Constructive, engaging criticism  
-        - Subtle humor vs. forced jokes  
-        - The power of specific, well-chosen details  
-
-        **Exercises**  
-        1. **Mini Review (Easy)**  
-          - Write a 100–150 word review of a film, album, book, or art piece you recently consumed.  
-          - Highlight key strengths and weaknesses succinctly.  
-
-        2. **In-Depth Critique (Medium)**  
-          - Expand the review to 300–400 words, analyzing a specific element (characterization, composition, staging).  
-          - Support observations with examples, avoiding pompous language.  
-
-        3. **Humor in Context (Challenging)**  
-          - Draft a 150-word humorous anecdote.  
-          - Rely on understated phrasing rather than overt punchlines.  
-
-        **Weekly Assignment (1 hour)**  
-        - Write a 500-word arts review (film, concert, play, or book).  
-        - Also craft a 150-word humorous piece that relies on precise wording and timing.
-
-        ---
-        
-        ### WEEK 15: VOICE, CONFIDENCE & REVISION
-        
-        **Chapters to Read**  
-        - Chapters 20–23: (The Sound of Your Voice, Enjoyment/Fear/Confidence, The Tyranny of the Final Product, A Writer’s Decisions)  
-
-        **Key Topics**  
-        - Developing a distinct, natural voice  
-        - Overcoming fear, embracing process over perfection  
-        - Making confident decisions at every level of writing  
-
-        **Exercises**  
-        1. **Voice Refinement (Easy)**  
-          - Pick an older piece from early in the course.  
-          - Read it aloud, identify where the voice sounds forced, then revise to sound more like you.  
-
-        2. **Confidence Building (Medium)**  
-          - Write 300 words about a topic you find intimidating (politics, economics, personal loss—whatever you usually avoid).  
-          - Focus on pushing through the discomfort and finding clarity.  
-
-        3. **Decision Map (Challenging)**  
-          - Take a paragraph from your writing.  
-          - Annotate each sentence with the reasoning behind word choice, punctuation, and structure.  
-          - Reflect on how these decisions shape the reader’s experience.  
-
-        **Weekly Assignment (1 hour)**  
-        - Edit a draft from a previous week. Show “before” and “after” versions, highlighting what you changed and why.
-
-        ---
-        
-        ### WEEK 16: FINAL PROJECT & COURSE WRAP-UP
-        
-        **Chapters to Read**  
-        - Chapters 24–25: (Writing Family History and Memoir, Write as Well as You Can)  
-
-        **Key Topics**  
-        - Mining personal or family stories for universal insights  
-        - Recognizing writing as a lifelong practice  
-
-        **Final Project Options**  
-        1. **Personal Essay (1,000–2,000 words)**  
-          - A refined memoir or reflective piece that applies all the techniques you’ve learned.  
-          - Craft a coherent narrative with strong leads, details, and a resonant ending.  
-
-        2. **Feature Article (1,500–2,500 words)**  
-          - A substantial piece of nonfiction (could be investigative, interview-based, travel-focused, etc.).  
-          - Demonstrate clarity, unity, and storytelling skill, weaving in research and quotes.  
-
-        3. **Portfolio Submission**  
-          - A collection of 3–5 revised works from the course (total of 2,000–3,000 words).  
-          - Include a 1–2 page reflection on your progress, challenges, and achievements.  
-
-        **Exercises (Entirely Project-Focused)**  
-        - Draft your final project.  
-        - Revisit relevant chapters and notes as you write.  
-        - Seek feedback (peer or self-critique) and revise thoroughly.  
-
-        **Weekly Assignment (1 hour+)**  
-        - Submit your final project.  
-        - Write a 300-word reflection on your journey from Week 1 to Week 16, noting key lessons and how your writing evolved.
-
-        ---
-        
-        ### COURSE COMPLETION & REFLECTION
-        
-        By completing these 16 weeks, you will have:
-        - Learned to write with clarity, conciseness, and simplicity.
-        - Developed a personal style that’s authentic and confident.
-        - Practiced specialized nonfiction forms (memoir, interview, travel, business, sports, arts/humor).
-        - Gained editing and rewriting skills essential for high-quality work.
-        - Built a portfolio of diverse pieces, demonstrating steady growth as a nonfiction writer.
-
-        Congratulations on reaching the end of the course and sharpening your craft in the spirit of
-        On Writing Well!
+        This course is structured as a 16-week guided writing program using William Zinsser’s *On Writing Well*. Each week includes focused readings, practical lessons, and public writing assignments to help you develop clarity, confidence, and personal voice. The course follows a carefully sequenced chapter-by-chapter schedule, ensuring every part of the book is used with intention.
+
+        ### Course Goals
+        1. Develop a writing voice rooted in honesty, clarity, and simplicity.
+        2. Build habits of revision, precision, and public accountability.
+        3. Gain practical experience in multiple nonfiction forms.
+        4. Learn to write with style, confidence, and purpose across any medium.
+
+        ### Weekly Breakdown
+
+        | Week | Theme                                | Chapters to Read                          |
+        |------|--------------------------------------|-------------------------------------------|
+        | 1    | Introduction & Course Goals          | Preface, Introduction, A Note to the Reader |
+        | 2    | The Transaction – Writing is Personal| Chapter 1: The Transaction                |
+        | 3    | Simplicity – Writing Clearly         | Chapter 2: Simplicity                     |
+        | 4    | Clutter – Cutting the Unnecessary    | Chapter 3: Clutter                        |
+        | 5    | Style – Finding Your Voice           | Chapter 4: Style                          |
+        | 6    | The Audience – Writing for Readers   | Chapter 5: The Audience                   |
+        | 7    | Words & Usage – Precision Matters    | Chapters 6 & 7: Words, Usage              |
+        | 8    | Unity, Lead, and Ending – Structure  | Chapters 8–10: Unity, The Lead, Bits & Pieces |
+        | 9    | Nonfiction Forms I – Interviews & Travel | Chapters 11–13: Nonfiction as Literature, The Interview, Travel Writing |
+        | 10   | Nonfiction Forms II – Memoir & Place | Chapters 14 & 24: Memoir, Family History  |
+        | 11   | Nonfiction Forms III – Business & Science | Chapters 15 & 16: Science, Business Writing |
+        | 12   | Revising and Editing – Writing is Rewriting | Chapters 21–23: Enjoyment, Tyranny, Decisions |
+        | 13   | Writing with Humor and Humanity      | Chapters 19 & 20: Humor, Voice            |
+        | 14   | Writing in the Digital Age – Essays & Blogs | Chapters 17 & 18: Sports, Arts Columns  |
+        | 15   | Building a Public Writing Habit      | Chapter 25: Write as Well as You Can      |
+        | 16   | Final Project – Your Signature Piece | *No new reading* – capstone writing and revision |
+
+        ### Format
+
+        - **Read assigned chapters** before each lesson.
+        - **Complete exercises and weekly assignments.**
+        - **Publish** your writing weekly with the hashtag **#theclassicsschool**.
+        - **Engage with peers** by reading and commenting on others' posts when possible.
+
+        Writing well takes commitment, practice, and honesty. By the end of this course, you will have a portfolio of original work and the tools to keep growing as a writer.
+
+    - lesson_id: 0b
+      title: "Chapter Summaries"
+      course: |
+        ### Part I: Principles
+
+        1. **The Transaction** – Writing is a personal transaction between writer and reader. The more authentic and honest the writer, the stronger the connection.
+        2. **Simplicity** – Clear writing begins with clear thinking. Strip sentences down to their cleanest components.
+        3. **Clutter** – Most writing is filled with unnecessary words. Eliminate clutter to reveal the meaning.
+        4. **Style** – Your style should be natural, not manufactured. It develops by being yourself on the page.
+        5. **The Audience** – Write for yourself first. When you enjoy your writing, readers will too.
+        6. **Words** – Use precise words. Prefer short, familiar ones over long, vague ones.
+        7. **Usage** – Know the rules of grammar and usage well enough to use them (or break them) confidently.
+
+        ### Part II: Methods
+
+        8. **Unity** – Good writing has unity of tone, point of view, and tense.
+        9. **The Lead and the Ending** – Start strong to hook readers and end with something that resonates.
+        10. **Bits & Pieces** – A collection of writing tips: avoid qualifiers, use active verbs, and vary sentence length.
+
+        ### Part III: Forms
+
+        11. **Nonfiction as Literature** – Nonfiction deserves the same care and craft as fiction.
+        12. **The Interview** – The key to a great interview is listening. The writer must shape the material with discretion.
+        13. **Writing About People** – Good profiles go beyond facts to reveal personality.
+        14. **Writing About Places** – Use specific details to bring locations to life. Show, don’t generalize.
+        15. **Memoir** – Memoir is about personal truth. Write honestly, even if events are rearranged.
+        16. **Science and Technology** – Write to explain, not to impress. Translate complexity into clarity.
+        17. **Business Writing** – Business prose should be human, not bureaucratic. Write with warmth and clarity.
+        18. **Sports** – Cover the event, but also the people and stories behind it.
+        19. **The Arts** – Criticism is a form of reporting. Write with insight, not just judgment.
+
+        ### Part IV: Attitudes
+
+        20. **The Sound of Your Voice** – Let your personality come through. Be confident and candid.
+        21. **Enjoyment, Fear, and Confidence** – Writing is joyful but also scary. Push through fear to gain confidence.
+        22. **The Tyranny of the Final Product** – Don’t get stuck striving for perfection. Focus on progress.
+        23. **A Writer’s Decisions** – Every sentence is a decision. Be deliberate.
+        24. **Write as Well as You Can** – Keep refining. You’re never finished learning how to write.
+    - lesson_id: 0c
+      title: "Keys"
+      course: |
+        ## Topics
+        - **Writing is Personal** – Every piece of writing is a reflection of the writer's personality and values. (Week 2)
+        - **Simplicity as Strength** – Clear writing reflects clear thinking. Simple is not simplistic—it’s deliberate. (Week 3)
+        - **Clutter Kills Meaning** – Most drafts contain unnecessary words; cutting clutter improves clarity. (Week 4)
+        - **Voice Comes from Honesty** – Style is not decoration—it’s your natural tone, refined through confidence. (Week 5)
+        - **Write for Yourself First** – Trying to impress an imaginary audience can ruin clarity. Be clear to yourself first. (Week 6)
+        - **Word Choice Shapes Thought** – Every word matters. Precision builds trust. (Week 7)
+        - **Structure Shapes Impact** – Unity, leads, and endings make writing coherent and memorable. (Week 8)
+        - **Nonfiction Can Be Storytelling** – Interviews, travel writing, and profiles rely on observation and shaping a narrative. (Week 9)
+        - **Memoir Requires Reflection** – Good memoirs focus on memory and meaning, not chronology. (Week 10)
+        - **Explain with Clarity** – Business and technical writing must be human and useful, not stiff or jargon-heavy. (Week 11)
+        - **Writing is Rewriting** – Revision is the real work of writing—clarity comes in the second (and third) draft. (Week 12)
+        - **Humor and Humanity Connect** – Lightness and sincerity build trust. Be real, not slick. (Week 13)
+        - **Short-Form is Still Craft** – Essays, blogs, and columns require strong voice, structure, and clarity. (Week 14)
+        - **Habits Build Mastery** – Writing publicly and consistently sharpens your skills over time. (Week 15)
+        - **Your Signature is Your Growth** – A final project should reflect all the tools you’ve gathered. (Week 16)
+
+        ## Terms
+        - **Authenticity** – Staying true to your personality and values in voice.
+        - **Candor** – Honest, unpretentious communication with the reader.
+        - **Clarity** – The quality of being easily understood and direct.
+        - **Clutter** – Excess language that clouds meaning and weakens impact.
+        - **Column** – A short, regular nonfiction piece that expresses a personal perspective.
+        - **Connection** – The trust and resonance built between writer and reader.
+        - **Craft** – The practiced, intentional art of clear, thoughtful writing.
+        - **Decision-making** – The intentional choices made in every aspect of writing.
+        - **Discipline** – The habit of writing consistently and thoughtfully over time.
+        - **Editing** – Line-by-line improvement of grammar, usage, rhythm, and tone.
+        - **Economy of Language** – Using the fewest words necessary to make a point.
+        - **Ending** – A thoughtful close that leaves the reader with something to remember.
+        - **Essence** – The emotional or thematic core of a person, place, or idea.
+        - **Humor** – The use of wit or irony to connect, reveal, or reflect.
+        - **Imagined Audience** – A mental construct that can distort authentic voice.
+        - **Jargon** – Specialized language that may confuse or alienate readers.
+        - **Lead** – The opening that captures attention and sets the tone.
+        - **Memoir** – A focused personal narrative built on emotional truth and specific memory.
+        - **Obfuscation** – The act of making writing unnecessarily complicated or confusing.
+        - **Op-ed** – A persuasive essay, typically published in a public forum, expressing a strong point-of-view.
+        - **Passive Voice** – A grammatical form that often weakens clarity and strength.
+        - **Place Writing** – Descriptive nonfiction rooted in setting and personal connection.
+        - **Portfolio** – A collection of writing that showcases your style and skills.
+        - **Precision** – Using exact, concrete language to express ideas.
+        - **Pretension** – A forced or artificial tone that distances readers.
+        - **Profile** – A narrative shaped around a person’s voice, story, or experience.
+        - **Reader Empathy** – Awareness of how your ideas will be received.
+        - **Reader-first Writing** – Writing that respects the reader’s time and effort.
+        - **Redundancy** – Repetition of ideas that adds no value.
+        - **Reflection** – Looking back on experience to draw meaning.
+        - **Rewriting** – The process of refining and restructuring a draft to improve clarity and impact.
+        - **Routine** – A consistent, repeatable writing schedule or habit.
+        - **Scene** – A vivid rendering of place, people, and moment in time.
+        - **Self-Awareness** – Seeing yourself clearly and writing with humility and honesty.
+        - **Signature Piece** – A polished final piece that reflects your voice and growth.
+        - **Simplicity** – Writing that is clear, unburdened by unnecessary words or complexity.
+        - **Style** – The individual way you express ideas in writing.
+        - **Sustainability** – The ability to maintain your writing practice over the long term.
+        - **Tone** – The emotional flavor or attitude conveyed in your writing.
+        - **Transaction** – The human connection between writer and reader through honest prose.
+        - **Unity** – Consistent tone, structure, and point-of-view within a piece.
+        - **Usage** – The conventional rules of language that ensure readability.
+        - **Voice** – The recognizable tone, rhythm, and personality of your writing.
+        - **Word Choice** – The deliberate selection of precise language to convey meaning.
+
+        ## Concepts
+        - **Clarity Comes from Cutting** – Clear writing is clean writing; you must revise to achieve it.
+        - **Editing is Thinking** – Good writing happens not in the first draft, but in revision.
+        - **Every Sentence is a Decision** – Be intentional. Words, tone, rhythm—they all matter.
+        - **Public Practice Builds Confidence** – Publishing what you write helps you improve faster and with purpose.
+        - **Short-Form is Real Writing** – Blogs, columns, and essays require discipline, voice, and purpose.
+        - **Signature Writing is Intentional** – Your final piece should demonstrate not just your skill, but your values as a writer.
+        - **Structure Leads the Reader** – Clear leads and strong endings make writing persuasive and memorable.
+        - **Truth is Specific** – The more personal and concrete your story, the more universal it becomes.
+        - **Voice is Found, Not Forced** – Authentic style emerges when you stop trying to sound like someone else.
+        - **Write to Discover** – Writing helps clarify thoughts you didn’t even know you had.
+        - **Writing is a Habit** – You improve by doing. Over and over again.
+    - lesson_id: 1
+      title: "Week 1: Introduction & Course Goals"
+      course: |
+        ## Overview  
+        This lesson introduces the course’s structure and purpose. You’ll begin reading the preface and introductory sections of *On Writing Well* to understand Zinsser’s philosophy: that good writing is built on clarity, simplicity, and humanity. You’ll also define your goals as a writer and start developing a public writing habit.
+
+        **Key Takeaways**
+        - Writing is a craft you can learn—regardless of background.
+        - Zinsser emphasizes clarity, simplicity, and truth over flashy style.
+        - Publicly committing to writing builds discipline and confidence.
+
+        **Key Concepts**
+        - **Writing as a Craft**: Good writing comes from practice and attention, not talent alone.
+        - **The Writer’s Role**: A writer’s job is to respect the reader’s time and attention.
+        - **Public Accountability**: Sharing work in public invites growth through feedback and consistency.
+
+        **Key Terms**
+        - **Preface**: A statement of intent and purpose from the author.
+        - **Clarity**: Writing in a way that is easy to understand and direct.
+        - **Discipline**: Committing to regular writing and revision.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Preface, Introduction, A Note to the Reader."
+        - "Course outline 'Week 1: Introduction & Course Goals'."
+
+      questions_and_answers:
+        - Q: "What does Zinsser say about the myth of 'natural writers'?"
+          A: "He insists that writing is a craft, not an art—anyone can learn it with practice and intention."
+        - Q: "Why is clarity so important in writing?"
+          A: "Because readers value their time; they should never have to work hard to understand what you mean."
+
+      exercises:
+        - name: "Writing Inventory (Easy)"
+          prompt: >
+            Reflect on your past writing. What kinds of writing have you done (journals, essays, blog posts)? What has come easily? What felt difficult?
+        - name: "Principles Reflection (Medium)"
+          prompt: >
+            After reading the introduction, identify 3 principles Zinsser believes are most essential to good writing. Briefly explain why each matters.
+        - name: "Reader-First Rewrite (Challenging)"
+          prompt: >
+            Take a piece of your old writing (100–200 words). Rewrite it with the goal of making it clearer, simpler, and more respectful of the reader’s time.
+
+      assignments:
+        - name: "Why I Write"
+          description: >
+            Write a 300–500 word personal essay titled “Why I Write.” Describe your writing goals, what you hope to improve, and why sharing publicly matters to you. Post it using the hashtag #theclassicsschool.
+    - lesson_id: 2
+      title: "Week 2: The Transaction – Writing is Personal"
+      course: |
+        ## Overview  
+        This week centers on Chapter 1 of *On Writing Well*, where Zinsser explores the personal nature of writing. He argues that writing is not just about conveying information—it's a transaction that reflects the writer’s individuality, honesty, and confidence. Your goal is to be yourself on the page and write with genuine purpose.
+
+        **Key Takeaways**
+        - Writing is an intimate act of communication between you and the reader.
+        - Authenticity and honesty are more powerful than style or perfection.
+        - Your job is not to impress, but to connect and express clearly.
+
+        **Key Concepts**
+        - **Writing is Personal**: Your best writing will come from your true voice, not from trying to sound “writerly.”
+        - **Confidence and Candor**: Good writing requires the courage to be honest and the discipline to write simply.
+        - **The Transaction**: The writer’s personality must be present in the words—this is what makes writing memorable.
+
+        **Key Terms**
+        - **Voice**: The unique sound and presence of you as the writer on the page.
+        - **Candor**: Honest, unpretentious communication with the reader.
+        - **Connection**: The trust and resonance built between writer and reader.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapter 1: The Transaction."
+        - "Course outline 'Week 2: The Transaction – Writing is Personal'."
+
+      questions_and_answers:
+        - Q: "What does Zinsser mean when he says writing is a transaction?"
+          A: "He means that writing is a human interaction—what matters is the personality, honesty, and clarity you bring to the exchange."
+        - Q: "Why should writers not try to impress?"
+          A: "Because trying to impress often leads to pretentiousness and clutter; authenticity is more powerful."
+
+      exercises:
+        - name: "Writer's Self-Reflection (Easy)"
+          prompt: >
+            List three adjectives that describe how you want your writing to feel to a reader. Then write a few sentences explaining why those qualities matter to you.
+        - name: "Voice Audit (Medium)"
+          prompt: >
+            Re-read a piece of writing you've done in the past. Underline any lines that sound like “you” and mark lines that feel unnatural or performative. Reflect on why.
+        - name: "Write It Real (Challenging)"
+          prompt: >
+            Write a 200–300 word mini-essay about a personal opinion or belief. Don’t try to sound clever—just write what you truly think and feel, using plain, clear language.
+
+      assignments:
+        - name: "Personal Narrative: A Moment That Shaped Me"
+          description: >
+            Write a 400–600 word personal story about a moment that influenced who you are. Focus on using your authentic voice and honest reflection. Publish it online and tag it with #theclassicsschool.
+    - lesson_id: 3
+      title: "Week 3: Simplicity – Writing Clearly"
+      course: |
+        ## Overview  
+        This week explores Chapter 2 of *On Writing Well*, in which Zinsser stresses the power of simplicity. Clear writing stems from clear thinking. Most first drafts contain clutter—unnecessary words that distract and confuse. Your goal this week is to practice writing that is lean, clean, and direct.
+
+        **Key Takeaways**
+        - Simplicity is the foundation of strong writing.
+        - Readers should never struggle to understand your sentences.
+        - Complexity in thought does not require complexity in language.
+
+        **Key Concepts**
+        - **Simplicity First**: Clear writing begins with eliminating the nonessential.
+        - **Reader Respect**: Simplicity values the reader’s time and effort.
+        - **Think Before You Write**: If you’re unsure what you mean, your writing will show it.
+
+        **Key Terms**
+        - **Clarity**: The quality of being easily understood.
+        - **Economy of Language**: Using the fewest words necessary to make a point.
+        - **Obfuscation**: The act of making writing unnecessarily complicated or confusing.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapter 2: Simplicity."
+        - "Course outline 'Week 3: Simplicity – Writing Clearly'."
+
+      questions_and_answers:
+        - Q: "Why is simplicity so hard to achieve in writing?"
+          A: "Because we often think in vague or cluttered ways—and we tend to write as we think. Simplicity requires clarity of thought and discipline."
+        - Q: "What is the writer’s responsibility when it comes to clarity?"
+          A: "To ensure the reader never has to work to understand the meaning. The burden is on the writer, not the reader."
+
+      exercises:
+        - name: "Trim the Fat (Easy)"
+          prompt: >
+            Take any 3-sentence paragraph you've previously written. Cut it in half by removing unnecessary words while keeping the meaning. Compare both versions.
+        - name: "Clarity Rewrite (Medium)"
+          prompt: >
+            Write a 100-word description of something technical or complex (e.g., how a car engine works, how a sourdough starter functions). Then revise it to be understandable to a 12-year-old.
+        - name: "Simplify to the Core (Challenging)"
+          prompt: >
+            Choose a complex idea or argument you care about. Write a 300-word explainer that removes jargon, qualifiers, and clutter. Use short sentences and strong verbs.
+
+      assignments:
+        - name: "Clear & Concise Essay"
+          description: >
+            Write a 400–600 word article or blog post explaining a concept or idea that matters to you. Focus on clarity and simplicity. Use no jargon, minimal adjectives, and only strong, precise verbs. Publish it with #theclassicsschool.
+    - lesson_id: 4
+      title: "Week 4: Clutter – Cutting the Unnecessary"
+      course: |
+        ## Overview  
+        In Chapter 3 of *On Writing Well*, Zinsser targets the most common enemy of clarity: clutter. Clutter is the buildup of unnecessary words, passive constructions, vague modifiers, and jargon. This week, you’ll practice spotting and eliminating clutter to make your prose more powerful and readable.
+
+        **Key Takeaways**
+        - Clutter weakens writing by hiding meaning behind needless words.
+        - Most first drafts are cluttered—it’s your job to clean them up.
+        - Strong writing is lean, direct, and purposeful.
+
+        **Key Concepts**
+        - **The Enemy of Clarity**: Clutter creates fog—remove it to reveal meaning.
+        - **Editing as Discovery**: You often find your real meaning in the act of trimming.
+        - **Precision Over Padding**: Exact words carry more force than vague embellishment.
+
+        **Key Terms**
+        - **Clutter**: Unnecessary words or phrases that cloud meaning.
+        - **Redundancy**: Saying the same thing more than once without adding value.
+        - **Passive Voice**: A form that often leads to indirect, cluttered writing.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapter 3: Clutter."
+        - "Course outline 'Week 4: Clutter – Cutting the Unnecessary'."
+
+      questions_and_answers:
+        - Q: "What does Zinsser recommend as the first act of revision?"
+          A: "To strip every sentence down to its cleanest components—eliminating unnecessary words, phrases, and qualifiers."
+        - Q: "Why is clutter so common in writing?"
+          A: "Because we often think cluttered thoughts or believe longer sentences sound more intelligent or professional."
+
+      exercises:
+        - name: "Clutter Cut (Easy)"
+          prompt: >
+            Take a 3–4 sentence paragraph and reduce it to a single, clean sentence without losing meaning. Share both versions.
+        - name: "Spot the Fluff (Medium)"
+          prompt: >
+            Write a 150-word description of a place or object. Then highlight every adjective and adverb. Cut or replace half. Rewrite the piece.
+        - name: "Professional Decluttering (Challenging)"
+          prompt: >
+            Find a piece of business or academic writing online. Rewrite a 100–150 word excerpt into clear, concise English without jargon or filler.
+
+      assignments:
+        - name: "Rewrite for Power"
+          description: >
+            Write a short opinion piece (400–600 words) on any subject. Then revise it to cut 20% of the word count without losing meaning. Publish both the original and the edited version, with a short reflection, using #theclassicsschool.
+    - lesson_id: 5
+      title: "Week 5: Style – Finding Your Voice"
+      course: |
+        ## Overview  
+        In Chapter 4 of *On Writing Well*, Zinsser addresses style—not as decoration, but as the natural expression of the writer’s personality. True style arises from confidence, simplicity, and an honest voice. This week, you’ll learn to recognize your voice and begin to trust it.
+
+        **Key Takeaways**
+        - Style grows from honesty, not affectation.
+        - You already have a voice—refine it rather than imitate others.
+        - Confidence leads to style; fear leads to overcompensation.
+
+        **Key Concepts**
+        - **Style is You**: Good style comes from being natural, not literary.
+        - **Imitation vs. Individuality**: Don’t write to sound like someone else.
+        - **Courage to be Plain**: Simpler, truer writing feels riskier—but it connects.
+
+        **Key Terms**
+        - **Style**: The individual way you express ideas in writing.
+        - **Authenticity**: Staying true to your personality and values in voice.
+        - **Pretension**: A forced or artificial tone that distances readers.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapter 4: Style."
+        - "Course outline 'Week 5: Style – Finding Your Voice'."
+
+      questions_and_answers:
+        - Q: "How does Zinsser define 'style' in writing?"
+          A: "Style is who you are—your natural voice on the page, without pretension or artificiality."
+        - Q: "Why is simplicity often mistaken for weakness in writing?"
+          A: "Because people wrongly believe that complex, ornate language sounds smarter—when it often hides weak thinking."
+
+      exercises:
+        - name: "Voice Snapshot (Easy)"
+          prompt: >
+            Write three short sentences about something you did today. Don’t overthink—just write how you’d speak.
+        - name: "Spot the Style (Medium)"
+          prompt: >
+            Find a paragraph from a favorite nonfiction writer. Analyze what makes their style distinctive (tone, word choice, sentence structure).
+        - name: "Write It Your Way (Challenging)"
+          prompt: >
+            Pick a formal topic (e.g., climate change, budgeting). Write 300 words on it in your voice—natural, direct, and clear.
+
+      assignments:
+        - name: "This is My Voice"
+          description: >
+            Write a personal essay (400–600 words) on any topic—but write it the way you speak. Be honest, informal, and readable. Avoid trying to sound smart. Publish it using #theclassicsschool.
+
+    - lesson_id: 6
+      title: "Week 6: The Audience – Writing for Readers"
+      course: |
+        ## Overview  
+        In Chapter 5, Zinsser argues that writers should stop worrying about “the audience.” Write for yourself first, and clarity will follow. This week, you’ll explore the balance between staying true to your voice and writing in a way others can understand.
+
+        **Key Takeaways**
+        - Don't write to please an imaginary audience.
+        - Clear thinking leads to writing that others can follow.
+        - Writing for yourself makes your voice more compelling.
+
+        **Key Concepts**
+        - **Authentic Intent**: Writing should begin with what you care about—not what you think others want.
+        - **Empathy vs. Pandering**: Consider the reader’s experience, but don’t compromise your voice.
+        - **Clarity as a Bridge**: When you think clearly, readers will follow.
+
+        **Key Terms**
+        - **Reader-first Writing**: Writing that respects the reader’s time and effort.
+        - **Imagined Audience**: A mental construct that can distort authentic voice.
+        - **Reader Empathy**: Awareness of how your ideas will be received.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapter 5: The Audience."
+        - "Course outline 'Week 6: The Audience – Writing for Readers'."
+
+      questions_and_answers:
+        - Q: "What does Zinsser say about the 'audience'?"
+          A: "Forget the audience. Write for yourself first—if it’s clear to you, it will be clear to them."
+        - Q: "How can worrying about the reader weaken your writing?"
+          A: "You’ll start second-guessing yourself, overexplaining, or trying to sound impressive rather than being clear and honest."
+
+      exercises:
+        - name: "Write to Yourself (Easy)"
+          prompt: >
+            Write a short note (3–4 sentences) explaining something only to yourself. Make it casual and direct.
+        - name: "Translate for Others (Medium)"
+          prompt: >
+            Take your note and revise it so someone else can understand it clearly—without losing your tone.
+        - name: "Audience-Aware Rewrite (Challenging)"
+          prompt: >
+            Write a 200-word description of a favorite place. Then rewrite it for a different audience (e.g., a child, a tourist, a critic). Compare the versions.
+
+      assignments:
+        - name: "Writing for Connection"
+          description: >
+            Choose a story, idea, or tip you want to share. Write it first for yourself. Then revise it to make it clearer and more inviting to others—without losing your voice. Post it with #theclassicsschool.
+
+    - lesson_id: 7
+      title: "Week 7: Words & Usage – Precision Matters"
+      course: |
+        ## Overview  
+        This week covers Chapters 6 and 7 of *On Writing Well*, which focus on word choice and proper usage. The right words make ideas come alive. The wrong ones kill clarity. This week is about learning to choose words deliberately and use them correctly.
+
+        **Key Takeaways**
+        - Words are tools. Use the best ones for the job.
+        - Avoid jargon, clichés, and vague language.
+        - Proper usage builds trust and makes your writing smoother.
+
+        **Key Concepts**
+        - **Precision Over Ornament**: Avoid showy words—choose the ones that fit.
+        - **Language Awareness**: Be conscious of tone, rhythm, and grammar.
+        - **Usage Matters**: Grammatical clarity supports credibility.
+
+        **Key Terms**
+        - **Jargon**: Specialized language that can confuse general readers.
+        - **Precision**: Using exact, concrete language to express ideas.
+        - **Usage**: The conventional rules of language that ensure readability.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapters 6 & 7: Words, Usage."
+        - "Course outline 'Week 7: Words & Usage – Precision Matters'."
+
+      questions_and_answers:
+        - Q: "Why does Zinsser emphasize word choice so strongly?"
+          A: "Because every word carries weight—and choosing the wrong one weakens your writing."
+        - Q: "What’s the danger of using jargon or big words?"
+          A: "You may lose or alienate your reader, or sound like you’re trying too hard."
+
+      exercises:
+        - name: "Strong Verbs Only (Easy)"
+          prompt: >
+            Write 5 sentences describing a small action (e.g., making coffee). Use strong, vivid verbs—no adverbs.
+        - name: "Jargon Hunt (Medium)"
+          prompt: >
+            Find a piece of writing that includes jargon (e.g., a tech article). Replace the jargon with plain English. Explain your choices.
+        - name: "Usage Check (Challenging)"
+          prompt: >
+            Take a 150-word paragraph you’ve written before. Edit it for grammar, clarity, and precision—without losing tone. Explain at least one change you made and why.
+
+      assignments:
+        - name: "Word Audit Article"
+          description: >
+            Write a 500–600 word explainer or guide on a topic you know well. Focus on word choice: cut fluff, clarify usage, and prefer the precise over the complicated. Publish it using #theclassicsschool.
+    - lesson_id: 8
+      title: "Week 8: Unity, Lead, and Ending – Structure and Flow"
+      course: |
+        ## Overview  
+        This week, you’ll explore how to shape a piece of writing so that it feels unified, flows naturally, and leaves a lasting impression. Chapters 8–10 of *On Writing Well* focus on the craft of structure: keeping your tone and direction consistent (unity), starting strong (lead), and ending memorably.
+
+        **Key Takeaways**
+        - A good piece of writing stays unified in tone, tense, and voice.
+        - The lead should hook the reader immediately.
+        - A strong ending leaves readers satisfied and reflective.
+
+        **Key Concepts**
+        - **Unity of Form**: All parts of your piece should support one clear idea or tone.
+        - **Effective Leads**: Start fast—get to the point or the heart of the story quickly.
+        - **Ending with Weight**: Don’t just stop; conclude. Leave readers with something that sticks.
+
+        **Key Terms**
+        - **Unity**: The internal consistency of tone, perspective, and subject in a piece.
+        - **Lead**: The opening section that sets tone and grabs attention.
+        - **Ending**: The final statement that leaves the reader with meaning or emotion.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapters 8–10: Unity, The Lead, Bits & Pieces."
+        - "Course outline 'Week 8: Unity, Lead, and Ending – Structure & Flow'."
+
+      questions_and_answers:
+        - Q: "Why is unity important in writing?"
+          A: "Because without unity, your writing will feel disjointed, and the reader will lose trust or interest."
+        - Q: "What makes a lead effective?"
+          A: "It creates immediate interest, signals what the piece is about, and invites the reader to keep going."
+
+      exercises:
+        - name: "Unity Check (Easy)"
+          prompt: >
+            Choose a short article or blog post. Identify the main point, tone, and perspective. Do they stay consistent throughout?
+        - name: "Lead Rewrites (Medium)"
+          prompt: >
+            Write three different leads (each 1–2 sentences) for the same topic—one dramatic, one humorous, one straight. Which feels most like your voice?
+        - name: "End with Impact (Challenging)"
+          prompt: >
+            Take a paragraph you’ve written. Add a closing sentence that leaves a stronger impression—something that reflects on or deepens the meaning of the piece.
+
+      assignments:
+        - name: "Start to Finish"
+          description: >
+            Write a 600–800 word blog post or personal essay that includes a strong lead, a consistent tone, and a satisfying ending. Be mindful of structure. Publish it with #theclassicsschool.
+    - lesson_id: 9
+      title: "Week 9: Nonfiction Forms I – Interviews & Travel"
+      course: |
+        ## Overview  
+        This week introduces two classic nonfiction forms: the interview and the travel article. Chapters 11–13 of *On Writing Well* explore how to listen well, capture voices truthfully, and evoke a place through detail and observation. Your job this week is to tell a story through someone else—or somewhere else.
+
+        **Key Takeaways**
+        - Interviewing requires listening, curiosity, and thoughtful shaping of material.
+        - Travel writing is more than listing scenery—it’s about people, context, and experience.
+        - Good nonfiction combines reporting and storytelling.
+
+        **Key Concepts**
+        - **The Interview as Story**: It’s not just about recording quotes—it’s about shaping a narrative.
+        - **Travel with a Lens**: Good travel writing focuses on what’s unusual, revealing, or personally significant.
+        - **Observation & Editing**: Whether place or person, the goal is clarity, not a transcript or travelogue.
+
+        **Key Terms**
+        - **Profile**: A shaped narrative based on an interview or observed subject.
+        - **Scene**: A vivid rendering of place, people, and moment in time.
+        - **Essence**: The core truth or emotional tone of a person or place.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapters 11–13: Nonfiction as Literature, The Interview, Travel Writing."
+        - "Course outline 'Week 9: Nonfiction Forms I – Interviews & Travel'."
+
+      questions_and_answers:
+        - Q: "What makes a good interview in writing?"
+          A: "It’s shaped—not just a transcript. The writer listens for telling details and then distills the essence of what was said."
+        - Q: "How can travel writing avoid being a list of sights?"
+          A: "By focusing on people, conflict, detail, and emotional resonance. Make it about an experience, not a brochure."
+
+      exercises:
+        - name: "Interview Warm-Up (Easy)"
+          prompt: >
+            Ask someone in your life 3 questions about something they love doing. Record their answers. What surprised you?
+        - name: "Travel Detail Hunt (Medium)"
+          prompt: >
+            Recall a place you've visited. Write a short paragraph using only specific, sensory details—no generalizations.
+        - name: "Profile Draft (Challenging)"
+          prompt: >
+            Interview someone (friend, family, classmate) about a meaningful experience. Write a 300–500 word draft that captures their story and voice.
+
+      assignments:
+        - name: "Interview or Travel Story"
+          description: >
+            Choose either to write a short travel narrative (600–800 words) or a profile based on a real interview. Use vivid detail, voice, and structure to tell a compelling story. Publish using #theclassicsschool.
+    - lesson_id: 10
+      title: "Week 10: Nonfiction Forms II – Memoir & Place"
+      course: |
+        ## Overview  
+        This week focuses on personal writing—specifically memoir and the art of grounding experience in a specific place. In Chapters 14 and 24 of *On Writing Well*, Zinsser encourages writing about yourself with honesty and restraint, while using setting to anchor memory and emotion.
+
+        **Key Takeaways**
+        - Memoir is not autobiography—it’s about capturing moments that reveal something essential.
+        - Writing about places should be specific, sensory, and tied to experience.
+        - The more particular your story, the more universal it becomes.
+
+        **Key Concepts**
+        - **Personal Truth**: Memoir is truthful storytelling rooted in memory and reflection.
+        - **Writing Place**: Good place writing uses detail to create mood, context, and emotional weight.
+        - **Selective Focus**: Memoir and place writing succeed when they focus on small, telling moments—not everything.
+
+        **Key Terms**
+        - **Memoir**: A personal narrative focused on memory and meaning.
+        - **Place Writing**: Writing that evokes a location through detail, voice, and emotional resonance.
+        - **Reflection**: The part of memoir where you look back and interpret the experience.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapters 14 & 24: Memoir, Family History and Memoir."
+        - "Course outline 'Week 10: Nonfiction Forms II – Memoir & Place'."
+
+      questions_and_answers:
+        - Q: "What’s the difference between memoir and autobiography?"
+          A: "Memoir is selective and emotional, focusing on specific memories and meaning—autobiography aims to cover a full life chronologically."
+        - Q: "How can you bring a place to life in writing?"
+          A: "By using vivid, sensory details and tying the setting to personal experience or emotion."
+
+      exercises:
+        - name: "Memory Moment (Easy)"
+          prompt: >
+            Write about the first place you remember clearly from childhood. What sights, smells, or feelings come to mind?
+        - name: "Emotional Map (Medium)"
+          prompt: >
+            Pick a place you’ve lived in or visited. Draw or list a “map” of 5 specific moments or spots there that have emotional significance. Write one paragraph about one.
+        - name: "Mini-Memoir (Challenging)"
+          prompt: >
+            Write a 300–400 word memoir scene focused on a meaningful experience in a particular place. Don’t explain everything—just describe it and let it speak.
+
+      assignments:
+        - name: "Memoir in Place"
+          description: >
+            Write a personal essay (600–800 words) about a memory tied to a particular place. Use sensory details to bring the setting alive, and reflect on why that moment matters. Publish using #theclassicsschool.
+    - lesson_id: 11
+      title: "Week 11: Nonfiction Forms III – Business & Science Writing"
+      course: |
+        ## Overview  
+        This week explores clear, purposeful writing in professional and technical fields. Chapters 15 and 16 of *On Writing Well* focus on how to write effectively about science, technology, and in the workplace. Clarity, simplicity, and human tone are essential—even when writing about complex or formal subjects.
+
+        **Key Takeaways**
+        - Clarity is even more crucial in business and technical writing.
+        - Avoid jargon, buzzwords, and stiff formalities.
+        - Even in professional contexts, writing should be human, honest, and readable.
+
+        **Key Concepts**
+        - **Explain, Don’t Impress**: Your goal is to inform, not to dazzle.
+        - **Human Business Writing**: Replace the corporate voice with warmth and clarity.
+        - **Accessible Complexity**: Translate complex ideas into plain, accurate language.
+
+        **Key Terms**
+        - **Jargon**: Specialized language that excludes or confuses general readers.
+        - **Tone**: The voice and mood of your writing; should match purpose and audience.
+        - **Clarity**: The gold standard in business and technical writing—no confusion, no fluff.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapters 15 & 16: Science and Technology, Business Writing."
+        - "Course outline 'Week 11: Nonfiction Forms III – Business & Science Writing'."
+
+      questions_and_answers:
+        - Q: "Why is it hard to write clearly in business or science?"
+          A: "Because people try to sound formal or authoritative instead of aiming for clarity. They often default to jargon or abstractions."
+        - Q: "How can you make complex topics understandable?"
+          A: "By breaking them down into simple parts, using plain language, and explaining as if to someone unfamiliar with the subject."
+
+      exercises:
+        - name: "Jargon Clean-Up (Easy)"
+          prompt: >
+            Take 3 jargon-heavy phrases from a business or science context and rewrite them in everyday English.
+        - name: "Explain the Complex (Medium)"
+          prompt: >
+            Choose a topic you understand well (a tech tool, workplace process, or scientific concept). Write 200 words explaining it clearly to a non-expert.
+        - name: "Professional Rewrite (Challenging)"
+          prompt: >
+            Find a paragraph from a company email, report, or website. Rewrite it to sound human, concise, and engaging—while still being professional.
+
+      assignments:
+        - name: "Make It Clear"
+          description: >
+            Write a 500–700 word piece explaining a professional, scientific, or technical topic in clear, plain language. Avoid jargon. Focus on usefulness and tone. Publish it using #theclassicsschool.
+    - lesson_id: 12
+      title: "Week 12: Revising and Editing – Writing is Rewriting"
+      course: |
+        ## Overview  
+        This week emphasizes the real work of writing: rewriting. In Chapters 21–23, Zinsser explores the emotional and practical realities of revision—overcoming fear, resisting perfectionism, and learning to make good decisions sentence by sentence. This week, you’ll practice editing as a creative act, not a mechanical one.
+
+        **Key Takeaways**
+        - First drafts are only the beginning—great writing is sculpted in revision.
+        - Editing requires both detachment and precision.
+        - Confidence comes from rewriting, not inspiration.
+
+        **Key Concepts**
+        - **Fear and Enjoyment**: Writing is both hard and joyful—accept both.
+        - **The Myth of Perfection**: Seeking the “perfect” piece paralyzes progress.
+        - **Revision as Craft**: Every rewrite is a chance to clarify, focus, and connect more deeply.
+
+        **Key Terms**
+        - **Rewriting**: The process of refining and restructuring a draft to improve clarity and impact.
+        - **Editing**: Line-by-line improvement of grammar, usage, rhythm, and tone.
+        - **Decision-making**: Every sentence you keep or cut is a choice that shapes your writing.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapters 21–23: Enjoyment, Fear and Confidence; The Tyranny of the Final Product; A Writer’s Decisions."
+        - "Course outline 'Week 12: Revising and Editing – Writing is Rewriting'."
+
+      questions_and_answers:
+        - Q: "Why is rewriting more important than the first draft?"
+          A: "Because the first draft is where you discover what you want to say. Rewriting is where you make it clear and powerful."
+        - Q: "What’s the danger of perfectionism in writing?"
+          A: "It keeps you from finishing. Writing is about progress, not getting it right on the first try."
+
+      exercises:
+        - name: "Edit One Sentence (Easy)"
+          prompt: >
+            Take a single sentence from your past writing. Rewrite it 3 different ways for clarity, rhythm, or tone.
+        - name: "Before & After (Medium)"
+          prompt: >
+            Take a 150-word paragraph you’ve written and revise it to improve clarity and flow. Highlight what you changed and why.
+        - name: "Reverse Outline (Challenging)"
+          prompt: >
+            Take a finished draft and outline its actual structure paragraph by paragraph. What’s the purpose of each section? Where can the piece be improved or tightened?
+
+      assignments:
+        - name: "Revise a Past Piece"
+          description: >
+            Choose a piece you’ve already written in this course. Revise it thoroughly—cut clutter, improve flow, enhance voice. Publish the revised version alongside the original, with a short note about what you changed. Tag it #theclassicsschool.
+    - lesson_id: 13
+      title: "Week 13: Writing with Humor and Humanity"
+      course: |
+        ## Overview  
+        This week’s lesson centers on warmth and personality in writing. Chapters 19 and 20 of *On Writing Well* encourage you to infuse your work with humor and humanity—not by trying to be funny, but by being genuine, observant, and willing to laugh at yourself. This is where voice meets heart.
+
+        **Key Takeaways**
+        - Humor is best when it grows naturally from the writer’s voice and experience.
+        - Humanity in writing comes from honesty, empathy, and self-awareness.
+        - You don’t need to be “a humorist” to write with lightness or wit.
+
+        **Key Concepts**
+        - **Humor as Honesty**: Humor arises from clear observation and emotional truth.
+        - **Humanity in Nonfiction**: Your writing should sound like it was written by a human, for other humans.
+        - **Warmth is a Strength**: Approachable writing builds trust and engagement.
+
+        **Key Terms**
+        - **Humor**: The use of wit or irony to connect, reveal, or reflect—not necessarily to joke.
+        - **Self-Awareness**: The writer’s ability to see themselves clearly and write without ego.
+        - **Tone**: The emotional flavor of your writing, shaped by word choice and attitude.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapters 19 & 20: Humor; The Sound of Your Voice."
+        - "Course outline 'Week 13: Writing with Humor and Humanity'."
+
+      questions_and_answers:
+        - Q: "What makes humor effective in nonfiction?"
+          A: "It’s honest, human, and specific. It reveals character, connects with the reader, and avoids sarcasm or cruelty."
+        - Q: "How does tone relate to humanity in writing?"
+          A: "Tone conveys your attitude—if it’s warm, candid, and fair, your readers will feel you’re writing with them, not at them."
+
+      exercises:
+        - name: "Little Laughs (Easy)"
+          prompt: >
+            Write about a small annoyance from your week in a way that’s light, self-aware, or gently funny.
+        - name: "Tone Test (Medium)"
+          prompt: >
+            Write a short paragraph on a controversial or serious topic using three different tones: neutral, humorous, and overly formal. Which sounds most like your natural voice?
+        - name: "Humor Rewrite (Challenging)"
+          prompt: >
+            Take a serious personal story and rewrite it with gentle humor—keeping the truth but adding levity. Reflect on how it changes the tone and message.
+
+      assignments:
+        - name: "A Funny Thing Happened"
+          description: >
+            Write a 500–700 word personal essay about a failure, awkward moment, or unexpected lesson. Use tone, detail, and voice to make it human and humorous. Publish using #theclassicsschool.
+    - lesson_id: 14
+      title: "Week 14: Writing in the Digital Age – Essays & Blogs"
+      course: |
+        ## Overview  
+        This week focuses on concise, engaging nonfiction for the digital world. Chapters 17 and 18 of *On Writing Well* explore writing about sports and the arts—two short-form styles that resemble the modern blog, op-ed, or column. You’ll practice writing clearly, personally, and with point-of-view.
+
+        **Key Takeaways**
+        - Good digital writing is brief, honest, and opinionated.
+        - A personal voice and strong perspective make online writing stand out.
+        - Clear structure is crucial for short-form pieces—hook, build, conclude.
+
+        **Key Concepts**
+        - **Blog-Style Writing**: Blend of opinion, reporting, and personal tone—often brief and punchy.
+        - **Column Voice**: Your unique lens on a topic makes it engaging.
+        - **Concise Structure**: Start fast, stay focused, and land the ending.
+
+        **Key Terms**
+        - **Column**: A short, regular piece that expresses the author’s view on a timely or thematic topic.
+        - **Op-ed**: An essay or article that expresses the author’s argument, typically published in a public forum.
+        - **Voice**: The signature tone and rhythm that makes your writing distinctively yours.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapters 17 & 18: Sports; Writing About the Arts."
+        - "Course outline 'Week 14: Writing in the Digital Age – Essays & Blogs'."
+
+      questions_and_answers:
+        - Q: "How do short-form nonfiction pieces resemble blog posts or digital essays?"
+          A: "They are often brief, structured around a central insight, and written with a clear, engaging voice."
+        - Q: "Why is clarity more important than ever in digital writing?"
+          A: "Online readers scan quickly—your writing must grab attention and deliver meaning fast."
+
+      exercises:
+        - name: "Fast Lead (Easy)"
+          prompt: >
+            Write the opening 2 sentences of a blog post or newsletter. Try to hook the reader quickly with an image, statement, or question.
+        - name: "Mini Opinion (Medium)"
+          prompt: >
+            Write a 200-word take on a current issue, trend, or frustration. Be honest and clear—don't hedge. What’s your stance?
+        - name: "Micro Column (Challenging)"
+          prompt: >
+            Draft a short (300–400 word) opinion piece or personal blog entry. Give it a strong angle and a clear, punchy conclusion.
+
+      assignments:
+        - name: "Column, Essay, or Blog"
+          description: >
+            Write a 500–700 word digital-style essay—personal, opinionated, or reflective—on a topic you care about. Publish it with a clear title and strong lead. Tag it with #theclassicsschool.
+    - lesson_id: 15
+      title: "Week 15: Building a Public Writing Habit"
+      course: |
+        ## Overview  
+        In this penultimate week, you’ll focus on building a sustainable public writing habit. Chapter 25 of *On Writing Well* urges writers to write as well as they can—for themselves, for their readers, and for the lifelong pursuit of clarity. You’ll reflect on your growth and prepare to keep writing beyond this course.
+
+        **Key Takeaways**
+        - Writing is a lifelong practice—not a one-time achievement.
+        - Public accountability improves consistency and quality.
+        - You improve by continuing to write, revise, and publish.
+
+        **Key Concepts**
+        - **Writing as Practice**: Great writers show up consistently, not only when inspired.
+        - **Public Sharing**: Publishing work—however small—creates structure and feedback.
+        - **The Habit Loop**: Write, reflect, share, repeat.
+
+        **Key Terms**
+        - **Discipline**: Showing up to write regularly, even when it’s hard.
+        - **Routine**: A consistent schedule or system for producing work.
+        - **Sustainability**: Creating a habit that’s achievable, meaningful, and flexible.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Chapter 25: Write as Well as You Can."
+        - "Course outline 'Week 15: Building a Public Writing Habit'."
+
+      questions_and_answers:
+        - Q: "What does it mean to 'write as well as you can'?"
+          A: "It means to take the craft seriously, keep growing, and always aim for clarity and honesty—whether you're writing for one person or a thousand."
+        - Q: "Why is public writing important?"
+          A: "Because it builds confidence, creates accountability, and encourages ongoing improvement through real-world practice."
+
+      exercises:
+        - name: "Writing Check-In (Easy)"
+          prompt: >
+            What was the easiest and hardest thing about writing this past month? Write a short reflection (100–150 words).
+        - name: "Micro-Habit Builder (Medium)"
+          prompt: >
+            Design a personal writing routine for the next 30 days. Include frequency, location, time, and platform (if public). Be realistic.
+        - name: "Write It Forward (Challenging)"
+          prompt: >
+            Write a note to your future writing self. What should you remember about this course, your voice, and what you want to keep doing?
+
+      assignments:
+        - name: "Writing Manifesto"
+          description: >
+            Write a 400–600 word “writing manifesto” outlining what writing means to you now, what kind of writer you want to become, and how you’ll keep practicing publicly. Post it with #theclassicsschool.
+    - lesson_id: 16
+      title: "Week 16: Final Project – Your Signature Piece"
+      course: |
+        ## Overview  
+        In this final week, you’ll apply everything you’ve learned to craft, revise, and publish a polished signature piece. There’s no new reading—this is your time to reflect, refine, and show the best of your voice, structure, clarity, and style. Celebrate your progress by creating something you’re proud to share.
+
+        **Key Takeaways**
+        - A great piece reflects your voice, values, and growth as a writer.
+        - Revision is part of the final project—don’t just submit a first draft.
+        - Public sharing is the final act of the writing process.
+
+        **Key Concepts**
+        - **Capstone Writing**: Pulling together clarity, voice, structure, and purpose into one piece.
+        - **Reflective Practice**: Looking back to assess growth and forward to build new goals.
+        - **Publishing with Intention**: Choosing your words and platform with care and confidence.
+
+        **Key Terms**
+        - **Signature Piece**: A final, polished piece that represents your writing voice and strengths.
+        - **Portfolio**: A public collection of your best or most representative writing.
+        - **Craft**: The practiced skill of thoughtful, purposeful writing.
+
+      sources:
+        - "Zinsser, W. (2006). On Writing Well. Full course reference."
+        - "Course outline 'Week 16: Final Project – Your Signature Piece'."
+
+      questions_and_answers:
+        - Q: "What should a final project show?"
+          A: "It should demonstrate your progress with voice, structure, clarity, tone, and intention—it’s the sum of your growth over the course."
+        - Q: "How do I choose what to write for my signature piece?"
+          A: "Choose a topic you care deeply about—one that allows you to use your real voice and apply what you’ve learned."
+
+      exercises:
+        - name: "Project Planner (Easy)"
+          prompt: >
+            List three topics you could write about that feel personal and meaningful. Choose one and sketch a loose outline.
+        - name: "Draft & Revise (Medium)"
+          prompt: >
+            Write a first draft of your final piece (600–1000 words). Then revise for voice, structure, and clarity. Track your major changes.
+        - name: "Final Polish Checklist (Challenging)"
+          prompt: >
+            Review your final draft using this checklist: Is it clear? Does it sound like you? Is the structure tight? Are there cluttered or vague parts? Make final edits accordingly.
+
+      assignments:
+        - name: "Signature Piece"
+          description: >
+            Write and revise your best piece yet—600 to 1000 words on a topic that reflects your voice and values. Use all the skills from this course. Publish publicly with a short note about what you’ve learned, and tag it #theclassicsschool.
