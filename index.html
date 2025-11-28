@@ -154,7 +154,6 @@
     const auth=getAuth(app)
     const db=getFirestore(app)
     const actionCodeSettings={url:"https://theclassics.school",handleCodeInApp:true}
-    let DEV_BYPASS=false
 
     const emailField=document.getElementById("emailForSignIn")
     const sendLinkBtn=document.getElementById("sendSignInLink")
@@ -182,6 +181,7 @@
 
     let allCourses=[]
     let currentCourseData={}
+    let currentCoursePath=""
     const defaultGuidePath="lessons/0000_HowToUseThisSite.yaml"
     let isSidebarCollapsed=false
 
@@ -205,7 +205,7 @@
 
     function filterCourses(cs,q){return cs.filter(c=>c.title.toLowerCase().includes(q.toLowerCase()))}
 
-    async function handleViewLessons(p){try{const resp=await fetch(p);if(!resp.ok)throw new Error("Unable to load YAML file: "+p);const y=await resp.text();const cd=jsyaml.load(y);currentCourseData=cd;showCourseContent(cd,p)}catch(e){console.error("Error fetching YAML:",e)}}
+    async function handleViewLessons(p){try{const resp=await fetch(p);if(!resp.ok)throw new Error("Unable to load YAML file: "+p);const y=await resp.text();const cd=jsyaml.load(y);currentCourseData=cd;currentCoursePath=p;showCourseContent(cd,p)}catch(e){console.error("Error fetching YAML:",e)}}
 
     function showCourseContent(cd,fp){if(!cd||!cd.course)return;const cObj=cd.course;const container=document.getElementById("lessonsContainer");const cTitle=document.getElementById("selectedCourseTitle");const cDesc=document.getElementById("selectedCourseDesc");const lList=document.getElementById("lessonList");const lContent=document.getElementById("lessonContent");const lProgress=document.getElementById("lessonProgress");container.style.display="block";cTitle.textContent=cObj.title||"Untitled Course";cDesc.textContent=cObj.description||"";lList.innerHTML="";lContent.innerHTML="<p style='color:#999;'>Select a lesson on the left to see details here.</p>";(cObj.lessons||[]).forEach(lesson=>{const lbl=lesson.title||"Lesson "+lesson.lesson_id;if(lesson.section&&!document.getElementById("section-"+lesson.section)){const s=document.createElement("h4");s.id="section-"+lesson.section;s.classList.add("title-text");s.textContent=lesson.section;lList.appendChild(s)}const li=document.createElement("li");if(isLessonChecked(fp,lbl))li.classList.add("completed");const icon=lesson.type?getLessonIcon(lesson.type):'<i class="fas fa-file-alt"></i>';li.innerHTML="<div class='icon-area'>"+icon+"</div><div class='lesson-title'>"+lbl+"</div><div class='hover-checkbox'><input type='checkbox'"+(isLessonChecked(fp,lbl)?" checked":"")+" /></div>";li.addEventListener("click",e=>{if(!e.target.closest(".hover-checkbox")){if(!(auth.currentUser||DEV_BYPASS)&&fp!==defaultGuidePath&&lbl!=="Getting Started"){MicroModal.show("modal-locked");return}document.querySelectorAll("#lessonList li").forEach(n=>n.classList.remove("active"));li.classList.add("active");displayLessonContent(lesson)}});const cb=li.querySelector(".hover-checkbox input[type='checkbox']");cb.addEventListener("change",async()=>{toggleLessonChecked(fp,lbl,cb.checked);await persistUserProgress();li.classList.toggle("completed",cb.checked);updateProgress(fp)});if(!(auth.currentUser||DEV_BYPASS)&&fp!==defaultGuidePath&&lbl!=="Getting Started")li.classList.add("locked");lList.appendChild(li)});function updateProgress(path){const tot=(cObj.lessons||[]).length;const comp=(cObj.lessons||[]).filter(ls=>isLessonChecked(path,ls.title||"Lesson "+ls.lesson_id)).length;lProgress.textContent="Completed "+comp+" / "+tot+" lessons";let status="";if(comp===0)status="(not-started)";else if(comp===tot)status="(complete)";else status="(in-progress)";cTitle.textContent=(cObj.title||"Untitled Course")+" "+status;updateCourseCardStatus(path)}updateProgress(fp)}
 
