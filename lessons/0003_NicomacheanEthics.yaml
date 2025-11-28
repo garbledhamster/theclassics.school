@@ -1,0 +1,101 @@
+course:
+  id: "0003"
+  title: "Aristotle's Nicomachean Ethics"
+  description: >
+    A seminar-style reading course through all ten books of Aristotle's *Nicomachean Ethics*. Learners will practice close reading,
+    argument reconstruction, and reflection on virtue, happiness, and friendship while applying Aristotle's insights to modern life.
+  lessons:
+    - lesson_id: 0a
+      title: "Course Outline"
+      course: |
+        This 10-week plan takes you through *Nicomachean Ethics* with structured reading, guiding questions, and practical exercises.
+        Each week lists primary texts, companion prompts, and a short writing assignment to internalize Aristotle's arguments.
+
+        ### Weekly Schedule
+
+        | Week | Books & Sections | Focus | Exercises |
+        |------|------------------|-------|-----------|
+        | 1 | Book I (1–13) | The human good & eudaimonia | Define the “function” argument; list three candidate goods and why Aristotle rejects them. |
+        | 2 | Book II (1–9) | Moral virtue & the mean | Chart virtues and their vices; journal two “mean” decisions you made this week. |
+        | 3 | Book III (1–12) | Voluntary action, courage, temperance | Identify voluntary vs. involuntary cases; outline Aristotle’s account of courage. |
+        | 4 | Book IV (1–9) | Character virtues | Summarize generosity, magnificence, magnanimity, good temper, wit; note modern parallels. |
+        | 5 | Book V (1–12) | Justice (general & particular) | Map types of justice; reconstruct the proportionality argument. |
+        | 6 | Book VI (1–13) | Intellectual virtues & prudence | Contrast epistēmē, technē, phronēsis, sophia; draft a “phronēsis checklist.” |
+        | 7 | Book VII (1–11) | Continence, incontinence, pleasure | Explain akrasia; record one temptation case and your reasoning. |
+        | 8 | Books VIII–IX | Friendship (philia) | Compare utility, pleasure, and virtue friendships; plan one “virtuous friendship” action. |
+        | 9 | Book X (1–8) | Pleasure revisited & the contemplative life | Evaluate the argument for contemplation as highest happiness. |
+        | 10 | Book X (9) & Synthesis | Legislation & habituation | Write a personal ethics “legislation” plan guided by Aristotle’s method. |
+
+        ### How to Work Each Week
+        1. **Read the assigned sections** slowly; mark key terms (virtue, mean, choice, prudence, friendship, contemplation).
+        2. **Answer the guiding questions** in writing before discussion.
+        3. **Complete the weekly exercise** (practical application or argument reconstruction).
+        4. **Submit a short reflection (200–300 words)** connecting Aristotle’s claims to a lived experience.
+
+    - lesson_id: 0b
+      title: "Guiding Questions by Book"
+      course: |
+        Use these prompts alongside the readings to steer note-taking and discussion.
+
+        #### Book I — Happiness & the Function Argument
+        - What does Aristotle mean by the “chief good,” and why must it be **complete** and **self-sufficient**?
+        - Reconstruct the function (ergon) argument step by step. Where are its vulnerable points?
+        - How does the distinction between **living**, **perceiving**, and **rational activity** ground the definition of happiness?
+
+        #### Book II — Virtue as Habit and the Mean
+        - Why are virtues **states** rather than feelings or capacities?
+        - How does habituation train perception of the mean? What role do pleasure and pain play?
+        - Pick two virtues (e.g., courage, generosity) and plot the excess/deficiency mean for each.
+
+        #### Book III — Choice, Deliberation, Courage, Temperance
+        - How does Aristotle distinguish **choice** (prohairesis) from wish or impulse?
+        - When is an act voluntary, mixed, or involuntary? What examples test the boundaries?
+        - What makes courage distinct from rashness and cowardice? How does temperance regulate bodily pleasures?
+
+        #### Book IV — The Finer-Grained Virtues
+        - What unifies generosity, magnificence, and magnanimity? How do they relate to honor and wealth?
+        - How do wit and friendliness express virtue in social interaction? Where is the mean for anger?
+
+        #### Book V — Justice
+        - Differentiate **universal justice** (lawfulness) from **particular justice** (distributive and corrective).
+        - How does geometric vs. arithmetic proportion structure Aristotle’s account of fairness?
+        - What role do equity and the equitable person play when law is too general?
+
+        #### Book VI — Intellectual Virtues
+        - Contrast **prudence (phronēsis)** with **wisdom (sophia)**; why is prudence essential to moral virtue?
+        - How do **nous**, **technē**, and **epistēmē** differ in their relation to universals and particulars?
+        - Why can’t someone be prudently akratic? What does this imply about practical reason?
+
+        #### Book VII — Continence & Pleasure
+        - What is Aristotle’s diagnosis of **akrasia** (incontinence)? How does it differ from vice?
+        - Why does he reject simple hedonism yet defend pleasure’s role in the good life?
+
+        #### Books VIII–IX — Friendship
+        - Distinguish friendships of **utility**, **pleasure**, and **virtue**. Why is the third the most stable?
+        - How do friendships mirror the self? What is the role of goodwill and reciprocity?
+        - Can unequal friendships (e.g., parent–child) still be just? How?
+
+        #### Book X — Pleasure & Contemplation
+        - How does Aristotle refine his account of pleasure? Why link it to **activity** rather than static states?
+        - Why is contemplative activity proposed as the highest happiness? Do you agree?
+        - How should legislators cultivate virtue in citizens, and what limits does Aristotle note?
+
+    - lesson_id: 0c
+      title: "Weekly Assignments & Practices"
+      course: |
+        Each week pairs a focused practice with a brief writing task. Keep all notes in a single notebook to track growth.
+
+        - **Week 1 (Book I):** Write a 250-word explanation of the **function argument** in your own words; include one objection.
+        - **Week 2 (Book II):** Keep a **virtue log** for three days, noting moments of excess/deficiency and attempts to steer to the mean.
+        - **Week 3 (Book III):** Draft a decision tree for one hard choice you face; label voluntary and mixed factors.
+        - **Week 4 (Book IV):** Observe a public interaction (live or recorded). Identify instances of wit, friendliness, or anger at a mean.
+        - **Week 5 (Book V):** Analyze a recent news story for issues of distributive or corrective justice. Write 200 words on what “fair” would mean in Aristotle’s terms.
+        - **Week 6 (Book VI):** Compose a **prudence checklist** for recurring decisions (money, time, relationships). Test it once and revise.
+        - **Week 7 (Book VII):** Document one episode of temptation. Narrate your reasoning, feelings, and whether you acted continently or akratically.
+        - **Week 8 (Books VIII–IX):** Schedule and execute one action that strengthens a virtue-based friendship. Reflect on reciprocity and shared activity.
+        - **Week 9 (Book X 1–8):** Write a 300-word reflection evaluating Aristotle’s case for contemplation as the highest happiness.
+        - **Week 10 (Book X 9):** Draft a one-page “mini-code” of laws for your personal or team life. Include habituation practices and penalties/rewards.
+
+        **Capstone (optional):** Produce a 3–4 page essay synthesizing Aristotle’s account of virtue, friendship, and contemplation, with one modern application (e.g., workplace ethics, digital habits, community life).
+
+        **Assessment:** Completion is based on weekly writings and application exercises, not quizzes. Share highlights with a partner or study group for accountability.

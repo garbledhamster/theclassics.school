@@ -1,13 +1,17 @@
 [
-    {
-      "id": "0001",
-      "title": "How to Read a Book",
-      "file": "lessons/0001_HowToReadABook.yaml"
-    },
-    {
-      "id": "0002",
-      "title": "On Writing Well",
-      "file": "lessons/0002_OnWritingWell.yaml"
-    }
-  ]
-  
+  {
+    "id": "0001",
+    "title": "How to Read a Book",
+    "file": "lessons/0001_HowToReadABook.yaml"
+  },
+  {
+    "id": "0002",
+    "title": "On Writing Well",
+    "file": "lessons/0002_OnWritingWell.yaml"
+  },
+  {
+    "id": "0003",
+    "title": "Aristotle's Nicomachean Ethics",
+    "file": "lessons/0003_NicomacheanEthics.yaml"
+  }
+]
