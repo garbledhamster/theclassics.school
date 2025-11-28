@@ -71,9 +71,9 @@
     @media(max-width:768px){.course-list{grid-template-columns:1fr 1fr}}
     .auth-section{text-align:center;margin-top:1rem;margin-bottom:2rem}
     #emailForSignIn{padding:0.5rem;border:2px solid var(--color-green);border-radius:4px;font-family:var(--font-base);width:280px;margin-bottom:0.5rem}
-    #sendSignInLink,#buyButton,#devBypass{background-color:var(--color-green);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-weight:bold;font-size:1rem;line-height:1.5;margin:0.5rem}
+    #sendSignInLink,#devBypass{background-color:var(--color-green);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-weight:bold;font-size:1rem;line-height:1.5;margin:0.5rem}
     #devBypass{background-color:#ccc;color:#333}
-    #sendSignInLink:hover,#buyButton:hover{background-color:#6e7a4b}
+    #sendSignInLink:hover{background-color:#6e7a4b}
     #devBypass:hover{background-color:#bbb}
     #lockedContent{display:none}
     .locked{opacity:.4;pointer-events:none;position:relative}
@@ -105,7 +105,6 @@
     <div class="auth-section">
       <div><input id="emailForSignIn" type="email" placeholder="Enter your email"/></div>
       <button id="sendSignInLink">Send Sign-In Link</button>
-      <button id="buyButton">Buy Lifetime Access ($99)</button>
       <button id="devBypass">Dev Bypass</button>
       <p id="loginStatus" style="margin-top:0.5rem;color:var(--color-orange);"></p>
     </div>
@@ -145,56 +144,60 @@
   <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://js.stripe.com/v3"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"
     import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"
-    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js"
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"
 
     const firebaseConfig={apiKey:"AIzaSyAOFHZbn02JpIlSHNxNdvBnfdYv08tZMJs",authDomain:"the-classics-befd2.firebaseapp.com",projectId:"the-classics-befd2",storageBucket:"the-classics-befd2.firebasestorage.app",messagingSenderId:"171500319429",appId:"1:171500319429:web:2f67b006048191fa6036ac",measurementId:"G-08W3C50VF6"}
     const app=initializeApp(firebaseConfig)
     const auth=getAuth(app)
-    const functions=getFunctions(app)
+    const db=getFirestore(app)
     const actionCodeSettings={url:"https://theclassics.school",handleCodeInApp:true}
     let DEV_BYPASS=false
 
     const emailField=document.getElementById("emailForSignIn")
     const sendLinkBtn=document.getElementById("sendSignInLink")
     const loginStatus=document.getElementById("loginStatus")
-    const buyButton=document.getElementById("buyButton")
     const devBypassBtn=document.getElementById("devBypass")
     const lockedContent=document.getElementById("lockedContent")
+    const LOCAL_PROGRESS_KEY="lessonProgress"
+    let lessonProgress={}
 
     if(location.hostname==="localhost"||location.hostname.startsWith("127.")){devBypassBtn.style.display="inline-block"}
     setTimeout(()=>{if(devBypassBtn.style.display===""||devBypassBtn.style.display==="none"){devBypassBtn.style.display="inline-block"}},1000)
 
-    devBypassBtn.onclick=()=>{DEV_BYPASS=true;loginStatus.textContent="Dev mode: unlocked";emailField.style.display="none";sendLinkBtn.style.display="none";buyButton.style.display="none";devBypassBtn.style.display="none";lockedContent.style.display="block"}
+    devBypassBtn.onclick=()=>{DEV_BYPASS=true;loginStatus.textContent="Dev mode: unlocked";emailField.style.display="none";sendLinkBtn.style.display="none";devBypassBtn.style.display="none";lockedContent.style.display="block";lessonProgress=getLocalLessonProgress();refreshCourseStatuses()}
 
     sendLinkBtn.onclick=async()=>{if(auth.currentUser){await signOut(auth);return}const email=emailField.value;if(!email){alert("Please enter your email.");return}try{await sendSignInLinkToEmail(auth,email,actionCodeSettings);localStorage.setItem("emailForSignIn",email);alert("Sign-in link sent! Check your email.")}catch(e){console.error(e);alert("Error sending link.")}}
 
     if(isSignInWithEmailLink(auth,window.location.href)){const storedEmail=localStorage.getItem("emailForSignIn");if(storedEmail){signInWithEmailLink(auth,storedEmail,window.location.href).then(()=>{localStorage.removeItem("emailForSignIn");alert("You are now signed in!");window.history.replaceState({},document.title,"/")}).catch(e=>console.error(e))}}
 
-    onAuthStateChanged(auth,user=>{if(user||DEV_BYPASS){loginStatus.textContent=user?`Signed in as: ${user.email}`:"Dev mode: unlocked";sendLinkBtn.textContent="Logout";emailField.style.display="none";lockedContent.style.display="block";devBypassBtn.style.display="none"}else{loginStatus.textContent="Not signed in";sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="inline-block";emailField.value="";lockedContent.style.display="none";devBypassBtn.style.display="inline-block"}})
-
-    buyButton.onclick=async()=>{if(!(auth.currentUser||DEV_BYPASS)){alert("Please sign in first!");return}try{const createSession=httpsCallable(functions,"createCheckoutSession");const{data}=await createSession({});if(data.error){alert(data.error);return}const stripe=Stripe("StripePublishableKeyHere");await stripe.redirectToCheckout({sessionId:data.sessionId})}catch(e){console.error(e);alert("Error creating Checkout session.")}}
+    onAuthStateChanged(auth,async user=>{if(user||DEV_BYPASS){loginStatus.textContent=user?`Signed in as: ${user.email}`:"Dev mode: unlocked";sendLinkBtn.textContent="Logout";emailField.style.display="none";lockedContent.style.display="block";devBypassBtn.style.display="none"}else{loginStatus.textContent="Not signed in";sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="inline-block";emailField.value="";lockedContent.style.display="none";devBypassBtn.style.display="inline-block"}
+      await loadUserProgress(user)
+      await refreshCourseStatuses()
+    })
 
     MicroModal.init()
 
     let allCourses=[]
     let currentCourseData={}
     const defaultGuidePath="lessons/0000_HowToUseThisSite.yaml"
-    const LESSON_CHECK_KEY="lessonProgress"
     let isSidebarCollapsed=false
 
-    function getStoredLessonProgress(){const d=localStorage.getItem(LESSON_CHECK_KEY);return d?JSON.parse(d):{}}
-    function setStoredLessonProgress(o){localStorage.setItem(LESSON_CHECK_KEY,JSON.stringify(o))}
-    function isLessonChecked(p,t){const s=getStoredLessonProgress();if(!s[p])return false;return!!s[p][t]}
-    function toggleLessonChecked(p,t,v){const s=getStoredLessonProgress();if(!s[p])s[p]={};s[p][t]=v;setStoredLessonProgress(s)}
+    function getLocalLessonProgress(){const d=localStorage.getItem(LOCAL_PROGRESS_KEY);return d?JSON.parse(d):{}}
+    function setLocalLessonProgress(o){localStorage.setItem(LOCAL_PROGRESS_KEY,JSON.stringify(o))}
+    async function loadUserProgress(user){try{if(DEV_BYPASS){lessonProgress=getLocalLessonProgress();return}if(!user){lessonProgress={};return}const snap=await getDoc(doc(db,"lessonProgress",user.uid));lessonProgress=snap.exists()&&snap.data().lessons?snap.data().lessons:{}}catch(e){console.error("Error loading progress:",e);lessonProgress={}}}
+    async function persistUserProgress(){try{if(DEV_BYPASS){setLocalLessonProgress(lessonProgress);return}const user=auth.currentUser;if(!user)return;await setDoc(doc(db,"lessonProgress",user.uid),{lessons:lessonProgress},{merge:true})}catch(e){console.error("Error saving progress:",e)}}
+    function isLessonChecked(p,t){return!!(lessonProgress[p]&&lessonProgress[p][t])}
+    function toggleLessonChecked(p,t,v){if(!lessonProgress[p])lessonProgress[p]={};lessonProgress[p][t]=v}
     function getLessonIcon(t){if(t==="reading")return'<i class="fas fa-book"></i>';if(t==="quiz")return'<i class="fas fa-question-circle"></i>';if(t==="video")return'<i class="fas fa-video"></i>';return'<i class="fas fa-file-alt"></i>'}
 
     async function loadCourses(){try{const r=await fetch("lessons.json");if(!r.ok)throw new Error("Could not load lessons.json");return await r.json()}catch(e){console.error("Error fetching lessons.json:",e);return[]}}
 
     async function updateAllCourseStatuses(cs){const tasks=cs.map(async c=>{try{const resp=await fetch(c.file);if(!resp.ok)throw new Error("Could not load "+c.file);const yText=await resp.text();const data=jsyaml.load(yText);if(data&&data.course&&Array.isArray(data.course.lessons)){const total=data.course.lessons.length;const completed=data.course.lessons.filter(l=>{const lbl=l.title||"Lesson "+l.lesson_id;return isLessonChecked(c.file,lbl)}).length;c._status=computeCourseStatus(completed,total)}else c._status="N/A"}catch(err){console.error("Error fetching YAML for",c.file,err);c._status="N/A"}});await Promise.all(tasks)}
+
+    async function refreshCourseStatuses(){await updateAllCourseStatuses(allCourses);renderCourses(allCourses)}
 
     function computeCourseStatus(cmp,tot){if(tot===0)return"N/A";if(cmp===0)return"Not Started";if(cmp===tot)return"Complete";return"In Progress"}
 
@@ -204,7 +207,7 @@
 
     async function handleViewLessons(p){try{const resp=await fetch(p);if(!resp.ok)throw new Error("Unable to load YAML file: "+p);const y=await resp.text();const cd=jsyaml.load(y);currentCourseData=cd;showCourseContent(cd,p)}catch(e){console.error("Error fetching YAML:",e)}}
 
-    function showCourseContent(cd,fp){if(!cd||!cd.course)return;const cObj=cd.course;const container=document.getElementById("lessonsContainer");const cTitle=document.getElementById("selectedCourseTitle");const cDesc=document.getElementById("selectedCourseDesc");const lList=document.getElementById("lessonList");const lContent=document.getElementById("lessonContent");const lProgress=document.getElementById("lessonProgress");container.style.display="block";cTitle.textContent=cObj.title||"Untitled Course";cDesc.textContent=cObj.description||"";lList.innerHTML="";lContent.innerHTML="<p style='color:#999;'>Select a lesson on the left to see details here.</p>";(cObj.lessons||[]).forEach(lesson=>{const lbl=lesson.title||"Lesson "+lesson.lesson_id;if(lesson.section&&!document.getElementById("section-"+lesson.section)){const s=document.createElement("h4");s.id="section-"+lesson.section;s.classList.add("title-text");s.textContent=lesson.section;lList.appendChild(s)}const li=document.createElement("li");if(isLessonChecked(fp,lbl))li.classList.add("completed");const icon=lesson.type?getLessonIcon(lesson.type):'<i class="fas fa-file-alt"></i>';li.innerHTML="<div class='icon-area'>"+icon+"</div><div class='lesson-title'>"+lbl+"</div><div class='hover-checkbox'><input type='checkbox'"+(isLessonChecked(fp,lbl)?" checked":"")+" /></div>";li.addEventListener("click",e=>{if(!e.target.closest(".hover-checkbox")){if(!(auth.currentUser||DEV_BYPASS)&&fp!==defaultGuidePath&&lbl!=="Getting Started"){MicroModal.show("modal-locked");return}document.querySelectorAll("#lessonList li").forEach(n=>n.classList.remove("active"));li.classList.add("active");displayLessonContent(lesson)}});const cb=li.querySelector(".hover-checkbox input[type='checkbox']");cb.addEventListener("change",()=>{toggleLessonChecked(fp,lbl,cb.checked);li.classList.toggle("completed",cb.checked);updateProgress(fp)});if(!(auth.currentUser||DEV_BYPASS)&&fp!==defaultGuidePath&&lbl!=="Getting Started")li.classList.add("locked");lList.appendChild(li)});function updateProgress(path){const tot=(cObj.lessons||[]).length;const comp=(cObj.lessons||[]).filter(ls=>isLessonChecked(path,ls.title||"Lesson "+ls.lesson_id)).length;lProgress.textContent="Completed "+comp+" / "+tot+" lessons";let status="";if(comp===0)status="(not-started)";else if(comp===tot)status="(complete)";else status="(in-progress)";cTitle.textContent=(cObj.title||"Untitled Course")+" "+status;updateCourseCardStatus(path)}updateProgress(fp)}
+    function showCourseContent(cd,fp){if(!cd||!cd.course)return;const cObj=cd.course;const container=document.getElementById("lessonsContainer");const cTitle=document.getElementById("selectedCourseTitle");const cDesc=document.getElementById("selectedCourseDesc");const lList=document.getElementById("lessonList");const lContent=document.getElementById("lessonContent");const lProgress=document.getElementById("lessonProgress");container.style.display="block";cTitle.textContent=cObj.title||"Untitled Course";cDesc.textContent=cObj.description||"";lList.innerHTML="";lContent.innerHTML="<p style='color:#999;'>Select a lesson on the left to see details here.</p>";(cObj.lessons||[]).forEach(lesson=>{const lbl=lesson.title||"Lesson "+lesson.lesson_id;if(lesson.section&&!document.getElementById("section-"+lesson.section)){const s=document.createElement("h4");s.id="section-"+lesson.section;s.classList.add("title-text");s.textContent=lesson.section;lList.appendChild(s)}const li=document.createElement("li");if(isLessonChecked(fp,lbl))li.classList.add("completed");const icon=lesson.type?getLessonIcon(lesson.type):'<i class="fas fa-file-alt"></i>';li.innerHTML="<div class='icon-area'>"+icon+"</div><div class='lesson-title'>"+lbl+"</div><div class='hover-checkbox'><input type='checkbox'"+(isLessonChecked(fp,lbl)?" checked":"")+" /></div>";li.addEventListener("click",e=>{if(!e.target.closest(".hover-checkbox")){if(!(auth.currentUser||DEV_BYPASS)&&fp!==defaultGuidePath&&lbl!=="Getting Started"){MicroModal.show("modal-locked");return}document.querySelectorAll("#lessonList li").forEach(n=>n.classList.remove("active"));li.classList.add("active");displayLessonContent(lesson)}});const cb=li.querySelector(".hover-checkbox input[type='checkbox']");cb.addEventListener("change",async()=>{toggleLessonChecked(fp,lbl,cb.checked);await persistUserProgress();li.classList.toggle("completed",cb.checked);updateProgress(fp)});if(!(auth.currentUser||DEV_BYPASS)&&fp!==defaultGuidePath&&lbl!=="Getting Started")li.classList.add("locked");lList.appendChild(li)});function updateProgress(path){const tot=(cObj.lessons||[]).length;const comp=(cObj.lessons||[]).filter(ls=>isLessonChecked(path,ls.title||"Lesson "+ls.lesson_id)).length;lProgress.textContent="Completed "+comp+" / "+tot+" lessons";let status="";if(comp===0)status="(not-started)";else if(comp===tot)status="(complete)";else status="(in-progress)";cTitle.textContent=(cObj.title||"Untitled Course")+" "+status;updateCourseCardStatus(path)}updateProgress(fp)}
 
     function displayLessonContent(lsn){const el=document.getElementById("lessonContent");el.innerHTML="";const title=lsn.title||"Lesson "+lsn.lesson_id;const h=document.createElement("h1");h.textContent=title;el.appendChild(h);const hr=document.createElement("hr");el.appendChild(hr);if(lsn.course){const n=document.createElement("div");n.innerHTML=marked.parse(lsn.course);el.appendChild(n)}if(lsn.exercises&&Array.isArray(lsn.exercises)&&lsn.exercises.length){const exH=document.createElement("h2");exH.textContent="Exercises:";el.appendChild(exH);let m="\n";lsn.exercises.forEach((ex,i)=>{m+=(i+1)+". **"+ex.name+"** – "+ex.prompt+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.assignments&&Array.isArray(lsn.assignments)&&lsn.assignments.length){const asH=document.createElement("h2");asH.textContent="Assignments:";el.appendChild(asH);let m="\n";lsn.assignments.forEach((a,i)=>{m+=(i+1)+". **"+a.name+"** – "+a.description+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.sources&&Array.isArray(lsn.sources)&&lsn.sources.length){const srcH=document.createElement("h2");srcH.textContent="Sources:";el.appendChild(srcH);let m="\n";lsn.sources.forEach((s,i)=>{m+=(i+1)+". "+s+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}}
 
@@ -212,7 +215,7 @@
 
     function toggleSidebar(){const sb=document.getElementById("lessonSidebar");const lo=document.getElementById("lessonLayout");isSidebarCollapsed=!isSidebarCollapsed;if(isSidebarCollapsed){sb.classList.add("collapsed");lo.classList.add("collapsed")}else{sb.classList.remove("collapsed");lo.classList.remove("collapsed")}}
 
-    document.addEventListener("DOMContentLoaded",async()=>{allCourses=await loadCourses();await updateAllCourseStatuses(allCourses);renderCourses(allCourses);handleViewLessons(defaultGuidePath);document.getElementById("courseSearch").addEventListener("input",e=>{renderCourses(filterCourses(allCourses,e.target.value))});document.addEventListener("click",e=>{const b=e.target;if(b.tagName==="BUTTON"&&b.hasAttribute("data-file"))handleViewLessons(b.getAttribute("data-file"))});document.getElementById("homeLink").addEventListener("click",e=>{e.preventDefault();handleViewLessons(defaultGuidePath)});document.getElementById("sidebarToggle").addEventListener("click",toggleSidebar)})
+    document.addEventListener("DOMContentLoaded",async()=>{allCourses=await loadCourses();await refreshCourseStatuses();handleViewLessons(defaultGuidePath);document.getElementById("courseSearch").addEventListener("input",e=>{renderCourses(filterCourses(allCourses,e.target.value))});document.addEventListener("click",e=>{const b=e.target;if(b.tagName==="BUTTON"&&b.hasAttribute("data-file"))handleViewLessons(b.getAttribute("data-file"))});document.getElementById("homeLink").addEventListener("click",e=>{e.preventDefault();handleViewLessons(defaultGuidePath)});document.getElementById("sidebarToggle").addEventListener("click",toggleSidebar)})
   </script>
 </body>
 </html>
