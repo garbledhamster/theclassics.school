@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
   <link rel="stylesheet" href="https://unpkg.com/micromodal/dist/micromodal.min.css"/>
   <style>
-    :root{--color-yellow:#FBAB34;--color-red:#E04E19;--color-orange:#E98839;--color-white:#FCEFDC;--color-green:#829559;--color-beige:#D8C19C;--font-base:"Crimson Pro",Georgia,"Times New Roman",serif;--font-classic:"Crimson Pro",Georgia,"Times New Roman",serif;font-size:18px}
+    :root{--color-yellow:#FBAB34;--color-red:#E04E19;--color-orange:#E98839;--color-white:#FCEFDC;--color-green:#829559;--color-beige:#D8C19C;--font-base:"Crimson Pro",Georgia,"Times New Roman",serif;--font-classic:"Crimson Pro",Georgia,"Times New Roman",serif;--sticky-offset:120px;font-size:18px}
     *{margin:0;padding:0;box-sizing:border-box;caret-color:transparent}
     input,textarea,select{caret-color:auto}
     html,body{width:100%;height:100%}
@@ -98,10 +98,11 @@
     .passphrase-warning{color:var(--color-red);font-weight:bold;margin-top:0.25rem}
     .copy-hint{color:#5a4a34;font-size:0.95rem;margin-top:0.25rem}
     .vault-note{color:#555;font-size:0.95rem;margin-top:0.35rem}
-    .modal__container.settings-modal{max-height:90vh;overflow-y:auto;width:min(900px,95vw);padding:1.5rem}
+    .modal__container.settings-modal{max-height:calc(100vh - var(--sticky-offset) - 2.5rem);overflow-y:auto;width:min(900px,95vw);padding:1.5rem}
     @media(max-width:640px){
-      .modal__container.settings-modal{max-height:92vh;width:95vw;padding:1.25rem}
+      .modal__container.settings-modal{max-height:calc(100vh - var(--sticky-offset) - 1.5rem);width:95vw;padding:1.25rem}
       .modal__content{overflow-y:visible}
+      .modal__overlay{padding:1.25rem 0.75rem;padding-top:calc(var(--sticky-offset) + 1.25rem)}
     }
     .passphrase-gate{position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:2000;padding:1rem}
     .passphrase-card{background:var(--color-white);border-radius:10px;max-width:520px;width:100%;padding:1rem 1.25rem;box-shadow:0 10px 25px rgba(0,0,0,0.15);border:2px solid var(--color-orange)}
@@ -116,8 +117,8 @@
     .lesson-notes .note-actions button{background:var(--color-green);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;font-weight:bold;cursor:pointer}
     .locked{opacity:.4;pointer-events:none;position:relative}
     .modal{display:none}.modal.is-open{display:block}
-    .modal__overlay{background:rgba(0,0,0,.5);position:fixed;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
-    .modal__container{background:#fff;padding:1rem;border-radius:4px;width:90%;max-width:500px}
+    .modal__overlay{background:rgba(0,0,0,.5);position:fixed;inset:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:1.5rem 1rem;padding-top:calc(var(--sticky-offset) + 1.5rem);overflow-y:auto;scrollbar-width:thin}
+    .modal__container{background:#fff;padding:1rem;border-radius:4px;width:90%;max-width:500px;margin:auto 0}
     .modal__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem}
     .modal__title{font-size:1.25rem;margin:0}
     .modal__close{background:none;border:none;cursor:pointer;font-size:1.25rem}
