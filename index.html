@@ -19,12 +19,15 @@
     header{background-color:var(--color-beige);padding:1rem;text-align:center;position:sticky;top:0;z-index:1000}
     header h1{color:var(--color-red);margin-bottom:0.5rem;line-height:1.2}
     header p{color:var(--color-green);font-size:1.125rem;line-height:1.4}
-    nav{background-color:var(--color-orange);display:flex;justify-content:center;padding:0.5rem;position:sticky;top:60px;z-index:999}
-    nav a{color:var(--color-white);text-decoration:none;margin:0 1rem;font-weight:bold;font-size:1rem;cursor:pointer}
+    nav{background-color:var(--color-orange);display:flex;justify-content:center;padding:0.5rem;position:sticky;top:60px;z-index:999;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--color-white);text-decoration:none;margin:0;font-weight:bold;font-size:1rem;cursor:pointer;padding:0.35rem 0.75rem;border-radius:6px;transition:background-color .2s ease-in-out,color .2s ease-in-out}
+    nav a.active{background-color:var(--color-red);color:#fff}
     .hero{background-color:var(--color-yellow);color:#fff;text-align:center;padding:2rem 1rem}
     .hero h2{margin-bottom:1rem}
     .hero p{max-width:600px;margin:0 auto;font-size:1.125rem;line-height:1.5}
     main{width:100%;margin:2rem 0;padding:0 1rem}
+    .page-section{margin:2rem auto;max-width:1200px}
+    .section-hidden{display:none!important}
     .course-search{text-align:center;margin-bottom:2rem}
     .course-search input[type=text]{width:60%;max-width:400px;padding:0.5rem;border:2px solid var(--color-green);border-radius:4px;font-size:1rem;line-height:1.5}
     .course-list{display:grid;grid-template-columns:1fr;gap:1rem}
@@ -98,6 +101,10 @@
     .passphrase-warning{color:var(--color-red);font-weight:bold;margin-top:0.25rem}
     .copy-hint{color:#5a4a34;font-size:0.95rem;margin-top:0.25rem}
     .vault-note{color:#555;font-size:0.95rem;margin-top:0.35rem}
+    .notes-list{display:grid;gap:0.75rem;margin-top:1rem}
+    .notes-card{padding:0.85rem;border:1px solid #c9b28d;border-radius:6px;background:#fffaf2}
+    .notes-card h4{margin-bottom:0.35rem;color:var(--color-red)}
+    .notes-card p{margin:0.25rem 0}
     .modal__container.settings-modal{max-height:calc(100vh - var(--sticky-offset) - 2.5rem);overflow-y:auto;width:min(900px,95vw);padding:1.5rem}
     @media(max-width:640px){
       .modal__container.settings-modal{max-height:calc(100vh - var(--sticky-offset) - 1.5rem);width:95vw;padding:1.25rem}
@@ -135,8 +142,13 @@
     <h1>theclassics.school</h1>
     <p>A Place to Read, Discover, and Grow</p>
   </header>
-  <nav><a href="#" id="homeLink">Home</a></nav>
-  <section class="hero">
+  <nav>
+    <a href="#" id="homeLink" class="active">Home</a>
+    <a href="#" id="lessonsLink">Lessons</a>
+    <a href="#" id="quizzesLink">Quizzes</a>
+    <a href="#" id="notesLink">Notes</a>
+  </nav>
+  <section class="hero" data-section="home">
     <h2>Welcome to theclassics.school</h2>
     <p>Here you’ll find structured lessons inspired by timeless works of literature, philosophy, and beyond.</p>
   </section>
@@ -185,22 +197,46 @@
             <button id="unlockVaultBtn" class="secondary">Unlock existing vault</button>
           </div>
         </section>
-        <div class="course-search"><input type="text" id="courseSearch" placeholder="Search for a course..."></div>
-      <div class="course-list" id="courseList"></div>
-      <div id="lessonsContainer" class="lessons-container">
-        <h2 id="selectedCourseTitle" style="color:var(--color-red);font-family:var(--font-classic);"></h2>
-        <p id="selectedCourseDesc"></p>
-        <h4 id="lessonProgress"></h4>
-        <div class="lesson-layout" id="lessonLayout">
-          <aside class="lesson-sidebar" id="lessonSidebar">
-            <div class="sidebar-header">
-              <i class="fa-solid fa-feather sidebar-header-icon" id="sidebarToggle" title="Toggle Lessons Menu"></i>
-              <h3 class="title-text">Lessons</h3>
-            </div>
-            <div class="lesson-list-wrapper"><ul id="lessonList" class="lesson-list"></ul></div>
-          </aside>
-          <div id="lessonContent" class="lesson-content"><p style="color:#999;">Select a lesson on the left to see details here.</p></div>
+        <section id="homeSection" class="page-section" data-section="home">
+          <div class="course-search"><input type="text" id="courseSearch" placeholder="Search for a course..."></div>
+          <div class="course-list" id="courseList"></div>
+        </section>
+      <section id="lessonsSection" class="page-section section-hidden" data-section="lessons">
+        <div id="lessonsContainer" class="lessons-container">
+          <h2 id="selectedCourseTitle" style="color:var(--color-red);font-family:var(--font-classic);"></h2>
+          <p id="selectedCourseDesc"></p>
+          <h4 id="lessonProgress"></h4>
+          <div class="lesson-layout" id="lessonLayout">
+            <aside class="lesson-sidebar" id="lessonSidebar">
+              <div class="sidebar-header">
+                <i class="fa-solid fa-feather sidebar-header-icon" id="sidebarToggle" title="Toggle Lessons Menu"></i>
+                <h3 class="title-text">Lessons</h3>
+              </div>
+              <div class="lesson-list-wrapper"><ul id="lessonList" class="lesson-list"></ul></div>
+            </aside>
+            <div id="lessonContent" class="lesson-content"><p style="color:#999;">Select a lesson on the left to see details here.</p></div>
+          </div>
         </div>
+      </section>
+      <section id="quizzesSection" class="page-section section-hidden" data-section="quizzes">
+        <div class="vault-card">
+          <h3>Quizzes</h3>
+          <p class="helper-text">Generate quizzes for the lesson you’re currently studying. Unlock with your passphrase first.</p>
+          <p id="quizLessonContext" class="settings-note"></p>
+          <div class="vault-actions">
+            <button id="generateQuizBtn">Generate Quiz</button>
+          </div>
+          <p id="quizStatus" class="settings-status info" role="status"></p>
+        </div>
+      </section>
+      <section id="notesSection" class="page-section section-hidden" data-section="notes">
+        <div class="vault-card">
+          <h3>Notes</h3>
+          <p class="helper-text">Your lesson notes are encrypted with your master passphrase. Unlock to read or update them.</p>
+          <div id="notesList" class="notes-list"></div>
+          <p id="notesEmptyState" class="settings-note"></p>
+        </div>
+      </section>
       </div>
     </div>
   </main>
@@ -300,6 +336,13 @@
       const rotatePassphraseBtn=document.getElementById("rotatePassphraseBtn")
       const resetAccountBtn=document.getElementById("resetAccountBtn")
       const settingsStatus=document.getElementById("settingsStatus")
+      const generateQuizBtn=document.getElementById("generateQuizBtn")
+      const quizLessonContext=document.getElementById("quizLessonContext")
+      const quizStatus=document.getElementById("quizStatus")
+      const notesList=document.getElementById("notesList")
+      const notesEmptyState=document.getElementById("notesEmptyState")
+      const navLinks={home:document.getElementById("homeLink"),lessons:document.getElementById("lessonsLink"),quizzes:document.getElementById("quizzesLink"),notes:document.getElementById("notesLink")}
+      const sectionRegistry={home:document.querySelectorAll('[data-section="home"]'),lessons:document.querySelectorAll('[data-section="lessons"]'),quizzes:document.querySelectorAll('[data-section="quizzes"]'),notes:document.querySelectorAll('[data-section="notes"]')}
       let lessonProgress={lessons:{},notes:{}}
       const DATA_MIGRATION_VERSION=1
       let profileVersionInfo=buildVersionInfo("bootstrap-profile")
@@ -325,12 +368,12 @@
       }
     }
 
-      onAuthStateChanged(auth,async user=>{if(user){loginStatus.textContent=`Signed in as: ${user.email}`;sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="none";lockedContent.style.display="block";signedInActions.style.display="flex"}else{loginStatus.textContent="Not signed in";sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="inline-block";emailField.value="";lockedContent.style.display="none";signedInActions.style.display="none";clearVaultState()}
+      onAuthStateChanged(auth,async user=>{if(user){loginStatus.textContent=`Signed in as: ${user.email}`;sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="none";lockedContent.style.display="block";signedInActions.style.display="flex"}else{loginStatus.textContent="Not signed in";sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="inline-block";emailField.value="";lockedContent.style.display="none";signedInActions.style.display="none";clearVaultState();currentCourseData={};currentCoursePath="";currentLessonSelection=null;setActiveSection("home");updateQuizContext();setQuizStatus("");renderNotesSummary()}
         await loadUserProgress(user)
         await loadVaultState(user)
         await refreshCourseStatuses()
         if(user&&!derivedVaultKey)showPassphraseGate();
-        if(currentCoursePath&&currentCourseData.course){showCourseContent(currentCourseData,currentCoursePath)}
+        if(currentCoursePath&&currentCourseData.course){showCourseContent(currentCourseData,currentCoursePath)}else if(user){setActiveSection("home")}
       })
 
     MicroModal.init()
@@ -340,6 +383,8 @@
     let currentCoursePath=""
     const defaultGuidePath="lessons/0000_HowToUseThisSite.yaml"
     let isSidebarCollapsed=false
+    let currentSection="home"
+    let currentLessonSelection=null
 
     function setDerivedVaultKeyContext(key,saltBytes){derivedVaultKey=key;if(saltBytes)derivedVaultSalt=saltBytes}
 
@@ -348,6 +393,12 @@
     function saltsMatch(a,b){if(!a||!b||a.length!==b.length)return false;for(let i=0;i<a.length;i++){if(a[i]!==b[i])return false}return true}
 
     function setSettingsStatus(message,type="info"){if(!settingsStatus)return;settingsStatus.textContent=message;settingsStatus.classList.remove("info","error","success");settingsStatus.classList.add(type)}
+
+    function setQuizStatus(message,type="info"){if(!quizStatus)return;quizStatus.textContent=message;quizStatus.classList.remove("info","error","success");quizStatus.classList.add(type)}
+
+    function setActiveSection(target){currentSection=target;Object.entries(sectionRegistry).forEach(([key,nodes])=>{nodes.forEach(node=>{node.classList.toggle("section-hidden",key!==target)})});Object.entries(navLinks).forEach(([key,link])=>{if(link)link.classList.toggle("active",key===target)});if(target==="notes")renderNotesSummary()}
+
+    function updateQuizContext(customMessage){if(!quizLessonContext)return;if(customMessage){quizLessonContext.textContent=customMessage;return}if(currentLessonSelection&&currentLessonSelection.title){quizLessonContext.textContent=`Current lesson: ${currentLessonSelection.title}`}else if(currentCourseData?.course){quizLessonContext.textContent="Select a lesson in the Lessons page to target your quiz."}else{quizLessonContext.textContent="Choose a course from Home to begin."}}
 
     function showPassphraseGate(){if(gate){gate.style.display="flex"}}
     function hidePassphraseGate(){if(gate){gate.style.display="none"}}
@@ -364,19 +415,24 @@
 
     function serializeLessonProgress(){const normalized=normalizeVersionInfo(progressVersionInfo,"lesson-progress-save");progressVersionInfo=normalized;return JSON.stringify({lessons:lessonProgress.lessons||{},notes:lessonProgress.notes||{},versionInfo:normalized})}
 
-    async function decryptLessonProgressPayload(payload,key){const decryptedText=await decryptSecret(payload,key);lessonProgress=parseLessonProgressText(decryptedText);encryptedLessonProgressPayload=payload;pendingEncryptedProgressPayload=null;await refreshCourseStatuses();if(currentCoursePath&&currentCourseData.course){showCourseContent(currentCourseData,currentCoursePath)}}
+    async function decryptLessonProgressPayload(payload,key){const decryptedText=await decryptSecret(payload,key);lessonProgress=parseLessonProgressText(decryptedText);encryptedLessonProgressPayload=payload;pendingEncryptedProgressPayload=null;await refreshCourseStatuses();renderNotesSummary();if(currentCoursePath&&currentCourseData.course){showCourseContent(currentCourseData,currentCoursePath)}}
 
     async function tryDecryptPendingProgress(){if(pendingEncryptedProgressPayload){try{const {key}=await ensureProgressKey(pendingEncryptedProgressPayload);await decryptLessonProgressPayload(pendingEncryptedProgressPayload,key)}catch(err){console.error("Error decrypting lesson progress:",err)}}}
 
     async function ensureProgressKey(payload){const saltBytes=getActiveSaltBytes(payload);if(derivedVaultKey&&derivedVaultSalt&&saltBytes&&saltsMatch(derivedVaultSalt,saltBytes)){setDerivedVaultKeyContext(derivedVaultKey,saltBytes);return{key:derivedVaultKey,saltBytes}}if(!saltBytes)throw new Error("Missing salt for encrypted progress.");throw new Error("Missing passphrase for encrypted progress.")}
 
-    async function loadUserProgress(user){try{lessonProgress={lessons:{},notes:{}};encryptedLessonProgressPayload=null;pendingEncryptedProgressPayload=null;if(!user)return;const snap=await getDoc(doc(db,"lessonProgress",user.uid));if(!snap.exists())return;const data=snap.data();if(data&&data.ciphertext){encryptedLessonProgressPayload=data;if(derivedVaultKey){const {key}=await ensureProgressKey(data);await decryptLessonProgressPayload(data,key)}else{pendingEncryptedProgressPayload=data}}else if(data&&(data.lessons||data.notes)){progressVersionInfo=normalizeVersionInfo(data.versionInfo,"lesson-progress-plaintext");lessonProgress={lessons:data.lessons||{},notes:data.notes||{}}}}catch(e){console.error("Error loading progress:",e);lessonProgress={lessons:{},notes:{}}}}
+    async function loadUserProgress(user){try{lessonProgress={lessons:{},notes:{}};encryptedLessonProgressPayload=null;pendingEncryptedProgressPayload=null;if(!user){renderNotesSummary();return}const snap=await getDoc(doc(db,"lessonProgress",user.uid));if(!snap.exists()){renderNotesSummary();return}const data=snap.data();if(data&&data.ciphertext){encryptedLessonProgressPayload=data;if(derivedVaultKey){const {key}=await ensureProgressKey(data);await decryptLessonProgressPayload(data,key)}else{pendingEncryptedProgressPayload=data}}else if(data&&(data.lessons||data.notes)){progressVersionInfo=normalizeVersionInfo(data.versionInfo,"lesson-progress-plaintext");lessonProgress={lessons:data.lessons||{},notes:data.notes||{}};renderNotesSummary()}}catch(e){console.error("Error loading progress:",e);lessonProgress={lessons:{},notes:{}};renderNotesSummary()}}
       async function persistUserProgress(){const user=auth.currentUser;if(!user)return false;if(!vaultDoc&&!encryptedLessonProgressPayload&&!derivedVaultKey){alert("Set up and unlock your vault before saving lesson progress.");return false}try{const {key,saltBytes}=await ensureProgressKey(encryptedLessonProgressPayload||vaultDoc);const encrypted=await encryptSecret(serializeLessonProgress(),key,saltBytes);await setDoc(doc(db,"lessonProgress",user.uid),encrypted);encryptedLessonProgressPayload=encrypted;pendingEncryptedProgressPayload=null;return true}catch(e){if(e&&e.message&&e.message.includes("Missing passphrase")){showPassphraseGate();alert("Unlock your vault with your master passphrase to sync progress.");return false}console.error("Error saving progress:",e);throw e}}
       function isLessonChecked(p,t){const lessons=lessonProgress?.lessons||{};return!!(lessons[p]&&lessons[p][t])}
       function toggleLessonChecked(p,t,v){if(!lessonProgress.lessons)lessonProgress.lessons={};if(!lessonProgress.lessons[p])lessonProgress.lessons[p]={};lessonProgress.lessons[p][t]=v}
       function getLessonNote(p,t){const notes=lessonProgress?.notes||{};return(notes[p]&&notes[p][t])||""}
       function setLessonNote(p,t,val){if(!lessonProgress.notes)lessonProgress.notes={};if(!lessonProgress.notes[p])lessonProgress.notes[p]={};lessonProgress.notes[p][t]=val}
       function getLessonIcon(t){if(t==="reading")return'<i class="fas fa-book"></i>';if(t==="quiz")return'<i class="fas fa-question-circle"></i>';if(t==="video")return'<i class="fas fa-video"></i>';return'<i class="fas fa-file-alt"></i>'}
+
+      function renderNotesSummary(){if(!notesList||!notesEmptyState)return;notesList.innerHTML="";const canRead=!!derivedVaultKey;const entries=[];if(canRead){Object.entries(lessonProgress?.notes||{}).forEach(([path,lessonMap])=>{Object.entries(lessonMap||{}).forEach(([lessonTitle,text])=>{if(text&&text.trim()){entries.push({coursePath:path,lessonTitle,text:text.trim()})}})})}
+        if(!canRead){notesEmptyState.textContent="Unlock with your master passphrase to view saved notes.";return}
+        if(!entries.length){notesEmptyState.textContent="No saved notes yet. Open a lesson and add notes to see them here.";return}
+        notesEmptyState.textContent="";entries.forEach(entry=>{const card=document.createElement("div");card.className="notes-card";const h=document.createElement("h4");h.textContent=entry.lessonTitle;const meta=document.createElement("p");meta.className="settings-note";meta.textContent=`Course file: ${entry.coursePath}`;const body=document.createElement("p");body.textContent=entry.text;card.appendChild(h);card.appendChild(meta);card.appendChild(body);notesList.appendChild(card)})}
 
       function clearVaultState(){derivedVaultKey=null;derivedVaultSalt=null;vaultDoc=null;decryptedUserPayload=null;encryptedLessonProgressPayload=null;pendingEncryptedProgressPayload=null;vaultPassphraseInput.value="";gatePassphraseInput.value="";setVaultUIState("locked");hidePassphraseGate()}
 
@@ -425,11 +481,13 @@
 
     function filterCourses(cs,q){return cs.filter(c=>c.title.toLowerCase().includes(q.toLowerCase()))}
 
-    async function handleViewLessons(p){try{if(!auth.currentUser){MicroModal.show("modal-locked");return}if(!derivedVaultKey){showPassphraseGate();alert("Unlock with your passphrase to view lessons.");return}const resp=await fetch(p);if(!resp.ok)throw new Error("Unable to load YAML file: "+p);const y=await resp.text();const cd=jsyaml.load(y);currentCourseData=cd;currentCoursePath=p;showCourseContent(cd,p)}catch(e){console.error("Error fetching YAML:",e)}}
+    async function handleViewLessons(p){try{if(!auth.currentUser){MicroModal.show("modal-locked");return}if(!derivedVaultKey){showPassphraseGate();alert("Unlock with your passphrase to view lessons.");return}const resp=await fetch(p);if(!resp.ok)throw new Error("Unable to load YAML file: "+p);const y=await resp.text();const cd=jsyaml.load(y);currentCourseData=cd;currentCoursePath=p;currentLessonSelection=null;setActiveSection("lessons");updateQuizContext();showCourseContent(cd,p)}catch(e){console.error("Error fetching YAML:",e)}}
 
-    function showCourseContent(cd,fp){if(!cd||!cd.course)return;const cObj=cd.course;const container=document.getElementById("lessonsContainer");const cTitle=document.getElementById("selectedCourseTitle");const cDesc=document.getElementById("selectedCourseDesc");const lList=document.getElementById("lessonList");const lContent=document.getElementById("lessonContent");const lProgress=document.getElementById("lessonProgress");container.style.display="block";cTitle.textContent=cObj.title||"Untitled Course";cDesc.textContent=cObj.description||"";lList.innerHTML="";lContent.innerHTML="<p style='color:#999;'>Select a lesson on the left to see details here.</p>";(cObj.lessons||[]).forEach(lesson=>{const lbl=lesson.title||"Lesson "+lesson.lesson_id;if(lesson.section&&!document.getElementById("section-"+lesson.section)){const s=document.createElement("h4");s.id="section-"+lesson.section;s.classList.add("title-text");s.textContent=lesson.section;lList.appendChild(s)}const li=document.createElement("li");if(isLessonChecked(fp,lbl))li.classList.add("completed");const icon=lesson.type?getLessonIcon(lesson.type):'<i class="fas fa-file-alt"></i>';li.innerHTML="<div class='icon-area'>"+icon+"</div><div class='lesson-title'>"+lbl+"</div><div class='hover-checkbox'><input type='checkbox'"+(isLessonChecked(fp,lbl)?" checked":"")+" /></div>";li.addEventListener("click",e=>{if(!e.target.closest(".hover-checkbox")){if(!auth.currentUser&&fp!==defaultGuidePath&&lbl!=="Getting Started"){MicroModal.show("modal-locked");return}document.querySelectorAll("#lessonList li").forEach(n=>n.classList.remove("active"));li.classList.add("active");displayLessonContent(lesson)}});const cb=li.querySelector(".hover-checkbox input[type='checkbox']");cb.addEventListener("change",async()=>{const desiredState=cb.checked;toggleLessonChecked(fp,lbl,desiredState);li.classList.toggle("completed",desiredState);updateProgress(fp);try{const saved=await persistUserProgress();if(saved===false){cb.checked=!desiredState;toggleLessonChecked(fp,lbl,cb.checked);li.classList.toggle("completed",cb.checked);updateProgress(fp);return}}catch(err){console.error("Progress save failed",err);cb.checked=!desiredState;toggleLessonChecked(fp,lbl,cb.checked);li.classList.toggle("completed",cb.checked);updateProgress(fp);const retry=confirm("Could not save progress. Re-enter your passphrase to retry?");if(retry){try{await persistUserProgress()}catch(err2){console.error("Retry failed",err2);alert("Progress not synced. Unlock with your passphrase and try again.")}}}});if(!auth.currentUser&&fp!==defaultGuidePath&&lbl!=="Getting Started")li.classList.add("locked");lList.appendChild(li)});function updateProgress(path){const tot=(cObj.lessons||[]).length;const comp=(cObj.lessons||[]).filter(ls=>isLessonChecked(path,ls.title||"Lesson "+ls.lesson_id)).length;lProgress.textContent="Completed "+comp+" / "+tot+" lessons";let status="";if(comp===0)status="(not-started)";else if(comp===tot)status="(complete)";else status="(in-progress)";cTitle.textContent=(cObj.title||"Untitled Course")+" "+status;updateCourseCardStatus(path)}updateProgress(fp)}
+    function showCourseContent(cd,fp){if(!cd||!cd.course)return;setActiveSection("lessons");updateQuizContext();setQuizStatus("");const cObj=cd.course;const container=document.getElementById("lessonsContainer");const cTitle=document.getElementById("selectedCourseTitle");const cDesc=document.getElementById("selectedCourseDesc");const lList=document.getElementById("lessonList");const lContent=document.getElementById("lessonContent");const lProgress=document.getElementById("lessonProgress");container.style.display="block";cTitle.textContent=cObj.title||"Untitled Course";cDesc.textContent=cObj.description||"";lList.innerHTML="";lContent.innerHTML="<p style='color:#999;'>Select a lesson on the left to see details here.</p>";(cObj.lessons||[]).forEach(lesson=>{const lbl=lesson.title||"Lesson "+lesson.lesson_id;if(lesson.section&&!document.getElementById("section-"+lesson.section)){const s=document.createElement("h4");s.id="section-"+lesson.section;s.classList.add("title-text");s.textContent=lesson.section;lList.appendChild(s)}const li=document.createElement("li");if(isLessonChecked(fp,lbl))li.classList.add("completed");const icon=lesson.type?getLessonIcon(lesson.type):'<i class="fas fa-file-alt"></i>';li.innerHTML="<div class='icon-area'>"+icon+"</div><div class='lesson-title'>"+lbl+"</div><div class='hover-checkbox'><input type='checkbox'"+(isLessonChecked(fp,lbl)?" checked":"")+" /></div>";li.addEventListener("click",e=>{if(!e.target.closest(".hover-checkbox")){if(!auth.currentUser&&fp!==defaultGuidePath&&lbl!=="Getting Started"){MicroModal.show("modal-locked");return}document.querySelectorAll("#lessonList li").forEach(n=>n.classList.remove("active"));li.classList.add("active");displayLessonContent(lesson)}});const cb=li.querySelector(".hover-checkbox input[type='checkbox']");cb.addEventListener("change",async()=>{const desiredState=cb.checked;toggleLessonChecked(fp,lbl,desiredState);li.classList.toggle("completed",desiredState);updateProgress(fp);try{const saved=await persistUserProgress();if(saved===false){cb.checked=!desiredState;toggleLessonChecked(fp,lbl,cb.checked);li.classList.toggle("completed",cb.checked);updateProgress(fp);return}}catch(err){console.error("Progress save failed",err);cb.checked=!desiredState;toggleLessonChecked(fp,lbl,cb.checked);li.classList.toggle("completed",cb.checked);updateProgress(fp);const retry=confirm("Could not save progress. Re-enter your passphrase to retry?");if(retry){try{await persistUserProgress()}catch(err2){console.error("Retry failed",err2);alert("Progress not synced. Unlock with your passphrase and try again.")}}}});if(!auth.currentUser&&fp!==defaultGuidePath&&lbl!=="Getting Started")li.classList.add("locked");lList.appendChild(li)});function updateProgress(path){const tot=(cObj.lessons||[]).length;const comp=(cObj.lessons||[]).filter(ls=>isLessonChecked(path,ls.title||"Lesson "+ls.lesson_id)).length;lProgress.textContent="Completed "+comp+" / "+tot+" lessons";let status="";if(comp===0)status="(not-started)";else if(comp===tot)status="(complete)";else status="(in-progress)";cTitle.textContent=(cObj.title||"Untitled Course")+" "+status;updateCourseCardStatus(path)}updateProgress(fp)}
 
-    function displayLessonContent(lsn){const el=document.getElementById("lessonContent");el.innerHTML="";const title=lsn.title||"Lesson "+lsn.lesson_id;const h=document.createElement("h1");h.textContent=title;el.appendChild(h);const hr=document.createElement("hr");el.appendChild(hr);if(lsn.course){const n=document.createElement("div");n.innerHTML=marked.parse(lsn.course);el.appendChild(n)}if(lsn.exercises&&Array.isArray(lsn.exercises)&&lsn.exercises.length){const exH=document.createElement("h2");exH.textContent="Exercises:";el.appendChild(exH);let m="\n";lsn.exercises.forEach((ex,i)=>{m+=(i+1)+". **"+ex.name+"** – "+ex.prompt+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.assignments&&Array.isArray(lsn.assignments)&&lsn.assignments.length){const asH=document.createElement("h2");asH.textContent="Assignments:";el.appendChild(asH);let m="\n";lsn.assignments.forEach((a,i)=>{m+=(i+1)+". **"+a.name+"** – "+a.description+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.sources&&Array.isArray(lsn.sources)&&lsn.sources.length){const srcH=document.createElement("h2");srcH.textContent="Sources:";el.appendChild(srcH);let m="\n";lsn.sources.forEach((s,i)=>{m+=(i+1)+". "+s+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}const notesWrapper=document.createElement("div");notesWrapper.className="lesson-notes";const notesHeading=document.createElement("h3");notesHeading.textContent="Your notes";const noteHint=document.createElement("p");noteHint.className="settings-note";noteHint.textContent="Notes are encrypted with your passphrase and saved per lesson.";const noteField=document.createElement("textarea");noteField.value=getLessonNote(currentCoursePath,title);noteField.placeholder="Add private notes for this lesson.";const noteActions=document.createElement("div");noteActions.className="note-actions";const saveNoteBtn=document.createElement("button");saveNoteBtn.textContent="Save notes";saveNoteBtn.addEventListener("click",async()=>{if(!auth.currentUser){alert("Sign in before saving notes.");return}if(!derivedVaultKey){showPassphraseGate();alert("Unlock with your passphrase before saving notes.");return}setLessonNote(currentCoursePath,title,noteField.value);try{await persistUserProgress();saveNoteBtn.textContent="Saved";setTimeout(()=>saveNoteBtn.textContent="Save notes",1500)}catch(err){console.error("Note save failed",err);alert("Could not save notes. Unlock with your passphrase and try again.")}});noteActions.appendChild(saveNoteBtn);notesWrapper.appendChild(notesHeading);notesWrapper.appendChild(noteHint);notesWrapper.appendChild(noteField);notesWrapper.appendChild(noteActions);el.appendChild(notesWrapper)}
+    function displayLessonContent(lsn){const el=document.getElementById("lessonContent");el.innerHTML="";const title=lsn.title||"Lesson "+lsn.lesson_id;currentLessonSelection={title,coursePath:currentCoursePath,lesson:lsn};updateQuizContext();setQuizStatus("");const h=document.createElement("h1");h.textContent=title;el.appendChild(h);const hr=document.createElement("hr");el.appendChild(hr);if(lsn.course){const n=document.createElement("div");n.innerHTML=marked.parse(lsn.course);el.appendChild(n)}if(lsn.exercises&&Array.isArray(lsn.exercises)&&lsn.exercises.length){const exH=document.createElement("h2");exH.textContent="Exercises:";el.appendChild(exH);let m="\n";lsn.exercises.forEach((ex,i)=>{m+=(i+1)+". **"+ex.name+"** – "+ex.prompt+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.assignments&&Array.isArray(lsn.assignments)&&lsn.assignments.length){const asH=document.createElement("h2");asH.textContent="Assignments:";el.appendChild(asH);let m="\n";lsn.assignments.forEach((a,i)=>{m+=(i+1)+". **"+a.name+"** – "+a.description+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.sources&&Array.isArray(lsn.sources)&&lsn.sources.length){const srcH=document.createElement("h2");srcH.textContent="Sources:";el.appendChild(srcH);let m="\n";lsn.sources.forEach((s,i)=>{m+=(i+1)+". "+s+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}const notesWrapper=document.createElement("div");notesWrapper.className="lesson-notes";const notesHeading=document.createElement("h3");notesHeading.textContent="Your notes";const noteHint=document.createElement("p");noteHint.className="settings-note";noteHint.textContent="Notes are encrypted with your passphrase and saved per lesson.";const noteField=document.createElement("textarea");noteField.value=getLessonNote(currentCoursePath,title);noteField.placeholder="Add private notes for this lesson.";const noteActions=document.createElement("div");noteActions.className="note-actions";const saveNoteBtn=document.createElement("button");saveNoteBtn.textContent="Save notes";saveNoteBtn.addEventListener("click",async()=>{if(!auth.currentUser){alert("Sign in before saving notes.");return}if(!derivedVaultKey){showPassphraseGate();alert("Unlock with your passphrase before saving notes.");return}setLessonNote(currentCoursePath,title,noteField.value);try{await persistUserProgress();renderNotesSummary();saveNoteBtn.textContent="Saved";setTimeout(()=>saveNoteBtn.textContent="Save notes",1500)}catch(err){console.error("Note save failed",err);alert("Could not save notes. Unlock with your passphrase and try again.")}});noteActions.appendChild(saveNoteBtn);notesWrapper.appendChild(notesHeading);notesWrapper.appendChild(noteHint);notesWrapper.appendChild(noteField);notesWrapper.appendChild(noteActions);el.appendChild(notesWrapper)}
+
+      async function startQuizGeneration(){if(!quizStatus)return;if(!auth.currentUser){MicroModal.show("modal-locked");setQuizStatus("Sign in to generate quizzes.","error");return}if(!derivedVaultKey){showPassphraseGate();setQuizStatus("Unlock with your passphrase to generate quizzes.","error");return}if(!currentLessonSelection){setQuizStatus("Open a lesson in the Lessons page before generating a quiz.","error");return}setQuizStatus(`Starting quiz generation for ${currentLessonSelection.title}...`,`info`);try{setQuizStatus(`Quiz generation started for ${currentLessonSelection.title}. Keep this page open.`,`success`)}catch(err){console.error("Quiz generation failed",err);setQuizStatus("Could not start quiz generation. Try again after unlocking your vault.","error")}}
 
       function updateCourseCardStatus(p){const co=allCourses.find(c=>c.file===p);if(!co||!currentCourseData.course)return;const tot=(currentCourseData.course.lessons||[]).length;const comp=(currentCourseData.course.lessons||[]).filter(l=>isLessonChecked(p,l.title||"Lesson "+l.lesson_id)).length;co._status=computeCourseStatus(comp,tot);const card=document.querySelector(".course-card button[data-file='"+p+"']")?.closest(".course-card");if(card){const st=card.querySelector(".course-status");if(st){st.classList.remove("not-started","in-progress","complete","n-a");st.textContent=co._status;const cls=co._status.toLowerCase().replace(/\s+/g,"-");st.classList.add(cls)}}}
 
@@ -449,7 +507,7 @@
       rotatePassphraseBtn?.addEventListener("click",rotatePassphrase)
       resetAccountBtn?.addEventListener("click",resetEncryptedAccount)
 
-      document.addEventListener("DOMContentLoaded",async()=>{allCourses=await loadCourses();await refreshCourseStatuses();document.getElementById("courseSearch").addEventListener("input",e=>{renderCourses(filterCourses(allCourses,e.target.value))});document.addEventListener("click",e=>{const b=e.target;if(b.tagName==="BUTTON"&&b.hasAttribute("data-file"))handleViewLessons(b.getAttribute("data-file"))});document.getElementById("homeLink").addEventListener("click",e=>{e.preventDefault();handleViewLessons(defaultGuidePath)});document.getElementById("sidebarToggle").addEventListener("click",toggleSidebar)})
+      document.addEventListener("DOMContentLoaded",async()=>{allCourses=await loadCourses();await refreshCourseStatuses();setActiveSection("home");updateQuizContext();renderNotesSummary();document.getElementById("courseSearch")?.addEventListener("input",e=>{renderCourses(filterCourses(allCourses,e.target.value))});document.addEventListener("click",e=>{const b=e.target;if(b.tagName==="BUTTON"&&b.hasAttribute("data-file"))handleViewLessons(b.getAttribute("data-file"))});Object.entries(navLinks).forEach(([section,link])=>{if(!link)return;link.addEventListener("click",e=>{e.preventDefault();if(section==="lessons"&&!currentCoursePath){setActiveSection("lessons");updateQuizContext("Select a course from Home to view lessons.");return}setActiveSection(section);if(section==="quizzes")updateQuizContext()})});document.getElementById("sidebarToggle").addEventListener("click",toggleSidebar);generateQuizBtn?.addEventListener("click",startQuizGeneration)})
   </script>
 </body>
 </html>
