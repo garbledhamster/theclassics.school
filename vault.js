@@ -46,6 +46,22 @@ export async function deriveKeyFromPassphrase(passphrase, saltBytes){
   return { key, salt }
 }
 
+function splitCiphertextAndTag(buffer){
+  const bytes = new Uint8Array(buffer)
+  if(bytes.length<=16)return{ciphertext:bytes,tag:new Uint8Array()}
+  const tag = bytes.slice(bytes.length-16)
+  const body = bytes.slice(0,bytes.length-16)
+  return {ciphertext:body,tag}
+}
+
+function combineCiphertextAndTag(ciphertextBytes, tagBytes){
+  if(!tagBytes||!tagBytes.length)return ciphertextBytes
+  const combined = new Uint8Array(ciphertextBytes.length+tagBytes.length)
+  combined.set(ciphertextBytes)
+  combined.set(tagBytes,ciphertextBytes.length)
+  return combined
+}
+
 export async function encryptSecret(plainText, key, saltBytes){
   const iv = crypto.getRandomValues(new Uint8Array(12))
   const ciphertextBuffer = await crypto.subtle.encrypt(
@@ -53,10 +69,12 @@ export async function encryptSecret(plainText, key, saltBytes){
     key,
     encoder.encode(plainText || "")
   )
+  const {ciphertext,tag} = splitCiphertextAndTag(ciphertextBuffer)
   return {
-    ciphertext: bufferToBase64(ciphertextBuffer),
+    ciphertext: bufferToBase64(ciphertext),
     iv: bufferToBase64(iv),
     salt: bufferToBase64(saltBytes),
+    tag: bufferToBase64(tag),
     version: 1
   }
 }
@@ -64,10 +82,12 @@ export async function encryptSecret(plainText, key, saltBytes){
 export async function decryptSecret(payload, key){
   const iv = base64ToBytes(payload.iv)
   const ciphertext = base64ToBytes(payload.ciphertext)
+  const tagBytes = payload.tag?base64ToBytes(payload.tag):null
+  const cipherWithTag = combineCiphertextAndTag(ciphertext,tagBytes)
   const plainBuffer = await crypto.subtle.decrypt(
     {name:"AES-GCM", iv},
     key,
-    ciphertext
+    cipherWithTag
   )
   return decoder.decode(plainBuffer)
 }
