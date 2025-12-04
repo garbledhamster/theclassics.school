@@ -163,10 +163,10 @@
         <label for="gatePassphrase">Master passphrase</label>
         <input id="gatePassphrase" type="password" autocomplete="current-password" placeholder="Enter your master passphrase"/>
         <p class="passphrase-warning">If you never set one, choose a strong passphrase below to initialize your encrypted vault.</p>
-        <div class="trusted-device-row">
+        <label style="display:flex;align-items:center;gap:0.5rem;margin-top:0.35rem;user-select:none;">
           <input id="gateTrustedDevice" type="checkbox"/>
-          <label for="gateTrustedDevice">Trusted computer (don’t ask again)</label>
-        </div>
+          <span>Trusted computer (don’t ask again)</span>
+        </label>
         <div class="passphrase-actions">
           <button id="gateUnlockBtn">Unlock</button>
           <button id="gateInitializeBtn" class="secondary">Set up new passphrase</button>
@@ -418,7 +418,7 @@
 
     async function clearTrustedDeviceCache(){try{localStorage.removeItem("trustedWrappedKey");localStorage.removeItem("trustedWrapSalt");localStorage.removeItem("trustedVaultSalt");await deleteStoreValue(TRUSTED_CACHE_ID);await deleteStoreValue(TRUSTED_WRAP_KEY_ID)}catch(err){console.error("Error clearing trusted cache",err)}}
 
-    async function getOrCreateWrappingKey(){const existing=await getStoredWrappingKey();if(existing)return existing;const key=await crypto.subtle.generateKey({name:"AES-GCM",length:256},false,["wrapKey","unwrapKey"]);await persistWrappingKey(key);return key}
+    async function getOrCreateWrappingKey(){const existing=await getStoredWrappingKey();if(existing)return existing;const key=await crypto.subtle.generateKey({name:"AES-GCM",length:256},true,["wrapKey","unwrapKey"]);await persistWrappingKey(key);return key}
 
     function cachePayloadLocally(wrappedBuffer,saltBytes,vaultSaltBytes){localStorage.setItem("trustedWrappedKey",bytesToBase64(new Uint8Array(wrappedBuffer||[])));localStorage.setItem("trustedWrapSalt",bytesToBase64(new Uint8Array(saltBytes||[])));if(vaultSaltBytes)localStorage.setItem("trustedVaultSalt",bytesToBase64(new Uint8Array(vaultSaltBytes)))}
 
@@ -476,7 +476,7 @@
 
       function clearVaultState(){derivedVaultKey=null;derivedVaultSalt=null;vaultDoc=null;decryptedUserPayload=null;encryptedLessonProgressPayload=null;pendingEncryptedProgressPayload=null;vaultPassphraseInput.value="";gatePassphraseInput.value="";setVaultUIState("locked");hidePassphraseGate();clearTrustedDeviceCache()}
 
-      async function handleTrustedDeviceSelection(key,saltBytes){if(!gateTrustedDevice?.checked){await clearTrustedDeviceCache();return}try{await persistTrustedCache(key,saltBytes)}catch(err){console.error("Trusted device cache failed",err);await clearTrustedDeviceCache()}}
+      async function handleTrustedDeviceSelection(key,saltBytes){if(gateTrustedDevice?.checked){await persistTrustedCache(key,saltBytes)}else{await clearTrustedDeviceCache()}}
 
       async function tryAutoUnlockFromTrustedCache(){try{if(!vaultDoc)return false;const cache=await getTrustedCache();if(!cache)return false;const wrappingKey=await getStoredWrappingKey();if(!wrappingKey)return false;if(!cache.saltBytes||cache.saltBytes.length<12)return false;const iv=cache.saltBytes.slice(0,12);const unwrappedKey=await crypto.subtle.unwrapKey("raw",wrappingKey,cache.wrapped.buffer,{name:"AES-GCM",iv,additionalData:cache.saltBytes},{name:"AES-GCM",length:256},true,["encrypt","decrypt"]);const activeSalt=getActiveSaltBytes(vaultDoc)||cache.vaultSaltBytes;if(!activeSalt)throw new Error("Missing vault salt for cached key.");setDerivedVaultKeyContext(unwrappedKey,activeSalt);const decryptedText=await decryptSecret(vaultDoc,unwrappedKey);decryptedUserPayload=parseUserPayload(decryptedText);await tryDecryptPendingProgress();setVaultUIState("unlocked");if(gateTrustedDevice)gateTrustedDevice.checked=true;hidePassphraseGate();return true}catch(err){console.error("Trusted device auto-unlock failed",err);await clearTrustedDeviceCache();return false}}
 
