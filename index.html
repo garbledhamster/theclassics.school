@@ -74,6 +74,18 @@
     #sendSignInLink{background-color:var(--color-green);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-weight:bold;font-size:1rem;line-height:1.5;margin:0.5rem}
     #sendSignInLink:hover{background-color:#6e7a4b}
     #lockedContent{display:none}
+    .vault-card{background:var(--color-beige);border:1px solid #c9b28d;border-radius:6px;padding:1rem;margin:1rem auto;max-width:960px;line-height:1.5}
+    .vault-card h3{color:var(--color-red);margin-bottom:0.5rem}
+    .vault-card .helper-text{color:#5a4a34;margin-bottom:0.75rem}
+    .vault-field{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:0.75rem}
+    .vault-field label{font-weight:bold}
+    .vault-field input,.vault-field textarea{width:100%;padding:0.5rem;border:2px solid var(--color-green);border-radius:4px;font-family:var(--font-base)}
+    .vault-actions{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem}
+    .vault-actions button{background-color:var(--color-green);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-weight:bold;line-height:1.5}
+    .vault-actions button.secondary{background-color:var(--color-orange)}
+    .passphrase-warning{color:var(--color-red);font-weight:bold;margin-top:0.25rem}
+    .copy-hint{color:#5a4a34;font-size:0.95rem;margin-top:0.25rem}
+    .vault-note{color:#555;font-size:0.95rem;margin-top:0.35rem}
     .locked{opacity:.4;pointer-events:none;position:relative}
     .modal{display:none}.modal.is-open{display:block}
     .modal__overlay{background:rgba(0,0,0,.5);position:fixed;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
@@ -105,8 +117,37 @@
       <button id="sendSignInLink">Send Sign-In Link</button>
       <p id="loginStatus" style="margin-top:0.5rem;color:var(--color-orange);"></p>
     </div>
-    <div id="lockedContent">
-      <div class="course-search"><input type="text" id="courseSearch" placeholder="Search for a course..."></div>
+      <div id="lockedContent">
+        <section id="vaultContainer" class="vault-card" style="display:none;">
+          <h3 id="vaultHeading">Protect your private notes</h3>
+          <p id="vaultDescription" class="helper-text">Set up a master passphrase to encrypt your secrets. We cannot recover this passphrase if you lose it.</p>
+          <div class="vault-field">
+            <label for="vaultPassphrase">Master passphrase</label>
+            <input id="vaultPassphrase" type="password" autocomplete="new-password" placeholder="Enter or paste your master passphrase"/>
+            <p class="passphrase-warning">Keep this somewhere safe before you continue. Losing it means losing access to your encrypted data.</p>
+            <div class="vault-actions">
+              <button id="generatePassphraseBtn">Generate strong passphrase</button>
+              <button id="copyPassphraseBtn" class="secondary">Copy passphrase</button>
+            </div>
+            <p class="copy-hint">You can also store this in a password manager. We never send the passphrase to the server.</p>
+          </div>
+          <div class="vault-actions">
+            <button id="initializeVaultBtn">Save &amp; initialize vault</button>
+            <button id="unlockVaultBtn" class="secondary">Unlock existing vault</button>
+          </div>
+          <div id="vaultContentArea" style="display:none;margin-top:1rem;">
+            <div class="vault-field">
+              <label for="vaultSecret">Encrypted secret</label>
+              <textarea id="vaultSecret" rows="6" placeholder="Store private study notes or secrets here."></textarea>
+              <p class="vault-note">Your encryption key lives only in this session. Re-enter your passphrase to read or change this later.</p>
+            </div>
+            <div class="vault-actions">
+              <button id="saveSecretBtn">Encrypt &amp; Save</button>
+              <button id="lockVaultBtn" class="secondary">Lock &amp; clear key</button>
+            </div>
+          </div>
+        </section>
+        <div class="course-search"><input type="text" id="courseSearch" placeholder="Search for a course..."></div>
       <div class="course-list" id="courseList"></div>
       <div id="lessonsContainer" class="lessons-container">
         <h2 id="selectedCourseTitle" style="color:var(--color-red);font-family:var(--font-classic);"></h2>
@@ -142,9 +183,10 @@
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"
-    import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"
+      import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"
+      import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"
+      import { decodeSalt, decryptSecret, deriveKeyFromPassphrase, encryptSecret, generatePassphrase } from "./vault.js"
 
     const firebaseConfig={apiKey:"AIzaSyAOFHZbn02JpIlSHNxNdvBnfdYv08tZMJs",authDomain:"the-classics-befd2.firebaseapp.com",projectId:"the-classics-befd2",storageBucket:"the-classics-befd2.firebasestorage.app",messagingSenderId:"171500319429",appId:"1:171500319429:web:2f67b006048191fa6036ac",measurementId:"G-08W3C50VF6"}
     const app=initializeApp(firebaseConfig)
@@ -152,21 +194,36 @@
     const db=getFirestore(app)
     const actionCodeSettings={url:"https://theclassics.school",handleCodeInApp:true}
 
-    const emailField=document.getElementById("emailForSignIn")
-    const sendLinkBtn=document.getElementById("sendSignInLink")
-    const loginStatus=document.getElementById("loginStatus")
-    const lockedContent=document.getElementById("lockedContent")
-    let lessonProgress={}
+      const emailField=document.getElementById("emailForSignIn")
+      const sendLinkBtn=document.getElementById("sendSignInLink")
+      const loginStatus=document.getElementById("loginStatus")
+      const lockedContent=document.getElementById("lockedContent")
+      const vaultContainer=document.getElementById("vaultContainer")
+      const vaultHeading=document.getElementById("vaultHeading")
+      const vaultDescription=document.getElementById("vaultDescription")
+      const vaultPassphraseInput=document.getElementById("vaultPassphrase")
+      const vaultSecretField=document.getElementById("vaultSecret")
+      const vaultContentArea=document.getElementById("vaultContentArea")
+      const initializeVaultBtn=document.getElementById("initializeVaultBtn")
+      const unlockVaultBtn=document.getElementById("unlockVaultBtn")
+      const saveSecretBtn=document.getElementById("saveSecretBtn")
+      const lockVaultBtn=document.getElementById("lockVaultBtn")
+      const generatePassphraseBtn=document.getElementById("generatePassphraseBtn")
+      const copyPassphraseBtn=document.getElementById("copyPassphraseBtn")
+      let lessonProgress={}
+      let vaultDoc=null
+      let derivedVaultKey=null
 
     sendLinkBtn.onclick=async()=>{if(auth.currentUser){await signOut(auth);return}const email=emailField.value;if(!email){alert("Please enter your email.");return}try{await sendSignInLinkToEmail(auth,email,actionCodeSettings);localStorage.setItem("emailForSignIn",email);alert("Sign-in link sent! Check your email.")}catch(e){console.error(e);alert("Error sending link.")}}
 
     if(isSignInWithEmailLink(auth,window.location.href)){const storedEmail=localStorage.getItem("emailForSignIn");if(storedEmail){signInWithEmailLink(auth,storedEmail,window.location.href).then(()=>{localStorage.removeItem("emailForSignIn");alert("You are now signed in!");window.history.replaceState({},document.title,"/")}).catch(e=>console.error(e))}}
 
-    onAuthStateChanged(auth,async user=>{if(user){loginStatus.textContent=`Signed in as: ${user.email}`;sendLinkBtn.textContent="Logout";emailField.style.display="none";lockedContent.style.display="block"}else{loginStatus.textContent="Not signed in";sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="inline-block";emailField.value="";lockedContent.style.display="none"}
-      await loadUserProgress(user)
-      await refreshCourseStatuses()
-      if(currentCoursePath&&currentCourseData.course){showCourseContent(currentCourseData,currentCoursePath)}
-    })
+      onAuthStateChanged(auth,async user=>{if(user){loginStatus.textContent=`Signed in as: ${user.email}`;sendLinkBtn.textContent="Logout";emailField.style.display="none";lockedContent.style.display="block"}else{loginStatus.textContent="Not signed in";sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="inline-block";emailField.value="";lockedContent.style.display="none";clearVaultState()}
+        await loadUserProgress(user)
+        await loadVaultState(user)
+        await refreshCourseStatuses()
+        if(currentCoursePath&&currentCourseData.course){showCourseContent(currentCourseData,currentCoursePath)}
+      })
 
     MicroModal.init()
 
@@ -177,10 +234,24 @@
     let isSidebarCollapsed=false
 
     async function loadUserProgress(user){try{if(!user){lessonProgress={};return}const snap=await getDoc(doc(db,"lessonProgress",user.uid));lessonProgress=snap.exists()&&snap.data().lessons?snap.data().lessons:{}}catch(e){console.error("Error loading progress:",e);lessonProgress={}}}
-    async function persistUserProgress(){try{const user=auth.currentUser;if(!user)return;await setDoc(doc(db,"lessonProgress",user.uid),{lessons:lessonProgress},{merge:true})}catch(e){console.error("Error saving progress:",e)}}
-    function isLessonChecked(p,t){return!!(lessonProgress[p]&&lessonProgress[p][t])}
-    function toggleLessonChecked(p,t,v){if(!lessonProgress[p])lessonProgress[p]={};lessonProgress[p][t]=v}
-    function getLessonIcon(t){if(t==="reading")return'<i class="fas fa-book"></i>';if(t==="quiz")return'<i class="fas fa-question-circle"></i>';if(t==="video")return'<i class="fas fa-video"></i>';return'<i class="fas fa-file-alt"></i>'}
+      async function persistUserProgress(){try{const user=auth.currentUser;if(!user)return;await setDoc(doc(db,"lessonProgress",user.uid),{lessons:lessonProgress},{merge:true})}catch(e){console.error("Error saving progress:",e)}}
+      function isLessonChecked(p,t){return!!(lessonProgress[p]&&lessonProgress[p][t])}
+      function toggleLessonChecked(p,t,v){if(!lessonProgress[p])lessonProgress[p]={};lessonProgress[p][t]=v}
+      function getLessonIcon(t){if(t==="reading")return'<i class="fas fa-book"></i>';if(t==="quiz")return'<i class="fas fa-question-circle"></i>';if(t==="video")return'<i class="fas fa-video"></i>';return'<i class="fas fa-file-alt"></i>'}
+
+      function clearVaultState(){derivedVaultKey=null;vaultDoc=null;vaultPassphraseInput.value="";vaultSecretField.value="";if(vaultContainer)vaultContainer.style.display="none"}
+
+      function setVaultUIState(mode){if(!vaultContainer)return;const hasUser=!!auth.currentUser;vaultContainer.style.display=hasUser?"block":"none";vaultContentArea.style.display=mode==="unlocked"?"block":"none";if(mode!=="unlocked")vaultSecretField.value="";if(mode==="setup"){vaultHeading.textContent="Protect your private notes";vaultDescription.textContent="Set up a master passphrase to encrypt your secrets. We cannot recover this passphrase if you lose it.";initializeVaultBtn.style.display="inline-block";unlockVaultBtn.style.display="none"}else if(mode==="locked"){vaultHeading.textContent="Unlock your vault";vaultDescription.textContent="Enter your master passphrase to read or update your encrypted secrets.";initializeVaultBtn.style.display="none";unlockVaultBtn.style.display="inline-block"}else{vaultHeading.textContent="Vault unlocked";vaultDescription.textContent="You can edit your encrypted secret below. Lock the vault to clear the key from memory.";initializeVaultBtn.style.display="none";unlockVaultBtn.style.display="none"}}
+
+      async function loadVaultState(user){try{if(!user){clearVaultState();return}const snap=await getDoc(doc(db,"userData",user.uid));if(snap.exists()){vaultDoc=snap.data();setVaultUIState("locked")}else{vaultDoc=null;setVaultUIState("setup")}}catch(e){console.error("Error loading vault:",e);setVaultUIState("setup")}}
+
+      async function initializeVault(){try{const user=auth.currentUser;if(!user)return;const passphrase=vaultPassphraseInput.value.trim();if(passphrase.length<12){alert("Please choose a longer passphrase (at least 12 characters).");return}const {key,salt}=await deriveKeyFromPassphrase(passphrase);derivedVaultKey=key;const encrypted=await encryptSecret(vaultSecretField.value||"",key,salt);await setDoc(doc(db,"userData",user.uid),{ciphertext:encrypted.ciphertext,iv:encrypted.iv,salt:encrypted.salt,version:encrypted.version});vaultDoc=encrypted;setVaultUIState("unlocked");alert("Vault initialized. Remember to store your passphrase safely—there is no recovery option.")}catch(err){console.error("Error initializing vault",err);alert("Could not initialize vault. Please try again.")}}
+
+      async function unlockVault(){try{if(!vaultDoc){alert("No vault found to unlock.");return}const passphrase=vaultPassphraseInput.value.trim();if(!passphrase){alert("Enter your master passphrase to unlock.");return}const saltBytes=decodeSalt(vaultDoc.salt);const {key}=await deriveKeyFromPassphrase(passphrase,saltBytes);const secretText=await decryptSecret(vaultDoc,key);derivedVaultKey=key;vaultSecretField.value=secretText;setVaultUIState("unlocked")}catch(err){console.error("Unlock failed",err);alert("Could not unlock vault. Double-check your passphrase.")}}
+
+      async function saveVaultSecret(){try{if(!derivedVaultKey){alert("Unlock the vault with your passphrase first.");return}const user=auth.currentUser;if(!user)return;const saltBytes=vaultDoc?.salt?decodeSalt(vaultDoc.salt):null;if(!saltBytes){alert("Missing vault salt. Reinitialize the vault.");return}const encrypted=await encryptSecret(vaultSecretField.value||"",derivedVaultKey,saltBytes);await setDoc(doc(db,"userData",user.uid),{ciphertext:encrypted.ciphertext,iv:encrypted.iv,salt:encrypted.salt,version:encrypted.version});vaultDoc=encrypted;alert("Encrypted secret saved. Remember to store your passphrase safely.")}catch(err){console.error("Save failed",err);alert("Could not save secret. Please try again.")}}
+
+      function lockVault(){derivedVaultKey=null;vaultSecretField.value="";vaultPassphraseInput.value="";setVaultUIState(vaultDoc?"locked":"setup")}
 
     async function loadCourses(){try{const r=await fetch("lessons.json");if(!r.ok)throw new Error("Could not load lessons.json");return await r.json()}catch(e){console.error("Error fetching lessons.json:",e);return[]}}
 
@@ -200,11 +271,19 @@
 
     function displayLessonContent(lsn){const el=document.getElementById("lessonContent");el.innerHTML="";const title=lsn.title||"Lesson "+lsn.lesson_id;const h=document.createElement("h1");h.textContent=title;el.appendChild(h);const hr=document.createElement("hr");el.appendChild(hr);if(lsn.course){const n=document.createElement("div");n.innerHTML=marked.parse(lsn.course);el.appendChild(n)}if(lsn.exercises&&Array.isArray(lsn.exercises)&&lsn.exercises.length){const exH=document.createElement("h2");exH.textContent="Exercises:";el.appendChild(exH);let m="\n";lsn.exercises.forEach((ex,i)=>{m+=(i+1)+". **"+ex.name+"** – "+ex.prompt+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.assignments&&Array.isArray(lsn.assignments)&&lsn.assignments.length){const asH=document.createElement("h2");asH.textContent="Assignments:";el.appendChild(asH);let m="\n";lsn.assignments.forEach((a,i)=>{m+=(i+1)+". **"+a.name+"** – "+a.description+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.sources&&Array.isArray(lsn.sources)&&lsn.sources.length){const srcH=document.createElement("h2");srcH.textContent="Sources:";el.appendChild(srcH);let m="\n";lsn.sources.forEach((s,i)=>{m+=(i+1)+". "+s+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}}
 
-    function updateCourseCardStatus(p){const co=allCourses.find(c=>c.file===p);if(!co||!currentCourseData.course)return;const tot=(currentCourseData.course.lessons||[]).length;const comp=(currentCourseData.course.lessons||[]).filter(l=>isLessonChecked(p,l.title||"Lesson "+l.lesson_id)).length;co._status=computeCourseStatus(comp,tot);const card=document.querySelector(".course-card button[data-file='"+p+"']")?.closest(".course-card");if(card){const st=card.querySelector(".course-status");if(st){st.classList.remove("not-started","in-progress","complete","n-a");st.textContent=co._status;const cls=co._status.toLowerCase().replace(/\s+/g,"-");st.classList.add(cls)}}}
+      function updateCourseCardStatus(p){const co=allCourses.find(c=>c.file===p);if(!co||!currentCourseData.course)return;const tot=(currentCourseData.course.lessons||[]).length;const comp=(currentCourseData.course.lessons||[]).filter(l=>isLessonChecked(p,l.title||"Lesson "+l.lesson_id)).length;co._status=computeCourseStatus(comp,tot);const card=document.querySelector(".course-card button[data-file='"+p+"']")?.closest(".course-card");if(card){const st=card.querySelector(".course-status");if(st){st.classList.remove("not-started","in-progress","complete","n-a");st.textContent=co._status;const cls=co._status.toLowerCase().replace(/\s+/g,"-");st.classList.add(cls)}}}
 
-    function toggleSidebar(){const sb=document.getElementById("lessonSidebar");const lo=document.getElementById("lessonLayout");isSidebarCollapsed=!isSidebarCollapsed;if(isSidebarCollapsed){sb.classList.add("collapsed");lo.classList.add("collapsed")}else{sb.classList.remove("collapsed");lo.classList.remove("collapsed")}}
+      function toggleSidebar(){const sb=document.getElementById("lessonSidebar");const lo=document.getElementById("lessonLayout");isSidebarCollapsed=!isSidebarCollapsed;if(isSidebarCollapsed){sb.classList.add("collapsed");lo.classList.add("collapsed")}else{sb.classList.remove("collapsed");lo.classList.remove("collapsed")}}
 
-    document.addEventListener("DOMContentLoaded",async()=>{allCourses=await loadCourses();await refreshCourseStatuses();handleViewLessons(defaultGuidePath);document.getElementById("courseSearch").addEventListener("input",e=>{renderCourses(filterCourses(allCourses,e.target.value))});document.addEventListener("click",e=>{const b=e.target;if(b.tagName==="BUTTON"&&b.hasAttribute("data-file"))handleViewLessons(b.getAttribute("data-file"))});document.getElementById("homeLink").addEventListener("click",e=>{e.preventDefault();handleViewLessons(defaultGuidePath)});document.getElementById("sidebarToggle").addEventListener("click",toggleSidebar)})
+      if(vaultContainer){setVaultUIState("setup")}
+      generatePassphraseBtn?.addEventListener("click",()=>{const newPass=generatePassphrase();vaultPassphraseInput.value=newPass;alert("Passphrase generated. Copy it and store it somewhere safe—there is no recovery option.")})
+      copyPassphraseBtn?.addEventListener("click",async()=>{const val=vaultPassphraseInput.value;if(!val){alert("Nothing to copy yet. Enter or generate a passphrase first.");return}try{await navigator.clipboard.writeText(val);alert("Passphrase copied. Store it safely before continuing.")}catch(err){console.error("Clipboard error",err);alert("Could not copy automatically. Please copy the passphrase manually.")}})
+      initializeVaultBtn?.addEventListener("click",initializeVault)
+      unlockVaultBtn?.addEventListener("click",unlockVault)
+      saveSecretBtn?.addEventListener("click",saveVaultSecret)
+      lockVaultBtn?.addEventListener("click",lockVault)
+
+      document.addEventListener("DOMContentLoaded",async()=>{allCourses=await loadCourses();await refreshCourseStatuses();handleViewLessons(defaultGuidePath);document.getElementById("courseSearch").addEventListener("input",e=>{renderCourses(filterCourses(allCourses,e.target.value))});document.addEventListener("click",e=>{const b=e.target;if(b.tagName==="BUTTON"&&b.hasAttribute("data-file"))handleViewLessons(b.getAttribute("data-file"))});document.getElementById("homeLink").addEventListener("click",e=>{e.preventDefault();handleViewLessons(defaultGuidePath)});document.getElementById("sidebarToggle").addEventListener("click",toggleSidebar)})
   </script>
 </body>
 </html>
