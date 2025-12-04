@@ -82,6 +82,10 @@
     .settings-field input,.settings-field textarea{width:100%;padding:0.5rem;border:2px solid var(--color-green);border-radius:4px;font-family:var(--font-base)}
     .settings-warning{color:var(--color-red);font-weight:bold;margin:0.25rem 0}
     .settings-note{font-size:0.95rem;color:#5a4a34;margin-bottom:0.5rem}
+    .settings-status{font-size:0.95rem;margin-bottom:0.5rem;min-height:1.2em}
+    .settings-status.info{color:#5a4a34}
+    .settings-status.success{color:var(--color-green)}
+    .settings-status.error{color:var(--color-red)}
     .vault-card{background:var(--color-beige);border:1px solid #c9b28d;border-radius:6px;padding:1rem;margin:1rem auto;max-width:960px;line-height:1.5}
     .vault-card h3{color:var(--color-red);margin-bottom:0.5rem}
     .vault-card .helper-text{color:#5a4a34;margin-bottom:0.75rem}
@@ -202,6 +206,7 @@
             <input id="settingsPassphrase" type="password" autocomplete="current-password" placeholder="Enter master passphrase"/>
           </div>
           <div class="settings-note">We only keep the key in memory for this session. Enter the passphrase each time you open settings.</div>
+          <div id="settingsStatus" class="settings-status info" role="status" aria-live="polite"></div>
           <div id="settingsFields" style="display:none;">
             <div class="settings-field">
               <label for="settingsDisplayName">Display name</label>
@@ -279,7 +284,11 @@
       const saveSettingsBtn=document.getElementById("saveSettingsBtn")
       const rotatePassphraseBtn=document.getElementById("rotatePassphraseBtn")
       const resetAccountBtn=document.getElementById("resetAccountBtn")
+      const settingsStatus=document.getElementById("settingsStatus")
       let lessonProgress={}
+      const DATA_MIGRATION_VERSION=1
+      let profileVersionInfo=buildVersionInfo("bootstrap-profile")
+      let progressVersionInfo=buildVersionInfo("bootstrap-progress")
       let vaultDoc=null
       let derivedVaultKey=null
       let derivedVaultSalt=null
@@ -312,9 +321,17 @@
 
     function saltsMatch(a,b){if(!a||!b||a.length!==b.length)return false;for(let i=0;i<a.length;i++){if(a[i]!==b[i])return false}return true}
 
-    function parseLessonProgressText(txt){try{return JSON.parse(txt||"{}")?.lessons||{}}catch(e){return{}}}
+    function setSettingsStatus(message,type="info"){if(!settingsStatus)return;settingsStatus.textContent=message;settingsStatus.classList.remove("info","error","success");settingsStatus.classList.add(type)}
 
-    function serializeLessonProgress(){return JSON.stringify({lessons:lessonProgress||{}})}
+    function buildVersionInfo(reason){return{version:DATA_MIGRATION_VERSION,updatedAt:new Date().toISOString(),reason}}
+
+    function normalizeVersionInfo(info,reason){if(!info)return buildVersionInfo(reason);return{...info,version:info.version||DATA_MIGRATION_VERSION,updatedAt:new Date().toISOString(),reason:info.reason||reason}}
+
+    function attachVersionMetadata(raw,reason){try{const parsed=JSON.parse(raw||"{}");const versionInfo=normalizeVersionInfo(parsed.versionInfo,reason);return JSON.stringify({...parsed,versionInfo})}catch(e){return JSON.stringify({value:raw||"",versionInfo:buildVersionInfo(reason)})}}
+
+    function parseLessonProgressText(txt){try{const parsed=JSON.parse(txt||"{}");progressVersionInfo=normalizeVersionInfo(parsed.versionInfo,"lesson-progress-import");return parsed?.lessons||{}}catch(e){progressVersionInfo=buildVersionInfo("lesson-progress-legacy");return{}}}
+
+    function serializeLessonProgress(){const normalized=normalizeVersionInfo(progressVersionInfo,"lesson-progress-save");progressVersionInfo=normalized;return JSON.stringify({lessons:lessonProgress||{},versionInfo:normalized})}
 
     async function decryptLessonProgressPayload(payload,key){const decryptedText=await decryptSecret(payload,key);lessonProgress=parseLessonProgressText(decryptedText);encryptedLessonProgressPayload=payload;pendingEncryptedProgressPayload=null;await refreshCourseStatuses();if(currentCoursePath&&currentCourseData.course){showCourseContent(currentCourseData,currentCoursePath)}}
 
@@ -322,7 +339,7 @@
 
     async function ensureProgressKey(payload){const saltBytes=getActiveSaltBytes(payload);if(derivedVaultKey&&derivedVaultSalt&&saltBytes&&saltsMatch(derivedVaultSalt,saltBytes)){setDerivedVaultKeyContext(derivedVaultKey,saltBytes);return{key:derivedVaultKey,saltBytes}}const passphrase=(vaultPassphraseInput?.value||settingsPassphrase?.value||"").trim();if(!passphrase)throw new Error("Missing passphrase for encrypted progress.");const {key,salt}=await deriveKeyFromPassphrase(passphrase,saltBytes);setDerivedVaultKeyContext(key,salt);return{key,saltBytes:salt}}
 
-    async function loadUserProgress(user){try{lessonProgress={};encryptedLessonProgressPayload=null;pendingEncryptedProgressPayload=null;if(!user)return;const snap=await getDoc(doc(db,"lessonProgress",user.uid));if(!snap.exists())return;const data=snap.data();if(data&&data.ciphertext){encryptedLessonProgressPayload=data;if(derivedVaultKey){const {key}=await ensureProgressKey(data);await decryptLessonProgressPayload(data,key)}else{pendingEncryptedProgressPayload=data}}else if(data&&data.lessons){lessonProgress=data.lessons}}catch(e){console.error("Error loading progress:",e);lessonProgress={}}}
+    async function loadUserProgress(user){try{lessonProgress={};encryptedLessonProgressPayload=null;pendingEncryptedProgressPayload=null;if(!user)return;const snap=await getDoc(doc(db,"lessonProgress",user.uid));if(!snap.exists())return;const data=snap.data();if(data&&data.ciphertext){encryptedLessonProgressPayload=data;if(derivedVaultKey){const {key}=await ensureProgressKey(data);await decryptLessonProgressPayload(data,key)}else{pendingEncryptedProgressPayload=data}}else if(data&&data.lessons){progressVersionInfo=normalizeVersionInfo(data.versionInfo,"lesson-progress-plaintext");lessonProgress=data.lessons}}catch(e){console.error("Error loading progress:",e);lessonProgress={}}}
       async function persistUserProgress(){try{const user=auth.currentUser;if(!user)return;const {key,saltBytes}=await ensureProgressKey(encryptedLessonProgressPayload||vaultDoc);const encrypted=await encryptSecret(serializeLessonProgress(),key,saltBytes);await setDoc(doc(db,"lessonProgress",user.uid),encrypted);encryptedLessonProgressPayload=encrypted;pendingEncryptedProgressPayload=null}catch(e){console.error("Error saving progress:",e);throw e}}
       function isLessonChecked(p,t){return!!(lessonProgress[p]&&lessonProgress[p][t])}
       function toggleLessonChecked(p,t,v){if(!lessonProgress[p])lessonProgress[p]={};lessonProgress[p][t]=v}
@@ -330,13 +347,15 @@
 
       function clearVaultState(){derivedVaultKey=null;derivedVaultSalt=null;vaultDoc=null;decryptedUserPayload=null;encryptedLessonProgressPayload=null;pendingEncryptedProgressPayload=null;vaultPassphraseInput.value="";vaultSecretField.value="";if(vaultContainer)vaultContainer.style.display="none"}
 
-      function getDefaultUserPayload(){return{secret:"",displayName:"",apiKey:"",metadata:""}}
+      function getDefaultUserPayload(){const normalized=normalizeVersionInfo(profileVersionInfo,"profile-default");profileVersionInfo=normalized;return{secret:"",displayName:"",apiKey:"",metadata:"",versionInfo:normalized}}
 
-      function parseUserPayload(text){try{const parsed=JSON.parse(text);return{...getDefaultUserPayload(),...parsed}}catch(e){return{...getDefaultUserPayload(),secret:text||""}}}
+      function parseUserPayload(text){try{const parsed=JSON.parse(text);profileVersionInfo=normalizeVersionInfo(parsed.versionInfo,"profile-import");return{...getDefaultUserPayload(),...parsed,versionInfo:profileVersionInfo}}catch(e){const fallback=buildVersionInfo("profile-legacy");profileVersionInfo=fallback;return{...getDefaultUserPayload(),secret:text||"",versionInfo:fallback}}}
 
-      function serializeUserPayload(){const payload={...getDefaultUserPayload(),...(decryptedUserPayload||{})};return JSON.stringify(payload)}
+      function serializeUserPayload(){const payload={...getDefaultUserPayload(),...(decryptedUserPayload||{})};const normalized=normalizeVersionInfo(payload.versionInfo,"profile-save");profileVersionInfo=normalized;payload.versionInfo=normalized;return JSON.stringify(payload)}
 
       async function persistEncryptedPayload(key,saltBytes){const user=auth.currentUser;if(!user)return;setDerivedVaultKeyContext(key,saltBytes);const encrypted=await encryptSecret(serializeUserPayload(),key,saltBytes);await setDoc(doc(db,"userData",user.uid),encrypted);vaultDoc=encrypted}
+
+      async function logMigrationMetadata(user,details){try{await setDoc(doc(db,"userMetadata",user.uid),{...details,version:DATA_MIGRATION_VERSION,updatedAt:new Date().toISOString()},{merge:true})}catch(err){console.error("Metadata log failed",err)}}
 
       function syncVaultSecretField(){const payload=decryptedUserPayload||getDefaultUserPayload();vaultSecretField.value=payload.secret||""}
 
@@ -354,17 +373,19 @@
 
       function lockVault(){derivedVaultKey=null;vaultSecretField.value="";vaultPassphraseInput.value="";setVaultUIState(vaultDoc?"locked":"setup")}
 
-      function resetSettingsForm(){settingsPassphrase.value="";settingsNewPassphrase.value="";settingsDisplayName.value="";settingsApiKey.value="";settingsMetadata.value="";settingsFields.style.display="none"}
+      function resetSettingsForm(){settingsPassphrase.value="";settingsNewPassphrase.value="";settingsDisplayName.value="";settingsApiKey.value="";settingsMetadata.value="";settingsFields.style.display="none";setSettingsStatus("", "info")}
 
       function populateSettingsFields(){const payload=decryptedUserPayload||getDefaultUserPayload();settingsDisplayName.value=payload.displayName||"";settingsApiKey.value=payload.apiKey||"";settingsMetadata.value=payload.metadata||"";syncVaultSecretField();settingsFields.style.display="block"}
 
-      async function unlockSettingsFromModal(){try{if(!vaultDoc){alert("Create or unlock your vault before opening settings.");return}const passphrase=settingsPassphrase.value.trim();if(!passphrase){alert("Enter your master passphrase to continue.");return}await loadEncryptedProfile(passphrase);populateSettingsFields();alert("Settings unlocked for this session. Remember: your key stays only in memory.")}catch(err){console.error("Settings unlock failed",err);alert("Could not unlock settings. Double-check your passphrase.")}}
+      async function unlockSettingsFromModal(){try{if(!vaultDoc){alert("Create or unlock your vault before opening settings.");return}const passphrase=settingsPassphrase.value.trim();if(!passphrase){alert("Enter your master passphrase to continue.");return}setSettingsStatus("Unlocking settings...","info");await loadEncryptedProfile(passphrase);populateSettingsFields();setSettingsStatus("Settings unlocked for this session.","success");alert("Settings unlocked for this session. Remember: your key stays only in memory.")}catch(err){console.error("Settings unlock failed",err);setSettingsStatus("Could not unlock settings. Double-check your passphrase.","error");alert("Could not unlock settings. Double-check your passphrase.")}}
 
-      async function saveSettings(){try{if(!vaultDoc){alert("Initialize your encrypted profile first.");return}const passphrase=settingsPassphrase.value.trim();if(!passphrase){alert("Re-enter your master passphrase to save.");return}const {saltBytes}=await loadEncryptedProfile(passphrase);decryptedUserPayload={...getDefaultUserPayload(),...(decryptedUserPayload||{}),displayName:settingsDisplayName.value.trim(),apiKey:settingsApiKey.value.trim(),metadata:settingsMetadata.value.trim(),secret:(decryptedUserPayload&&decryptedUserPayload.secret)||vaultSecretField.value||""};await persistEncryptedPayload(derivedVaultKey,saltBytes);settingsFields.style.display="block";alert("Settings saved and re-encrypted. Keep your passphrase safe.")}catch(err){console.error("Settings save failed",err);alert("Could not save settings. Please try again.")}}
+      async function saveSettings(){try{if(!vaultDoc){alert("Initialize your encrypted profile first.");return}const passphrase=settingsPassphrase.value.trim();if(!passphrase){alert("Re-enter your master passphrase to save.");return}setSettingsStatus("Unlocking profile...","info");const {saltBytes}=await loadEncryptedProfile(passphrase);decryptedUserPayload={...getDefaultUserPayload(),...(decryptedUserPayload||{}),displayName:settingsDisplayName.value.trim(),apiKey:settingsApiKey.value.trim(),metadata:settingsMetadata.value.trim(),secret:(decryptedUserPayload&&decryptedUserPayload.secret)||vaultSecretField.value||""};await persistEncryptedPayload(derivedVaultKey,saltBytes);settingsFields.style.display="block";setSettingsStatus("Settings saved with updated encryption.","success");alert("Settings saved and re-encrypted. Keep your passphrase safe.")}catch(err){console.error("Settings save failed",err);setSettingsStatus("Could not save settings. Recheck your passphrase and try again.","error");alert("Could not save settings. Please try again.")}}
 
-      async function rotatePassphrase(){try{if(!vaultDoc){alert("Nothing to rotate yet. Initialize your vault first.");return}const user=auth.currentUser;if(!user)return;const currentPass=settingsPassphrase.value.trim();if(!currentPass){alert("Enter your current passphrase to rotate.");return}const newPass=settingsNewPassphrase.value.trim();if(newPass.length<12){alert("Choose a stronger new passphrase (at least 12 characters).");return}await loadEncryptedProfile(currentPass);await tryDecryptPendingProgress();const {key:newKey,salt:newSalt}=await deriveKeyFromPassphrase(newPass);const updatedVaultPayload=await encryptSecret(serializeUserPayload(),newKey,newSalt);const updatedProgressPayload=await encryptSecret(serializeLessonProgress(),newKey,newSalt);await runTransaction(db,async tx=>{tx.set(doc(db,"userData",user.uid),updatedVaultPayload);tx.set(doc(db,"lessonProgress",user.uid),updatedProgressPayload)});setDerivedVaultKeyContext(newKey,newSalt);vaultDoc=updatedVaultPayload;encryptedLessonProgressPayload=updatedProgressPayload;pendingEncryptedProgressPayload=null;settingsNewPassphrase.value="";settingsPassphrase.value="";vaultPassphraseInput.value="";alert("Passphrase rotated. You must remember the new passphrase to keep access.");setVaultUIState("locked")}catch(err){console.error("Passphrase rotation failed",err);alert("Could not rotate passphrase. Confirm your current passphrase and try again. If the old passphrase was incorrect, no data was changed.")}}
+      async function reencryptQuizDocs(oldKey,newKey,newSalt,missingCollections){const user=auth.currentUser;if(!user)return null;const quizRef=doc(db,"quizzes",user.uid);const snap=await getDoc(quizRef);if(!snap.exists()){missingCollections.push("quizzes");return null}const data=snap.data();if(!data.ciphertext){missingCollections.push("quizzes-unencrypted");return null}const decrypted=await decryptSecret(data,oldKey);const serialized=attachVersionMetadata(decrypted,"quizzes-reencrypt");const encrypted=await encryptSecret(serialized,newKey,newSalt);await setDoc(quizRef,encrypted);return encrypted}
 
-      async function resetEncryptedAccount(){try{if(!vaultDoc){alert("No encrypted data to reset.");return}const passphrase=settingsPassphrase.value.trim();if(!passphrase){alert("Enter your master passphrase to continue.");return}await loadEncryptedProfile(passphrase);const confirmed=confirm("This will delete your encrypted data. Without the passphrase, it cannot be restored. Continue?");if(!confirmed)return;const user=auth.currentUser;if(!user)return;await deleteDoc(doc(db,"userData",user.uid));clearVaultState();setVaultUIState("setup");MicroModal.close("modal-settings");alert("Encrypted profile reset. Set up a new passphrase to start again.")}catch(err){console.error("Reset failed",err);alert("Could not reset encrypted data. Try again after re-entering your passphrase.")}}
+      async function rotatePassphrase(){try{if(!vaultDoc){alert("Nothing to rotate yet. Initialize your vault first.");return}const user=auth.currentUser;if(!user)return;const currentPass=settingsPassphrase.value.trim();if(!currentPass){alert("Enter your current passphrase to rotate.");return}const newPass=settingsNewPassphrase.value.trim();if(newPass.length<12){alert("Choose a stronger new passphrase (at least 12 characters).");return}setSettingsStatus("Validating current passphrase...","info");const {key:currentKey}=await loadEncryptedProfile(currentPass);await tryDecryptPendingProgress();setSettingsStatus("Deriving new encryption key...","info");const {key:newKey,salt:newSalt}=await deriveKeyFromPassphrase(newPass);setSettingsStatus("Re-encrypting profile and progress...","info");const updatedVaultPayload=await encryptSecret(serializeUserPayload(),newKey,newSalt);const updatedProgressPayload=await encryptSecret(serializeLessonProgress(),newKey,newSalt);const missingCollections=[];let updatedQuizPayload=null;try{updatedQuizPayload=await reencryptQuizDocs(currentKey,newKey,newSalt,missingCollections);if(updatedQuizPayload)setSettingsStatus("Re-encrypted quiz history.","info")}catch(err){console.error("Quiz re-encryption failed",err);missingCollections.push("quizzes-error");setSettingsStatus("Quiz data could not be re-encrypted.","error")}setSettingsStatus("Committing rotated keys...","info");await runTransaction(db,async tx=>{tx.set(doc(db,"userData",user.uid),updatedVaultPayload);tx.set(doc(db,"lessonProgress",user.uid),updatedProgressPayload);if(updatedQuizPayload)tx.set(doc(db,"quizzes",user.uid),updatedQuizPayload)});setDerivedVaultKeyContext(newKey,newSalt);vaultDoc=updatedVaultPayload;encryptedLessonProgressPayload=updatedProgressPayload;pendingEncryptedProgressPayload=null;settingsNewPassphrase.value="";settingsPassphrase.value="";vaultPassphraseInput.value="";await logMigrationMetadata(user,{lastRotationAt:new Date().toISOString(),missingCollections});const statusNote=missingCollections.length?`Rotation complete. Missing collections: ${missingCollections.join(", ")}`:"Passphrase rotated and data re-encrypted.";setSettingsStatus(statusNote,missingCollections.length?"info":"success");alert("Passphrase rotated. You must remember the new passphrase to keep access.");setVaultUIState("locked")}catch(err){console.error("Passphrase rotation failed",err);setSettingsStatus("Could not rotate passphrase. No changes were applied.","error");alert("Could not rotate passphrase. Confirm your current passphrase and try again. If the old passphrase was incorrect, no data was changed.")}}
+
+      async function resetEncryptedAccount(){try{if(!vaultDoc){alert("No encrypted data to reset.");return}const passphrase=settingsPassphrase.value.trim();if(!passphrase){alert("Enter your master passphrase to continue.");return}setSettingsStatus("Validating passphrase for reset...","info");await loadEncryptedProfile(passphrase);const confirmed=confirm("This will delete your encrypted data. Without the passphrase, it cannot be restored. Continue?");if(!confirmed)return;const user=auth.currentUser;if(!user)return;const missingCollections=[];setSettingsStatus("Deleting encrypted documents...","info");await deleteDoc(doc(db,"userData",user.uid));await deleteDoc(doc(db,"lessonProgress",user.uid));try{await deleteDoc(doc(db,"quizzes",user.uid))}catch(err){console.error("Quiz deletion failed",err);missingCollections.push("quizzes-error")}await deleteDoc(doc(db,"userMetadata",user.uid));clearVaultState();lessonProgress={};profileVersionInfo=buildVersionInfo("profile-reset");progressVersionInfo=buildVersionInfo("lesson-progress-reset");setVaultUIState("setup");await logMigrationMetadata(user,{lastResetAt:new Date().toISOString(),missingCollections});MicroModal.close("modal-settings");setSettingsStatus("Encrypted data cleared. Defaults restored.","success");alert("Encrypted profile reset. Set up a new passphrase to start again.")}catch(err){console.error("Reset failed",err);setSettingsStatus("Could not reset encrypted data. Recheck your passphrase.","error");alert("Could not reset encrypted data. Try again after re-entering your passphrase.")}}
 
     async function loadCourses(){try{const r=await fetch("lessons.json");if(!r.ok)throw new Error("Could not load lessons.json");return await r.json()}catch(e){console.error("Error fetching lessons.json:",e);return[]}}
 
