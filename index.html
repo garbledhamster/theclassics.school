@@ -115,6 +115,9 @@
     .passphrase-card{background:var(--color-white);border-radius:10px;max-width:520px;width:100%;padding:1rem 1.25rem;box-shadow:0 10px 25px rgba(0,0,0,0.15);border:2px solid var(--color-orange)}
     .passphrase-card h3{color:var(--color-red);margin-bottom:0.5rem}
     .passphrase-card .helper-text{color:#5a4a34;margin-bottom:0.75rem}
+    .trusted-device-row{display:flex;align-items:center;gap:0.55rem;margin-top:0.4rem;color:#5a4a34;font-size:0.97rem}
+    .trusted-device-row input{width:18px;height:18px}
+    .trusted-device-row label{cursor:pointer;user-select:none;line-height:1.35}
     .passphrase-actions{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:flex-end;margin-top:0.5rem}
     .passphrase-actions button{background:var(--color-green);color:#fff;border:none;padding:0.5rem 0.9rem;border-radius:6px;font-weight:bold;cursor:pointer}
     .lesson-notes{margin-top:1.5rem;padding:1rem;border:1px solid #c9b28d;border-radius:6px;background:#fffaf2}
@@ -160,6 +163,10 @@
         <label for="gatePassphrase">Master passphrase</label>
         <input id="gatePassphrase" type="password" autocomplete="current-password" placeholder="Enter your master passphrase"/>
         <p class="passphrase-warning">If you never set one, choose a strong passphrase below to initialize your encrypted vault.</p>
+        <div class="trusted-device-row">
+          <input id="gateTrustedDevice" type="checkbox"/>
+          <label for="gateTrustedDevice">Trusted computer (don’t ask again)</label>
+        </div>
         <div class="passphrase-actions">
           <button id="gateUnlockBtn">Unlock</button>
           <button id="gateInitializeBtn" class="secondary">Set up new passphrase</button>
@@ -321,6 +328,7 @@
       const gateUnlockBtn=document.getElementById("gateUnlockBtn")
       const gateInitializeBtn=document.getElementById("gateInitializeBtn")
       const gateGenerateBtn=document.getElementById("gateGenerateBtn")
+      const gateTrustedDevice=document.getElementById("gateTrustedDevice")
       const initializeVaultBtn=document.getElementById("initializeVaultBtn")
       const unlockVaultBtn=document.getElementById("unlockVaultBtn")
       const generatePassphraseBtn=document.getElementById("generatePassphraseBtn")
@@ -353,6 +361,10 @@
       let encryptedLessonProgressPayload=null
       let pendingEncryptedProgressPayload=null
       let decryptedUserPayload=null
+      const TRUSTED_WRAP_DB="vault-wrap-store"
+      const TRUSTED_WRAP_STORE="device-keys"
+      const TRUSTED_WRAP_KEY_ID="wrapping-key"
+      const TRUSTED_CACHE_ID="vault-cache"
 
     sendLinkBtn.onclick=async()=>{if(auth.currentUser){await signOut(auth);return}const email=emailField.value;if(!email){alert("Please enter your email.");return}try{await sendSignInLinkToEmail(auth,email,actionCodeSettings);localStorage.setItem("emailForSignIn",email);alert("Sign-in link sent! Check your email.")}catch(e){console.error(e);alert("Error sending link.")}}
 
@@ -371,6 +383,7 @@
       onAuthStateChanged(auth,async user=>{if(user){loginStatus.textContent=`Signed in as: ${user.email}`;sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="none";lockedContent.style.display="block";signedInActions.style.display="flex"}else{loginStatus.textContent="Not signed in";sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="inline-block";emailField.value="";lockedContent.style.display="none";signedInActions.style.display="none";clearVaultState();currentCourseData={};currentCoursePath="";currentLessonSelection=null;setActiveSection("home");updateQuizContext();setQuizStatus("");renderNotesSummary()}
         await loadUserProgress(user)
         await loadVaultState(user)
+        await tryAutoUnlockFromTrustedCache()
         await refreshCourseStatuses()
         if(user&&!derivedVaultKey)showPassphraseGate();
         if(currentCoursePath&&currentCourseData.course){showCourseContent(currentCourseData,currentCoursePath)}else if(user){setActiveSection("home")}
@@ -387,6 +400,33 @@
     let currentLessonSelection=null
 
     function setDerivedVaultKeyContext(key,saltBytes){derivedVaultKey=key;if(saltBytes)derivedVaultSalt=saltBytes}
+
+    function bytesToBase64(bytes){const arr=bytes instanceof Uint8Array?bytes:new Uint8Array(bytes||[]);let bin="";arr.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin)}
+    function base64ToBytesLocal(str){if(!str)return new Uint8Array();const bin=atob(str);const out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out}
+
+    function openTrustedDb(){return new Promise((resolve,reject)=>{const req=indexedDB.open(TRUSTED_WRAP_DB,1);req.onerror=()=>reject(req.error);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(TRUSTED_WRAP_STORE))db.createObjectStore(TRUSTED_WRAP_STORE)};req.onsuccess=()=>resolve(req.result)})}
+
+    async function readStoreValue(key){const db=await openTrustedDb();return new Promise((resolve,reject)=>{const tx=db.transaction(TRUSTED_WRAP_STORE,"readonly");const store=tx.objectStore(TRUSTED_WRAP_STORE);const req=store.get(key);req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error)})}
+
+    async function writeStoreValue(key,value){const db=await openTrustedDb();return new Promise((resolve,reject)=>{const tx=db.transaction(TRUSTED_WRAP_STORE,"readwrite");tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.objectStore(TRUSTED_WRAP_STORE).put(value,key)})}
+
+    async function deleteStoreValue(key){const db=await openTrustedDb();return new Promise((resolve,reject)=>{const tx=db.transaction(TRUSTED_WRAP_STORE,"readwrite");tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.objectStore(TRUSTED_WRAP_STORE).delete(key)})}
+
+    async function getStoredWrappingKey(){try{return await readStoreValue(TRUSTED_WRAP_KEY_ID)}catch(err){console.error("Wrap key fetch failed",err);return null}}
+
+    async function persistWrappingKey(key){try{await writeStoreValue(TRUSTED_WRAP_KEY_ID,key)}catch(err){console.error("Wrap key persist failed",err)}}
+
+    async function clearTrustedDeviceCache(){try{localStorage.removeItem("trustedWrappedKey");localStorage.removeItem("trustedWrapSalt");localStorage.removeItem("trustedVaultSalt");await deleteStoreValue(TRUSTED_CACHE_ID);await deleteStoreValue(TRUSTED_WRAP_KEY_ID)}catch(err){console.error("Error clearing trusted cache",err)}}
+
+    async function getOrCreateWrappingKey(){const existing=await getStoredWrappingKey();if(existing)return existing;const key=await crypto.subtle.generateKey({name:"AES-GCM",length:256},false,["wrapKey","unwrapKey"]);await persistWrappingKey(key);return key}
+
+    function cachePayloadLocally(wrappedBuffer,saltBytes,vaultSaltBytes){localStorage.setItem("trustedWrappedKey",bytesToBase64(new Uint8Array(wrappedBuffer||[])));localStorage.setItem("trustedWrapSalt",bytesToBase64(new Uint8Array(saltBytes||[])));if(vaultSaltBytes)localStorage.setItem("trustedVaultSalt",bytesToBase64(new Uint8Array(vaultSaltBytes)))}
+
+    async function persistTrustedCache(keyToWrap,vaultSaltBytes){const wrappingKey=await getOrCreateWrappingKey();const saltBytes=crypto.getRandomValues(new Uint8Array(16));const iv=saltBytes.slice(0,12);const wrapped=await crypto.subtle.wrapKey("raw",keyToWrap,wrappingKey,{name:"AES-GCM",iv,additionalData:saltBytes});cachePayloadLocally(wrapped,saltBytes,vaultSaltBytes);await writeStoreValue(TRUSTED_CACHE_ID,{wrapped,saltBytes,vaultSaltBytes})}
+
+    function readLocalCache(){const wrapped=localStorage.getItem("trustedWrappedKey");const salt=localStorage.getItem("trustedWrapSalt");const vaultSalt=localStorage.getItem("trustedVaultSalt");if(!wrapped||!salt)return null;return{wrapped:base64ToBytesLocal(wrapped),saltBytes:base64ToBytesLocal(salt),vaultSaltBytes:vaultSalt?base64ToBytesLocal(vaultSalt):null}}
+
+    async function getTrustedCache(){const local=readLocalCache();if(local)return local;try{const stored=await readStoreValue(TRUSTED_CACHE_ID);if(stored)return{wrapped:new Uint8Array(stored.wrapped||[]),saltBytes:new Uint8Array(stored.saltBytes||[]),vaultSaltBytes:stored.vaultSaltBytes?new Uint8Array(stored.vaultSaltBytes):null}}catch(err){console.error("Trusted cache read failed",err)}return null}
 
     function getActiveSaltBytes(payload){if(payload&&payload.salt)return decodeSalt(payload.salt);if(derivedVaultSalt)return derivedVaultSalt;if(vaultDoc&&vaultDoc.salt)return decodeSalt(vaultDoc.salt);return null}
 
@@ -434,7 +474,11 @@
         if(!entries.length){notesEmptyState.textContent="No saved notes yet. Open a lesson and add notes to see them here.";return}
         notesEmptyState.textContent="";entries.forEach(entry=>{const card=document.createElement("div");card.className="notes-card";const h=document.createElement("h4");h.textContent=entry.lessonTitle;const meta=document.createElement("p");meta.className="settings-note";meta.textContent=`Course file: ${entry.coursePath}`;const body=document.createElement("p");body.textContent=entry.text;card.appendChild(h);card.appendChild(meta);card.appendChild(body);notesList.appendChild(card)})}
 
-      function clearVaultState(){derivedVaultKey=null;derivedVaultSalt=null;vaultDoc=null;decryptedUserPayload=null;encryptedLessonProgressPayload=null;pendingEncryptedProgressPayload=null;vaultPassphraseInput.value="";gatePassphraseInput.value="";setVaultUIState("locked");hidePassphraseGate()}
+      function clearVaultState(){derivedVaultKey=null;derivedVaultSalt=null;vaultDoc=null;decryptedUserPayload=null;encryptedLessonProgressPayload=null;pendingEncryptedProgressPayload=null;vaultPassphraseInput.value="";gatePassphraseInput.value="";setVaultUIState("locked");hidePassphraseGate();clearTrustedDeviceCache()}
+
+      async function handleTrustedDeviceSelection(key,saltBytes){if(!gateTrustedDevice?.checked){await clearTrustedDeviceCache();return}try{await persistTrustedCache(key,saltBytes)}catch(err){console.error("Trusted device cache failed",err);await clearTrustedDeviceCache()}}
+
+      async function tryAutoUnlockFromTrustedCache(){try{if(!vaultDoc)return false;const cache=await getTrustedCache();if(!cache)return false;const wrappingKey=await getStoredWrappingKey();if(!wrappingKey)return false;if(!cache.saltBytes||cache.saltBytes.length<12)return false;const iv=cache.saltBytes.slice(0,12);const unwrappedKey=await crypto.subtle.unwrapKey("raw",wrappingKey,cache.wrapped.buffer,{name:"AES-GCM",iv,additionalData:cache.saltBytes},{name:"AES-GCM",length:256},true,["encrypt","decrypt"]);const activeSalt=getActiveSaltBytes(vaultDoc)||cache.vaultSaltBytes;if(!activeSalt)throw new Error("Missing vault salt for cached key.");setDerivedVaultKeyContext(unwrappedKey,activeSalt);const decryptedText=await decryptSecret(vaultDoc,unwrappedKey);decryptedUserPayload=parseUserPayload(decryptedText);await tryDecryptPendingProgress();setVaultUIState("unlocked");if(gateTrustedDevice)gateTrustedDevice.checked=true;hidePassphraseGate();return true}catch(err){console.error("Trusted device auto-unlock failed",err);await clearTrustedDeviceCache();return false}}
 
       function getDefaultUserPayload(){const normalized=normalizeVersionInfo(profileVersionInfo,"profile-default");profileVersionInfo=normalized;return{secret:"",displayName:"",apiKey:"",metadata:"",versionInfo:normalized}}
 
@@ -450,11 +494,11 @@
 
       async function loadVaultState(user){try{if(!user){clearVaultState();return}const snap=await getDoc(doc(db,"userData",user.uid));if(snap.exists()){vaultDoc=snap.data();setVaultUIState("locked")}else{vaultDoc=null;setVaultUIState("setup")}}catch(e){console.error("Error loading vault:",e);setVaultUIState("setup")}}
 
-      async function initializeVault(){try{const user=auth.currentUser;if(!user)return;const passphrase=readPassphraseInput();if(passphrase.length<12){alert("Please choose a longer passphrase (at least 12 characters).");return}const {key,salt}=await deriveKeyFromPassphrase(passphrase);setDerivedVaultKeyContext(key,salt);decryptedUserPayload={...getDefaultUserPayload()};await persistEncryptedPayload(key,salt);await tryDecryptPendingProgress();setVaultUIState("unlocked");hidePassphraseGate();alert("Vault initialized. Remember to store your passphrase safely—there is no recovery option.")}catch(err){console.error("Error initializing vault",err);alert("Could not initialize vault. Please try again.")}}
+      async function initializeVault(){try{const user=auth.currentUser;if(!user)return;const passphrase=readPassphraseInput();if(passphrase.length<12){alert("Please choose a longer passphrase (at least 12 characters).");return}const {key,salt}=await deriveKeyFromPassphrase(passphrase);setDerivedVaultKeyContext(key,salt);decryptedUserPayload={...getDefaultUserPayload()};await persistEncryptedPayload(key,salt);await handleTrustedDeviceSelection(key,salt);await tryDecryptPendingProgress();setVaultUIState("unlocked");hidePassphraseGate();alert("Vault initialized. Remember to store your passphrase safely—there is no recovery option.")}catch(err){console.error("Error initializing vault",err);alert("Could not initialize vault. Please try again.")}}
 
       async function loadEncryptedProfile(passphrase){if(!vaultDoc){throw new Error("No encrypted profile available.")}const saltBytes=vaultDoc?.salt?decodeSalt(vaultDoc.salt):null;if(!saltBytes)throw new Error("Missing vault salt. Reinitialize the vault.");const {key}=await deriveKeyFromPassphrase(passphrase,saltBytes);const decryptedText=await decryptSecret(vaultDoc,key);setDerivedVaultKeyContext(key,saltBytes);decryptedUserPayload=parseUserPayload(decryptedText);await tryDecryptPendingProgress();hidePassphraseGate();return{key,saltBytes}}
 
-      async function unlockVault(){try{if(!vaultDoc){alert("No vault found to unlock.");return}const passphrase=readPassphraseInput();if(!passphrase){alert("Enter your master passphrase to unlock.");return}await loadEncryptedProfile(passphrase);setVaultUIState("unlocked");hidePassphraseGate()}catch(err){console.error("Unlock failed",err);alert("Could not unlock vault. Double-check your passphrase.")}}
+      async function unlockVault(){try{if(!vaultDoc){alert("No vault found to unlock.");return}const passphrase=readPassphraseInput();if(!passphrase){alert("Enter your master passphrase to unlock.");return}const {key,saltBytes}=await loadEncryptedProfile(passphrase);await handleTrustedDeviceSelection(key,saltBytes);setVaultUIState("unlocked");hidePassphraseGate()}catch(err){console.error("Unlock failed",err);alert("Could not unlock vault. Double-check your passphrase.")}}
 
       function resetSettingsForm(){settingsNewPassphrase.value="";settingsDisplayName.value="";settingsApiKey.value="";settingsMetadata.value="";settingsFields.style.display="none";setSettingsStatus("", "info")}
 
