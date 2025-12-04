@@ -74,6 +74,14 @@
     #sendSignInLink{background-color:var(--color-green);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-weight:bold;font-size:1rem;line-height:1.5;margin:0.5rem}
     #sendSignInLink:hover{background-color:#6e7a4b}
     #lockedContent{display:none}
+    .account-actions{display:flex;gap:0.5rem;justify-content:center;margin-bottom:1rem;flex-wrap:wrap}
+    .account-actions button{background-color:var(--color-green);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-weight:bold;line-height:1.5}
+    .account-actions button.secondary{background-color:var(--color-orange)}
+    .settings-field{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.75rem}
+    .settings-field label{font-weight:bold}
+    .settings-field input,.settings-field textarea{width:100%;padding:0.5rem;border:2px solid var(--color-green);border-radius:4px;font-family:var(--font-base)}
+    .settings-warning{color:var(--color-red);font-weight:bold;margin:0.25rem 0}
+    .settings-note{font-size:0.95rem;color:#5a4a34;margin-bottom:0.5rem}
     .vault-card{background:var(--color-beige);border:1px solid #c9b28d;border-radius:6px;padding:1rem;margin:1rem auto;max-width:960px;line-height:1.5}
     .vault-card h3{color:var(--color-red);margin-bottom:0.5rem}
     .vault-card .helper-text{color:#5a4a34;margin-bottom:0.75rem}
@@ -116,6 +124,10 @@
       <div><input id="emailForSignIn" type="email" placeholder="Enter your email"/></div>
       <button id="sendSignInLink">Send Sign-In Link</button>
       <p id="loginStatus" style="margin-top:0.5rem;color:var(--color-orange);"></p>
+      <div id="signedInActions" class="account-actions" style="display:none;">
+        <button id="openSettingsBtn">Settings</button>
+        <button id="signOutBtn" class="secondary">Sign Out</button>
+      </div>
     </div>
       <div id="lockedContent">
         <section id="vaultContainer" class="vault-card" style="display:none;">
@@ -179,13 +191,57 @@
       </div>
     </div>
   </div>
+  <div class="modal micromodal-slide" id="modal-settings" aria-hidden="true">
+    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+      <div class="modal__container" role="dialog" aria-modal="true">
+        <header class="modal__header"><h2 class="modal__title">Account Settings</h2><button class="modal__close" data-micromodal-close></button></header>
+        <main class="modal__content">
+          <p class="settings-warning">Never lose your master passphrase. Without it, your encrypted data—including these settings—cannot be recovered.</p>
+          <div class="settings-field">
+            <label for="settingsPassphrase">Re-enter master passphrase to unlock settings</label>
+            <input id="settingsPassphrase" type="password" autocomplete="current-password" placeholder="Enter master passphrase"/>
+          </div>
+          <div class="settings-note">We only keep the key in memory for this session. Enter the passphrase each time you open settings.</div>
+          <div id="settingsFields" style="display:none;">
+            <div class="settings-field">
+              <label for="settingsDisplayName">Display name</label>
+              <input id="settingsDisplayName" type="text" placeholder="How you want to appear in the app"/>
+            </div>
+            <div class="settings-field">
+              <label for="settingsApiKey">API key</label>
+              <input id="settingsApiKey" type="password" placeholder="Paste a private API key" autocomplete="off"/>
+              <div class="settings-note">Stored only in your encrypted profile. Keep it secret.</div>
+            </div>
+            <div class="settings-field">
+              <label for="settingsMetadata">Metadata / notes</label>
+              <textarea id="settingsMetadata" rows="3" placeholder="Optional context about your account"></textarea>
+            </div>
+            <div class="settings-warning">Saving updates the encrypted profile in Firestore. Losing your passphrase will make this data inaccessible.</div>
+          </div>
+          <div class="settings-field">
+            <label for="settingsNewPassphrase">Rotate passphrase (optional)</label>
+            <input id="settingsNewPassphrase" type="password" autocomplete="new-password" placeholder="Enter a new master passphrase"/>
+            <div class="settings-note">Rotating creates a new encryption key. You must remember the new passphrase to keep access.</div>
+          </div>
+        </main>
+        <footer class="modal__footer" style="display:flex;flex-direction:column;gap:0.5rem;align-items:flex-end;">
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:flex-end;width:100%;">
+            <button class="modal__btn" id="loadSettingsBtn" type="button">Unlock Settings</button>
+            <button class="modal__btn" id="saveSettingsBtn" type="button">Save Settings</button>
+            <button class="modal__btn" id="rotatePassphraseBtn" type="button" style="background:var(--color-orange);">Rotate Passphrase</button>
+          </div>
+          <button class="modal__btn" id="resetAccountBtn" type="button" style="background:var(--color-red);width:100%;">Reset encrypted data (irreversible)</button>
+        </footer>
+      </div>
+    </div>
+  </div>
   <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"
       import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"
-      import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"
+      import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"
       import { decodeSalt, decryptSecret, deriveKeyFromPassphrase, encryptSecret, generatePassphrase } from "./vault.js"
 
     const firebaseConfig={apiKey:"AIzaSyAOFHZbn02JpIlSHNxNdvBnfdYv08tZMJs",authDomain:"the-classics-befd2.firebaseapp.com",projectId:"the-classics-befd2",storageBucket:"the-classics-befd2.firebasestorage.app",messagingSenderId:"171500319429",appId:"1:171500319429:web:2f67b006048191fa6036ac",measurementId:"G-08W3C50VF6"}
@@ -198,6 +254,7 @@
       const sendLinkBtn=document.getElementById("sendSignInLink")
       const loginStatus=document.getElementById("loginStatus")
       const lockedContent=document.getElementById("lockedContent")
+      const signedInActions=document.getElementById("signedInActions")
       const vaultContainer=document.getElementById("vaultContainer")
       const vaultHeading=document.getElementById("vaultHeading")
       const vaultDescription=document.getElementById("vaultDescription")
@@ -210,15 +267,28 @@
       const lockVaultBtn=document.getElementById("lockVaultBtn")
       const generatePassphraseBtn=document.getElementById("generatePassphraseBtn")
       const copyPassphraseBtn=document.getElementById("copyPassphraseBtn")
+      const openSettingsBtn=document.getElementById("openSettingsBtn")
+      const signOutBtn=document.getElementById("signOutBtn")
+      const settingsPassphrase=document.getElementById("settingsPassphrase")
+      const settingsFields=document.getElementById("settingsFields")
+      const settingsDisplayName=document.getElementById("settingsDisplayName")
+      const settingsApiKey=document.getElementById("settingsApiKey")
+      const settingsMetadata=document.getElementById("settingsMetadata")
+      const settingsNewPassphrase=document.getElementById("settingsNewPassphrase")
+      const loadSettingsBtn=document.getElementById("loadSettingsBtn")
+      const saveSettingsBtn=document.getElementById("saveSettingsBtn")
+      const rotatePassphraseBtn=document.getElementById("rotatePassphraseBtn")
+      const resetAccountBtn=document.getElementById("resetAccountBtn")
       let lessonProgress={}
       let vaultDoc=null
       let derivedVaultKey=null
+      let decryptedUserPayload=null
 
     sendLinkBtn.onclick=async()=>{if(auth.currentUser){await signOut(auth);return}const email=emailField.value;if(!email){alert("Please enter your email.");return}try{await sendSignInLinkToEmail(auth,email,actionCodeSettings);localStorage.setItem("emailForSignIn",email);alert("Sign-in link sent! Check your email.")}catch(e){console.error(e);alert("Error sending link.")}}
 
     if(isSignInWithEmailLink(auth,window.location.href)){const storedEmail=localStorage.getItem("emailForSignIn");if(storedEmail){signInWithEmailLink(auth,storedEmail,window.location.href).then(()=>{localStorage.removeItem("emailForSignIn");alert("You are now signed in!");window.history.replaceState({},document.title,"/")}).catch(e=>console.error(e))}}
 
-      onAuthStateChanged(auth,async user=>{if(user){loginStatus.textContent=`Signed in as: ${user.email}`;sendLinkBtn.textContent="Logout";emailField.style.display="none";lockedContent.style.display="block"}else{loginStatus.textContent="Not signed in";sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="inline-block";emailField.value="";lockedContent.style.display="none";clearVaultState()}
+      onAuthStateChanged(auth,async user=>{if(user){loginStatus.textContent=`Signed in as: ${user.email}`;sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="none";lockedContent.style.display="block";signedInActions.style.display="flex"}else{loginStatus.textContent="Not signed in";sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="inline-block";emailField.value="";lockedContent.style.display="none";signedInActions.style.display="none";clearVaultState()}
         await loadUserProgress(user)
         await loadVaultState(user)
         await refreshCourseStatuses()
@@ -239,19 +309,43 @@
       function toggleLessonChecked(p,t,v){if(!lessonProgress[p])lessonProgress[p]={};lessonProgress[p][t]=v}
       function getLessonIcon(t){if(t==="reading")return'<i class="fas fa-book"></i>';if(t==="quiz")return'<i class="fas fa-question-circle"></i>';if(t==="video")return'<i class="fas fa-video"></i>';return'<i class="fas fa-file-alt"></i>'}
 
-      function clearVaultState(){derivedVaultKey=null;vaultDoc=null;vaultPassphraseInput.value="";vaultSecretField.value="";if(vaultContainer)vaultContainer.style.display="none"}
+      function clearVaultState(){derivedVaultKey=null;vaultDoc=null;decryptedUserPayload=null;vaultPassphraseInput.value="";vaultSecretField.value="";if(vaultContainer)vaultContainer.style.display="none"}
+
+      function getDefaultUserPayload(){return{secret:"",displayName:"",apiKey:"",metadata:""}}
+
+      function parseUserPayload(text){try{const parsed=JSON.parse(text);return{...getDefaultUserPayload(),...parsed}}catch(e){return{...getDefaultUserPayload(),secret:text||""}}}
+
+      function serializeUserPayload(){const payload={...getDefaultUserPayload(),...(decryptedUserPayload||{})};return JSON.stringify(payload)}
+
+      async function persistEncryptedPayload(key,saltBytes){const user=auth.currentUser;if(!user)return;const encrypted=await encryptSecret(serializeUserPayload(),key,saltBytes);await setDoc(doc(db,"userData",user.uid),encrypted);vaultDoc=encrypted}
+
+      function syncVaultSecretField(){const payload=decryptedUserPayload||getDefaultUserPayload();vaultSecretField.value=payload.secret||""}
 
       function setVaultUIState(mode){if(!vaultContainer)return;const hasUser=!!auth.currentUser;vaultContainer.style.display=hasUser?"block":"none";vaultContentArea.style.display=mode==="unlocked"?"block":"none";if(mode!=="unlocked")vaultSecretField.value="";if(mode==="setup"){vaultHeading.textContent="Protect your private notes";vaultDescription.textContent="Set up a master passphrase to encrypt your secrets. We cannot recover this passphrase if you lose it.";initializeVaultBtn.style.display="inline-block";unlockVaultBtn.style.display="none"}else if(mode==="locked"){vaultHeading.textContent="Unlock your vault";vaultDescription.textContent="Enter your master passphrase to read or update your encrypted secrets.";initializeVaultBtn.style.display="none";unlockVaultBtn.style.display="inline-block"}else{vaultHeading.textContent="Vault unlocked";vaultDescription.textContent="You can edit your encrypted secret below. Lock the vault to clear the key from memory.";initializeVaultBtn.style.display="none";unlockVaultBtn.style.display="none"}}
 
       async function loadVaultState(user){try{if(!user){clearVaultState();return}const snap=await getDoc(doc(db,"userData",user.uid));if(snap.exists()){vaultDoc=snap.data();setVaultUIState("locked")}else{vaultDoc=null;setVaultUIState("setup")}}catch(e){console.error("Error loading vault:",e);setVaultUIState("setup")}}
 
-      async function initializeVault(){try{const user=auth.currentUser;if(!user)return;const passphrase=vaultPassphraseInput.value.trim();if(passphrase.length<12){alert("Please choose a longer passphrase (at least 12 characters).");return}const {key,salt}=await deriveKeyFromPassphrase(passphrase);derivedVaultKey=key;const encrypted=await encryptSecret(vaultSecretField.value||"",key,salt);await setDoc(doc(db,"userData",user.uid),{ciphertext:encrypted.ciphertext,iv:encrypted.iv,salt:encrypted.salt,version:encrypted.version});vaultDoc=encrypted;setVaultUIState("unlocked");alert("Vault initialized. Remember to store your passphrase safely—there is no recovery option.")}catch(err){console.error("Error initializing vault",err);alert("Could not initialize vault. Please try again.")}}
+      async function initializeVault(){try{const user=auth.currentUser;if(!user)return;const passphrase=vaultPassphraseInput.value.trim();if(passphrase.length<12){alert("Please choose a longer passphrase (at least 12 characters).");return}const {key,salt}=await deriveKeyFromPassphrase(passphrase);derivedVaultKey=key;decryptedUserPayload={...getDefaultUserPayload(),secret:vaultSecretField.value||""};await persistEncryptedPayload(key,salt);setVaultUIState("unlocked");alert("Vault initialized. Remember to store your passphrase safely—there is no recovery option.")}catch(err){console.error("Error initializing vault",err);alert("Could not initialize vault. Please try again.")}}
 
-      async function unlockVault(){try{if(!vaultDoc){alert("No vault found to unlock.");return}const passphrase=vaultPassphraseInput.value.trim();if(!passphrase){alert("Enter your master passphrase to unlock.");return}const saltBytes=decodeSalt(vaultDoc.salt);const {key}=await deriveKeyFromPassphrase(passphrase,saltBytes);const secretText=await decryptSecret(vaultDoc,key);derivedVaultKey=key;vaultSecretField.value=secretText;setVaultUIState("unlocked")}catch(err){console.error("Unlock failed",err);alert("Could not unlock vault. Double-check your passphrase.")}}
+      async function loadEncryptedProfile(passphrase){if(!vaultDoc){throw new Error("No encrypted profile available.")}const saltBytes=vaultDoc?.salt?decodeSalt(vaultDoc.salt):null;if(!saltBytes)throw new Error("Missing vault salt. Reinitialize the vault.");const {key}=await deriveKeyFromPassphrase(passphrase,saltBytes);const decryptedText=await decryptSecret(vaultDoc,key);derivedVaultKey=key;decryptedUserPayload=parseUserPayload(decryptedText);syncVaultSecretField();return{key,saltBytes}}
 
-      async function saveVaultSecret(){try{if(!derivedVaultKey){alert("Unlock the vault with your passphrase first.");return}const user=auth.currentUser;if(!user)return;const saltBytes=vaultDoc?.salt?decodeSalt(vaultDoc.salt):null;if(!saltBytes){alert("Missing vault salt. Reinitialize the vault.");return}const encrypted=await encryptSecret(vaultSecretField.value||"",derivedVaultKey,saltBytes);await setDoc(doc(db,"userData",user.uid),{ciphertext:encrypted.ciphertext,iv:encrypted.iv,salt:encrypted.salt,version:encrypted.version});vaultDoc=encrypted;alert("Encrypted secret saved. Remember to store your passphrase safely.")}catch(err){console.error("Save failed",err);alert("Could not save secret. Please try again.")}}
+      async function unlockVault(){try{if(!vaultDoc){alert("No vault found to unlock.");return}const passphrase=vaultPassphraseInput.value.trim();if(!passphrase){alert("Enter your master passphrase to unlock.");return}await loadEncryptedProfile(passphrase);setVaultUIState("unlocked")}catch(err){console.error("Unlock failed",err);alert("Could not unlock vault. Double-check your passphrase.")}}
+
+      async function saveVaultSecret(){try{if(!derivedVaultKey){alert("Unlock the vault with your passphrase first.");return}const user=auth.currentUser;if(!user)return;const saltBytes=vaultDoc?.salt?decodeSalt(vaultDoc.salt):null;if(!saltBytes){alert("Missing vault salt. Reinitialize the vault.");return}decryptedUserPayload={...getDefaultUserPayload(),...(decryptedUserPayload||{}),secret:vaultSecretField.value||""};await persistEncryptedPayload(derivedVaultKey,saltBytes);alert("Encrypted secret saved. Remember to store your passphrase safely.")}catch(err){console.error("Save failed",err);alert("Could not save secret. Please try again.")}}
 
       function lockVault(){derivedVaultKey=null;vaultSecretField.value="";vaultPassphraseInput.value="";setVaultUIState(vaultDoc?"locked":"setup")}
+
+      function resetSettingsForm(){settingsPassphrase.value="";settingsNewPassphrase.value="";settingsDisplayName.value="";settingsApiKey.value="";settingsMetadata.value="";settingsFields.style.display="none"}
+
+      function populateSettingsFields(){const payload=decryptedUserPayload||getDefaultUserPayload();settingsDisplayName.value=payload.displayName||"";settingsApiKey.value=payload.apiKey||"";settingsMetadata.value=payload.metadata||"";syncVaultSecretField();settingsFields.style.display="block"}
+
+      async function unlockSettingsFromModal(){try{if(!vaultDoc){alert("Create or unlock your vault before opening settings.");return}const passphrase=settingsPassphrase.value.trim();if(!passphrase){alert("Enter your master passphrase to continue.");return}await loadEncryptedProfile(passphrase);populateSettingsFields();alert("Settings unlocked for this session. Remember: your key stays only in memory.")}catch(err){console.error("Settings unlock failed",err);alert("Could not unlock settings. Double-check your passphrase.")}}
+
+      async function saveSettings(){try{if(!vaultDoc){alert("Initialize your encrypted profile first.");return}const passphrase=settingsPassphrase.value.trim();if(!passphrase){alert("Re-enter your master passphrase to save.");return}const {saltBytes}=await loadEncryptedProfile(passphrase);decryptedUserPayload={...getDefaultUserPayload(),...(decryptedUserPayload||{}),displayName:settingsDisplayName.value.trim(),apiKey:settingsApiKey.value.trim(),metadata:settingsMetadata.value.trim(),secret:(decryptedUserPayload&&decryptedUserPayload.secret)||vaultSecretField.value||""};await persistEncryptedPayload(derivedVaultKey,saltBytes);settingsFields.style.display="block";alert("Settings saved and re-encrypted. Keep your passphrase safe.")}catch(err){console.error("Settings save failed",err);alert("Could not save settings. Please try again.")}}
+
+      async function rotatePassphrase(){try{if(!vaultDoc){alert("Nothing to rotate yet. Initialize your vault first.");return}const currentPass=settingsPassphrase.value.trim();if(!currentPass){alert("Enter your current passphrase to rotate.");return}const newPass=settingsNewPassphrase.value.trim();if(newPass.length<12){alert("Choose a stronger new passphrase (at least 12 characters).");return}await loadEncryptedProfile(currentPass);const {key:newKey,salt:newSalt}=await deriveKeyFromPassphrase(newPass);await persistEncryptedPayload(newKey,newSalt);derivedVaultKey=newKey;settingsNewPassphrase.value="";settingsPassphrase.value="";vaultPassphraseInput.value="";alert("Passphrase rotated. You must remember the new passphrase to keep access.");setVaultUIState("locked")}catch(err){console.error("Passphrase rotation failed",err);alert("Could not rotate passphrase. Confirm your current passphrase and try again.")}}
+
+      async function resetEncryptedAccount(){try{if(!vaultDoc){alert("No encrypted data to reset.");return}const passphrase=settingsPassphrase.value.trim();if(!passphrase){alert("Enter your master passphrase to continue.");return}await loadEncryptedProfile(passphrase);const confirmed=confirm("This will delete your encrypted data. Without the passphrase, it cannot be restored. Continue?");if(!confirmed)return;const user=auth.currentUser;if(!user)return;await deleteDoc(doc(db,"userData",user.uid));clearVaultState();setVaultUIState("setup");MicroModal.close("modal-settings");alert("Encrypted profile reset. Set up a new passphrase to start again.")}catch(err){console.error("Reset failed",err);alert("Could not reset encrypted data. Try again after re-entering your passphrase.")}}
 
     async function loadCourses(){try{const r=await fetch("lessons.json");if(!r.ok)throw new Error("Could not load lessons.json");return await r.json()}catch(e){console.error("Error fetching lessons.json:",e);return[]}}
 
@@ -282,6 +376,12 @@
       unlockVaultBtn?.addEventListener("click",unlockVault)
       saveSecretBtn?.addEventListener("click",saveVaultSecret)
       lockVaultBtn?.addEventListener("click",lockVault)
+      openSettingsBtn?.addEventListener("click",()=>{resetSettingsForm();if(!vaultDoc){alert("Set up your vault first so settings can be encrypted.")}MicroModal.show("modal-settings")})
+      signOutBtn?.addEventListener("click",async()=>{await signOut(auth)})
+      loadSettingsBtn?.addEventListener("click",unlockSettingsFromModal)
+      saveSettingsBtn?.addEventListener("click",saveSettings)
+      rotatePassphraseBtn?.addEventListener("click",rotatePassphrase)
+      resetAccountBtn?.addEventListener("click",resetEncryptedAccount)
 
       document.addEventListener("DOMContentLoaded",async()=>{allCourses=await loadCourses();await refreshCourseStatuses();handleViewLessons(defaultGuidePath);document.getElementById("courseSearch").addEventListener("input",e=>{renderCourses(filterCourses(allCourses,e.target.value))});document.addEventListener("click",e=>{const b=e.target;if(b.tagName==="BUTTON"&&b.hasAttribute("data-file"))handleViewLessons(b.getAttribute("data-file"))});document.getElementById("homeLink").addEventListener("click",e=>{e.preventDefault();handleViewLessons(defaultGuidePath)});document.getElementById("sidebarToggle").addEventListener("click",toggleSidebar)})
   </script>
