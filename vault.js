@@ -40,7 +40,7 @@ export async function deriveKeyFromPassphrase(passphrase, saltBytes){
     {name:"PBKDF2", salt, iterations:210000, hash:"SHA-256"},
     keyMaterial,
     {name:"AES-GCM", length:256},
-    false,
+    true,
     ["encrypt","decrypt"]
   )
   return { key, salt }
