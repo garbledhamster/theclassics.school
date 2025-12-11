@@ -115,9 +115,10 @@
     .passphrase-card{background:var(--color-white);border-radius:10px;max-width:520px;width:100%;padding:1rem 1.25rem;box-shadow:0 10px 25px rgba(0,0,0,0.15);border:2px solid var(--color-orange)}
     .passphrase-card h3{color:var(--color-red);margin-bottom:0.5rem}
     .passphrase-card .helper-text{color:#5a4a34;margin-bottom:0.75rem}
-    .trusted-device-row{display:flex;align-items:center;gap:0.55rem;margin-top:0.4rem;color:#5a4a34;font-size:0.97rem}
-    .trusted-device-row input{width:18px;height:18px}
-    .trusted-device-row label{cursor:pointer;user-select:none;line-height:1.35}
+    .trusted-device-row{display:flex;align-items:flex-start;justify-content:flex-start;gap:0.55rem;margin-top:0.4rem;color:#5a4a34;font-size:0.97rem}
+    .trusted-device-row input{width:18px;height:18px;margin-top:0.1rem}
+    .trusted-device-row label{cursor:pointer;user-select:none;line-height:1.25;font-weight:600;display:flex;flex-direction:column;gap:0.1rem;margin:0}
+    .trusted-device-row .trusted-device-hint{font-weight:400;font-size:0.95em;color:#6b5c3f}
     .passphrase-actions{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:flex-end;margin-top:0.5rem}
     .passphrase-actions button{background:var(--color-green);color:#fff;border:none;padding:0.5rem 0.9rem;border-radius:6px;font-weight:bold;cursor:pointer}
     .lesson-notes{margin-top:1.5rem;padding:1rem;border:1px solid #c9b28d;border-radius:6px;background:#fffaf2}
@@ -163,10 +164,13 @@
         <label for="gatePassphrase">Master passphrase</label>
         <input id="gatePassphrase" type="password" autocomplete="current-password" placeholder="Enter your master passphrase"/>
         <p class="passphrase-warning">If you never set one, choose a strong passphrase below to initialize your encrypted vault.</p>
-        <label style="display:flex;align-items:center;gap:0.5rem;margin-top:0.35rem;user-select:none;">
+                <div class="trusted-device-row">
           <input id="gateTrustedDevice" type="checkbox"/>
-          <span>Trusted computer (don’t ask again)</span>
-        </label>
+          <label for="gateTrustedDevice">
+            <span>Trusted computer</span>
+            <span class="trusted-device-hint">(don't ask again)</span>
+          </label>
+        </div>
         <div class="passphrase-actions">
           <button id="gateUnlockBtn">Unlock</button>
           <button id="gateInitializeBtn" class="secondary">Set up new passphrase</button>
@@ -555,3 +559,4 @@
   </script>
 </body>
 </html>
+
