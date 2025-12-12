@@ -164,7 +164,7 @@
         <label for="gatePassphrase">Master passphrase</label>
         <input id="gatePassphrase" type="password" autocomplete="current-password" placeholder="Enter your master passphrase"/>
         <p class="passphrase-warning">If you never set one, choose a strong passphrase below to initialize your encrypted vault.</p>
-                <div class="trusted-device-row">
+        <div class="trusted-device-row">
           <input id="gateTrustedDevice" type="checkbox"/>
           <label for="gateTrustedDevice">
             <span>Trusted computer</span>
@@ -189,29 +189,29 @@
         <button id="signOutBtn" class="secondary">Sign Out</button>
       </div>
     </div>
-      <div id="lockedContent">
-        <section id="vaultContainer" class="vault-card" style="display:none;">
-          <h3 id="vaultHeading">Secure your account</h3>
-          <p id="vaultDescription" class="helper-text">Enter or set a master passphrase to unlock lessons, settings, and notes. We cannot recover it if lost.</p>
-          <div class="vault-field">
-            <label for="vaultPassphrase">Master passphrase</label>
-            <input id="vaultPassphrase" type="password" autocomplete="new-password" placeholder="Enter or paste your master passphrase"/>
-            <p class="passphrase-warning">Keep this somewhere safe before you continue. Losing it means losing access to your encrypted data.</p>
-            <div class="vault-actions">
-              <button id="generatePassphraseBtn">Generate strong passphrase</button>
-              <button id="copyPassphraseBtn" class="secondary">Copy passphrase</button>
-            </div>
-            <p class="copy-hint">Stored only in this session. We never send the passphrase to the server.</p>
-          </div>
+    <div id="lockedContent">
+      <section id="vaultContainer" class="vault-card" style="display:none;">
+        <h3 id="vaultHeading">Secure your account</h3>
+        <p id="vaultDescription" class="helper-text">Enter or set a master passphrase to unlock lessons, settings, and notes. We cannot recover it if lost.</p>
+        <div class="vault-field">
+          <label for="vaultPassphrase">Master passphrase</label>
+          <input id="vaultPassphrase" type="password" autocomplete="new-password" placeholder="Enter or paste your master passphrase"/>
+          <p class="passphrase-warning">Keep this somewhere safe before you continue. Losing it means losing access to your encrypted data.</p>
           <div class="vault-actions">
-            <button id="initializeVaultBtn">Save &amp; initialize vault</button>
-            <button id="unlockVaultBtn" class="secondary">Unlock existing vault</button>
+            <button id="generatePassphraseBtn">Generate strong passphrase</button>
+            <button id="copyPassphraseBtn" class="secondary">Copy passphrase</button>
           </div>
-        </section>
-        <section id="homeSection" class="page-section" data-section="home">
-          <div class="course-search"><input type="text" id="courseSearch" placeholder="Search for a course..."></div>
-          <div class="course-list" id="courseList"></div>
-        </section>
+          <p class="copy-hint">Stored only in this session. We never send the passphrase to the server.</p>
+        </div>
+        <div class="vault-actions">
+          <button id="initializeVaultBtn">Save &amp; initialize vault</button>
+          <button id="unlockVaultBtn" class="secondary">Unlock existing vault</button>
+        </div>
+      </section>
+      <section id="homeSection" class="page-section" data-section="home">
+        <div class="course-search"><input type="text" id="courseSearch" placeholder="Search for a course..."></div>
+        <div class="course-list" id="courseList"></div>
+      </section>
       <section id="lessonsSection" class="page-section section-hidden" data-section="lessons">
         <div id="lessonsContainer" class="lessons-container">
           <h2 id="selectedCourseTitle" style="color:var(--color-red);font-family:var(--font-classic);"></h2>
@@ -248,7 +248,6 @@
           <p id="notesEmptyState" class="settings-note"></p>
         </div>
       </section>
-      </div>
     </div>
   </main>
   <footer>
@@ -312,11 +311,11 @@
       import { getFirestore, doc, getDoc, setDoc, deleteDoc, runTransaction } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"
       import { decodeSalt, decryptSecret, deriveKeyFromPassphrase, encryptSecret, generatePassphrase } from "./vault.js"
 
-    const firebaseConfig={apiKey:"AIzaSyAOFHZbn02JpIlSHNxNdvBnfdYv08tZMJs",authDomain:"the-classics-befd2.firebaseapp.com",projectId:"the-classics-befd2",storageBucket:"the-classics-befd2.firebasestorage.app",messagingSenderId:"171500319429",appId:"1:171500319429:web:2f67b006048191fa6036ac",measurementId:"G-08W3C50VF6"}
-    const app=initializeApp(firebaseConfig)
-    const auth=getAuth(app)
-    const db=getFirestore(app)
-    const actionCodeSettings={url:"https://theclassics.school",handleCodeInApp:true}
+      const firebaseConfig={apiKey:"AIzaSyAOFHZbn02JpIlSHNxNdvBnfdYv08tZMJs",authDomain:"the-classics-befd2.firebaseapp.com",projectId:"the-classics-befd2",storageBucket:"the-classics-befd2.firebasestorage.app",messagingSenderId:"171500319429",appId:"1:171500319429:web:2f67b006048191fa6036ac",measurementId:"G-08W3C50VF6"}
+      const app=initializeApp(firebaseConfig)
+      const auth=getAuth(app)
+      const db=getFirestore(app)
+      const actionCodeSettings={url:"https://theclassics.school",handleCodeInApp:true}
 
       const emailField=document.getElementById("emailForSignIn")
       const sendLinkBtn=document.getElementById("sendSignInLink")
@@ -365,24 +364,22 @@
       let encryptedLessonProgressPayload=null
       let pendingEncryptedProgressPayload=null
       let decryptedUserPayload=null
-      const TRUSTED_WRAP_DB="vault-wrap-store"
-      const TRUSTED_WRAP_STORE="device-keys"
-      const TRUSTED_WRAP_KEY_ID="wrapping-key"
-      const TRUSTED_CACHE_ID="vault-cache"
+      const TRUSTED_VAULT_KEY="trustedVaultKey"
+      const TRUSTED_VAULT_SALT="trustedVaultSalt"
 
-    sendLinkBtn.onclick=async()=>{if(auth.currentUser){await signOut(auth);return}const email=emailField.value;if(!email){alert("Please enter your email.");return}try{await sendSignInLinkToEmail(auth,email,actionCodeSettings);localStorage.setItem("emailForSignIn",email);alert("Sign-in link sent! Check your email.")}catch(e){console.error(e);alert("Error sending link.")}}
+      sendLinkBtn.onclick=async()=>{if(auth.currentUser){await signOut(auth);return}const email=emailField.value;if(!email){alert("Please enter your email.");return}try{await sendSignInLinkToEmail(auth,email,actionCodeSettings);localStorage.setItem("emailForSignIn",email);alert("Sign-in link sent! Check your email.")}catch(e){console.error(e);alert("Error sending link.")}}
 
-    if(isSignInWithEmailLink(auth,window.location.href)){
-      let storedEmail=localStorage.getItem("emailForSignIn")
-      if(!storedEmail){
-        storedEmail=window.prompt("Confirm your email to finish signing in")
+      if(isSignInWithEmailLink(auth,window.location.href)){
+        let storedEmail=localStorage.getItem("emailForSignIn")
+        if(!storedEmail){
+          storedEmail=window.prompt("Confirm your email to finish signing in")
+        }
+        if(storedEmail){
+          signInWithEmailLink(auth,storedEmail,window.location.href)
+            .then(()=>{localStorage.removeItem("emailForSignIn");alert("You are now signed in!");window.history.replaceState({},document.title,"/")})
+            .catch(e=>{console.error(e);alert("Could not complete sign-in. Please try the link again.")})
+        }
       }
-      if(storedEmail){
-        signInWithEmailLink(auth,storedEmail,window.location.href)
-          .then(()=>{localStorage.removeItem("emailForSignIn");alert("You are now signed in!");window.history.replaceState({},document.title,"/")})
-          .catch(e=>{console.error(e);alert("Could not complete sign-in. Please try the link again.")})
-      }
-    }
 
       onAuthStateChanged(auth,async user=>{if(user){loginStatus.textContent=`Signed in as: ${user.email}`;sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="none";lockedContent.style.display="block";signedInActions.style.display="flex"}else{loginStatus.textContent="Not signed in";sendLinkBtn.textContent="Send Sign-In Link";emailField.style.display="inline-block";emailField.value="";lockedContent.style.display="none";signedInActions.style.display="none";clearVaultState();currentCourseData={};currentCoursePath="";currentLessonSelection=null;setActiveSection("home");updateQuizContext();setQuizStatus("");renderNotesSummary()}
         await loadUserProgress(user)
@@ -393,79 +390,63 @@
         if(currentCoursePath&&currentCourseData.course){showCourseContent(currentCourseData,currentCoursePath)}else if(user){setActiveSection("home")}
       })
 
-    MicroModal.init()
+      MicroModal.init()
 
-    let allCourses=[]
-    let currentCourseData={}
-    let currentCoursePath=""
-    const defaultGuidePath="lessons/0000_HowToUseThisSite.yaml"
-    let isSidebarCollapsed=false
-    let currentSection="home"
-    let currentLessonSelection=null
+      let allCourses=[]
+      let currentCourseData={}
+      let currentCoursePath=""
+      const defaultGuidePath="lessons/0000_HowToUseThisSite.yaml"
+      let isSidebarCollapsed=false
+      let currentSection="home"
+      let currentLessonSelection=null
 
-    function setDerivedVaultKeyContext(key,saltBytes){derivedVaultKey=key;if(saltBytes)derivedVaultSalt=saltBytes}
+      function setDerivedVaultKeyContext(key,saltBytes){derivedVaultKey=key;if(saltBytes)derivedVaultSalt=saltBytes}
 
-    function bytesToBase64(bytes){const arr=bytes instanceof Uint8Array?bytes:new Uint8Array(bytes||[]);let bin="";arr.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin)}
-    function base64ToBytesLocal(str){if(!str)return new Uint8Array();const bin=atob(str);const out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out}
+      function bytesToBase64(bytes){const arr=bytes instanceof Uint8Array?bytes:new Uint8Array(bytes||[]);let bin="";arr.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin)}
+      function base64ToBytesLocal(str){if(!str)return new Uint8Array();const bin=atob(str);const out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out}
 
-    function openTrustedDb(){return new Promise((resolve,reject)=>{const req=indexedDB.open(TRUSTED_WRAP_DB,1);req.onerror=()=>reject(req.error);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(TRUSTED_WRAP_STORE))db.createObjectStore(TRUSTED_WRAP_STORE)};req.onsuccess=()=>resolve(req.result)})}
+      function cacheTrustedKey(rawKeyBytes,vaultSaltBytes){try{const keyBytes=rawKeyBytes instanceof Uint8Array?rawKeyBytes:new Uint8Array(rawKeyBytes||[]);localStorage.setItem(TRUSTED_VAULT_KEY,bytesToBase64(keyBytes));if(vaultSaltBytes){const saltBytes=vaultSaltBytes instanceof Uint8Array?vaultSaltBytes:new Uint8Array(vaultSaltBytes||[]);localStorage.setItem(TRUSTED_VAULT_SALT,bytesToBase64(saltBytes))}}catch(err){console.error("Trusted cache persist failed",err)}}
 
-    async function readStoreValue(key){const db=await openTrustedDb();return new Promise((resolve,reject)=>{const tx=db.transaction(TRUSTED_WRAP_STORE,"readonly");const store=tx.objectStore(TRUSTED_WRAP_STORE);const req=store.get(key);req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error)})}
+      function getTrustedCache(){try{const keyB64=localStorage.getItem(TRUSTED_VAULT_KEY);const saltB64=localStorage.getItem(TRUSTED_VAULT_SALT);if(!keyB64||!saltB64)return null;return{keyBytes:base64ToBytesLocal(keyB64),vaultSaltBytes:base64ToBytesLocal(saltB64)}}catch(err){console.error("Trusted cache read failed",err);return null}}
 
-    async function writeStoreValue(key,value){const db=await openTrustedDb();return new Promise((resolve,reject)=>{const tx=db.transaction(TRUSTED_WRAP_STORE,"readwrite");tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.objectStore(TRUSTED_WRAP_STORE).put(value,key)})}
+      async function clearTrustedDeviceCache(){try{localStorage.removeItem(TRUSTED_VAULT_KEY);localStorage.removeItem(TRUSTED_VAULT_SALT)}catch(err){console.error("Error clearing trusted cache",err)}}
 
-    async function deleteStoreValue(key){const db=await openTrustedDb();return new Promise((resolve,reject)=>{const tx=db.transaction(TRUSTED_WRAP_STORE,"readwrite");tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.objectStore(TRUSTED_WRAP_STORE).delete(key)})}
+      async function persistTrustedCache(keyToPersist,vaultSaltBytes){try{const raw=await crypto.subtle.exportKey("raw",keyToPersist);cacheTrustedKey(new Uint8Array(raw),vaultSaltBytes)}catch(err){console.error("Trusted cache persist failed",err)}}
 
-    async function getStoredWrappingKey(){try{return await readStoreValue(TRUSTED_WRAP_KEY_ID)}catch(err){console.error("Wrap key fetch failed",err);return null}}
+      function getActiveSaltBytes(payload){if(payload&&payload.salt)return decodeSalt(payload.salt);if(derivedVaultSalt)return derivedVaultSalt;if(vaultDoc&&vaultDoc.salt)return decodeSalt(vaultDoc.salt);return null}
 
-    async function persistWrappingKey(key){try{await writeStoreValue(TRUSTED_WRAP_KEY_ID,key)}catch(err){console.error("Wrap key persist failed",err)}}
+      function saltsMatch(a,b){if(!a||!b||a.length!==b.length)return false;for(let i=0;i<a.length;i++){if(a[i]!==b[i])return false}return true}
 
-    async function clearTrustedDeviceCache(){try{localStorage.removeItem("trustedWrappedKey");localStorage.removeItem("trustedWrapSalt");localStorage.removeItem("trustedVaultSalt");await deleteStoreValue(TRUSTED_CACHE_ID);await deleteStoreValue(TRUSTED_WRAP_KEY_ID)}catch(err){console.error("Error clearing trusted cache",err)}}
+      function setSettingsStatus(message,type="info"){if(!settingsStatus)return;settingsStatus.textContent=message;settingsStatus.classList.remove("info","error","success");settingsStatus.classList.add(type)}
 
-    async function getOrCreateWrappingKey(){const existing=await getStoredWrappingKey();if(existing)return existing;const key=await crypto.subtle.generateKey({name:"AES-GCM",length:256},true,["wrapKey","unwrapKey"]);await persistWrappingKey(key);return key}
+      function setQuizStatus(message,type="info"){if(!quizStatus)return;quizStatus.textContent=message;quizStatus.classList.remove("info","error","success");quizStatus.classList.add(type)}
 
-    function cachePayloadLocally(wrappedBuffer,saltBytes,vaultSaltBytes){localStorage.setItem("trustedWrappedKey",bytesToBase64(new Uint8Array(wrappedBuffer||[])));localStorage.setItem("trustedWrapSalt",bytesToBase64(new Uint8Array(saltBytes||[])));if(vaultSaltBytes)localStorage.setItem("trustedVaultSalt",bytesToBase64(new Uint8Array(vaultSaltBytes)))}
+      function setActiveSection(target){currentSection=target;Object.entries(sectionRegistry).forEach(([key,nodes])=>{nodes.forEach(node=>{node.classList.toggle("section-hidden",key!==target)})});Object.entries(navLinks).forEach(([key,link])=>{if(link)link.classList.toggle("active",key===target)});if(target==="notes")renderNotesSummary()}
 
-    async function persistTrustedCache(keyToWrap,vaultSaltBytes){const wrappingKey=await getOrCreateWrappingKey();const saltBytes=crypto.getRandomValues(new Uint8Array(16));const iv=saltBytes.slice(0,12);const wrapped=await crypto.subtle.wrapKey("raw",keyToWrap,wrappingKey,{name:"AES-GCM",iv,additionalData:saltBytes});cachePayloadLocally(wrapped,saltBytes,vaultSaltBytes);await writeStoreValue(TRUSTED_CACHE_ID,{wrapped,saltBytes,vaultSaltBytes})}
+      function updateQuizContext(customMessage){if(!quizLessonContext)return;if(customMessage){quizLessonContext.textContent=customMessage;return}if(currentLessonSelection&&currentLessonSelection.title){quizLessonContext.textContent=`Current lesson: ${currentLessonSelection.title}`}else if(currentCourseData?.course){quizLessonContext.textContent="Select a lesson in the Lessons page to target your quiz."}else{quizLessonContext.textContent="Choose a course from Home to begin."}}
 
-    function readLocalCache(){const wrapped=localStorage.getItem("trustedWrappedKey");const salt=localStorage.getItem("trustedWrapSalt");const vaultSalt=localStorage.getItem("trustedVaultSalt");if(!wrapped||!salt)return null;return{wrapped:base64ToBytesLocal(wrapped),saltBytes:base64ToBytesLocal(salt),vaultSaltBytes:vaultSalt?base64ToBytesLocal(vaultSalt):null}}
+      function showPassphraseGate(){if(gate){gate.style.display="flex"}}
+      function hidePassphraseGate(){if(gate){gate.style.display="none"}}
 
-    async function getTrustedCache(){const local=readLocalCache();if(local)return local;try{const stored=await readStoreValue(TRUSTED_CACHE_ID);if(stored)return{wrapped:new Uint8Array(stored.wrapped||[]),saltBytes:new Uint8Array(stored.saltBytes||[]),vaultSaltBytes:stored.vaultSaltBytes?new Uint8Array(stored.vaultSaltBytes):null}}catch(err){console.error("Trusted cache read failed",err)}return null}
+      function buildVersionInfo(reason){return{version:DATA_MIGRATION_VERSION,updatedAt:new Date().toISOString(),reason}}
 
-    function getActiveSaltBytes(payload){if(payload&&payload.salt)return decodeSalt(payload.salt);if(derivedVaultSalt)return derivedVaultSalt;if(vaultDoc&&vaultDoc.salt)return decodeSalt(vaultDoc.salt);return null}
+      function normalizeVersionInfo(info,reason){if(!info)return buildVersionInfo(reason);return{...info,version:info.version||DATA_MIGRATION_VERSION,updatedAt:new Date().toISOString(),reason:info.reason||reason}}
 
-    function saltsMatch(a,b){if(!a||!b||a.length!==b.length)return false;for(let i=0;i<a.length;i++){if(a[i]!==b[i])return false}return true}
+      function readPassphraseInput(){return(gatePassphraseInput?.value||vaultPassphraseInput?.value||"").trim()}
 
-    function setSettingsStatus(message,type="info"){if(!settingsStatus)return;settingsStatus.textContent=message;settingsStatus.classList.remove("info","error","success");settingsStatus.classList.add(type)}
+      function attachVersionMetadata(raw,reason){try{const parsed=JSON.parse(raw||"{}");const versionInfo=normalizeVersionInfo(parsed.versionInfo,reason);return JSON.stringify({...parsed,versionInfo})}catch(e){return JSON.stringify({value:raw||"",versionInfo:buildVersionInfo(reason)})}}
 
-    function setQuizStatus(message,type="info"){if(!quizStatus)return;quizStatus.textContent=message;quizStatus.classList.remove("info","error","success");quizStatus.classList.add(type)}
+      function parseLessonProgressText(txt){try{const parsed=JSON.parse(txt||"{}");progressVersionInfo=normalizeVersionInfo(parsed.versionInfo,"lesson-progress-import");const lessons=parsed?.lessons||{};const notes=parsed?.notes||{};return{lessons,notes}}catch(e){progressVersionInfo=buildVersionInfo("lesson-progress-legacy");return{lessons:{},notes:{}}}}
 
-    function setActiveSection(target){currentSection=target;Object.entries(sectionRegistry).forEach(([key,nodes])=>{nodes.forEach(node=>{node.classList.toggle("section-hidden",key!==target)})});Object.entries(navLinks).forEach(([key,link])=>{if(link)link.classList.toggle("active",key===target)});if(target==="notes")renderNotesSummary()}
+      function serializeLessonProgress(){const normalized=normalizeVersionInfo(progressVersionInfo,"lesson-progress-save");progressVersionInfo=normalized;return JSON.stringify({lessons:lessonProgress.lessons||{},notes:lessonProgress.notes||{},versionInfo:normalized})}
 
-    function updateQuizContext(customMessage){if(!quizLessonContext)return;if(customMessage){quizLessonContext.textContent=customMessage;return}if(currentLessonSelection&&currentLessonSelection.title){quizLessonContext.textContent=`Current lesson: ${currentLessonSelection.title}`}else if(currentCourseData?.course){quizLessonContext.textContent="Select a lesson in the Lessons page to target your quiz."}else{quizLessonContext.textContent="Choose a course from Home to begin."}}
+      async function decryptLessonProgressPayload(payload,key){const decryptedText=await decryptSecret(payload,key);lessonProgress=parseLessonProgressText(decryptedText);encryptedLessonProgressPayload=payload;pendingEncryptedProgressPayload=null;await refreshCourseStatuses();renderNotesSummary();if(currentCoursePath&&currentCourseData.course){showCourseContent(currentCourseData,currentCoursePath)}}
 
-    function showPassphraseGate(){if(gate){gate.style.display="flex"}}
-    function hidePassphraseGate(){if(gate){gate.style.display="none"}}
+      async function tryDecryptPendingProgress(){if(pendingEncryptedProgressPayload){try{const {key}=await ensureProgressKey(pendingEncryptedProgressPayload);await decryptLessonProgressPayload(pendingEncryptedProgressPayload,key)}catch(err){console.error("Error decrypting lesson progress:",err)}}}
 
-    function buildVersionInfo(reason){return{version:DATA_MIGRATION_VERSION,updatedAt:new Date().toISOString(),reason}}
+      async function ensureProgressKey(payload){const saltBytes=getActiveSaltBytes(payload);if(derivedVaultKey&&derivedVaultSalt&&saltBytes&&saltsMatch(derivedVaultSalt,saltBytes)){setDerivedVaultKeyContext(derivedVaultKey,saltBytes);return{key:derivedVaultKey,saltBytes}}if(!saltBytes)throw new Error("Missing salt for encrypted progress.");throw new Error("Missing passphrase for encrypted progress.")}
 
-    function normalizeVersionInfo(info,reason){if(!info)return buildVersionInfo(reason);return{...info,version:info.version||DATA_MIGRATION_VERSION,updatedAt:new Date().toISOString(),reason:info.reason||reason}}
-
-    function readPassphraseInput(){return(gatePassphraseInput?.value||vaultPassphraseInput?.value||"").trim()}
-
-    function attachVersionMetadata(raw,reason){try{const parsed=JSON.parse(raw||"{}");const versionInfo=normalizeVersionInfo(parsed.versionInfo,reason);return JSON.stringify({...parsed,versionInfo})}catch(e){return JSON.stringify({value:raw||"",versionInfo:buildVersionInfo(reason)})}}
-
-    function parseLessonProgressText(txt){try{const parsed=JSON.parse(txt||"{}");progressVersionInfo=normalizeVersionInfo(parsed.versionInfo,"lesson-progress-import");const lessons=parsed?.lessons||{};const notes=parsed?.notes||{};return{lessons,notes}}catch(e){progressVersionInfo=buildVersionInfo("lesson-progress-legacy");return{lessons:{},notes:{}}}}
-
-    function serializeLessonProgress(){const normalized=normalizeVersionInfo(progressVersionInfo,"lesson-progress-save");progressVersionInfo=normalized;return JSON.stringify({lessons:lessonProgress.lessons||{},notes:lessonProgress.notes||{},versionInfo:normalized})}
-
-    async function decryptLessonProgressPayload(payload,key){const decryptedText=await decryptSecret(payload,key);lessonProgress=parseLessonProgressText(decryptedText);encryptedLessonProgressPayload=payload;pendingEncryptedProgressPayload=null;await refreshCourseStatuses();renderNotesSummary();if(currentCoursePath&&currentCourseData.course){showCourseContent(currentCourseData,currentCoursePath)}}
-
-    async function tryDecryptPendingProgress(){if(pendingEncryptedProgressPayload){try{const {key}=await ensureProgressKey(pendingEncryptedProgressPayload);await decryptLessonProgressPayload(pendingEncryptedProgressPayload,key)}catch(err){console.error("Error decrypting lesson progress:",err)}}}
-
-    async function ensureProgressKey(payload){const saltBytes=getActiveSaltBytes(payload);if(derivedVaultKey&&derivedVaultSalt&&saltBytes&&saltsMatch(derivedVaultSalt,saltBytes)){setDerivedVaultKeyContext(derivedVaultKey,saltBytes);return{key:derivedVaultKey,saltBytes}}if(!saltBytes)throw new Error("Missing salt for encrypted progress.");throw new Error("Missing passphrase for encrypted progress.")}
-
-    async function loadUserProgress(user){try{lessonProgress={lessons:{},notes:{}};encryptedLessonProgressPayload=null;pendingEncryptedProgressPayload=null;if(!user){renderNotesSummary();return}const snap=await getDoc(doc(db,"lessonProgress",user.uid));if(!snap.exists()){renderNotesSummary();return}const data=snap.data();if(data&&data.ciphertext){encryptedLessonProgressPayload=data;if(derivedVaultKey){const {key}=await ensureProgressKey(data);await decryptLessonProgressPayload(data,key)}else{pendingEncryptedProgressPayload=data}}else if(data&&(data.lessons||data.notes)){progressVersionInfo=normalizeVersionInfo(data.versionInfo,"lesson-progress-plaintext");lessonProgress={lessons:data.lessons||{},notes:data.notes||{}};renderNotesSummary()}}catch(e){console.error("Error loading progress:",e);lessonProgress={lessons:{},notes:{}};renderNotesSummary()}}
+      async function loadUserProgress(user){try{lessonProgress={lessons:{},notes:{}};encryptedLessonProgressPayload=null;pendingEncryptedProgressPayload=null;if(!user){renderNotesSummary();return}const snap=await getDoc(doc(db,"lessonProgress",user.uid));if(!snap.exists()){renderNotesSummary();return}const data=snap.data();if(data&&data.ciphertext){encryptedLessonProgressPayload=data;if(derivedVaultKey){const {key}=await ensureProgressKey(data);await decryptLessonProgressPayload(data,key)}else{pendingEncryptedProgressPayload=data}}else if(data&&(data.lessons||data.notes)){progressVersionInfo=normalizeVersionInfo(data.versionInfo,"lesson-progress-plaintext");lessonProgress={lessons:data.lessons||{},notes:data.notes||{}};renderNotesSummary()}}catch(e){console.error("Error loading progress:",e);lessonProgress={lessons:{},notes:{}};renderNotesSummary()}}
       async function persistUserProgress(){const user=auth.currentUser;if(!user)return false;if(!vaultDoc&&!encryptedLessonProgressPayload&&!derivedVaultKey){alert("Set up and unlock your vault before saving lesson progress.");return false}try{const {key,saltBytes}=await ensureProgressKey(encryptedLessonProgressPayload||vaultDoc);const encrypted=await encryptSecret(serializeLessonProgress(),key,saltBytes);await setDoc(doc(db,"lessonProgress",user.uid),encrypted);encryptedLessonProgressPayload=encrypted;pendingEncryptedProgressPayload=null;return true}catch(e){if(e&&e.message&&e.message.includes("Missing passphrase")){showPassphraseGate();alert("Unlock your vault with your master passphrase to sync progress.");return false}console.error("Error saving progress:",e);throw e}}
       function isLessonChecked(p,t){const lessons=lessonProgress?.lessons||{};return!!(lessons[p]&&lessons[p][t])}
       function toggleLessonChecked(p,t,v){if(!lessonProgress.lessons)lessonProgress.lessons={};if(!lessonProgress.lessons[p])lessonProgress.lessons[p]={};lessonProgress.lessons[p][t]=v}
@@ -482,7 +463,7 @@
 
       async function handleTrustedDeviceSelection(key,saltBytes){if(gateTrustedDevice?.checked){await persistTrustedCache(key,saltBytes)}else{await clearTrustedDeviceCache()}}
 
-      async function tryAutoUnlockFromTrustedCache(){try{if(!vaultDoc)return false;const cache=await getTrustedCache();if(!cache)return false;const wrappingKey=await getStoredWrappingKey();if(!wrappingKey)return false;if(!cache.saltBytes||cache.saltBytes.length<12)return false;const iv=cache.saltBytes.slice(0,12);const unwrappedKey=await crypto.subtle.unwrapKey("raw",wrappingKey,cache.wrapped.buffer,{name:"AES-GCM",iv,additionalData:cache.saltBytes},{name:"AES-GCM",length:256},true,["encrypt","decrypt"]);const activeSalt=getActiveSaltBytes(vaultDoc)||cache.vaultSaltBytes;if(!activeSalt)throw new Error("Missing vault salt for cached key.");setDerivedVaultKeyContext(unwrappedKey,activeSalt);const decryptedText=await decryptSecret(vaultDoc,unwrappedKey);decryptedUserPayload=parseUserPayload(decryptedText);await tryDecryptPendingProgress();setVaultUIState("unlocked");if(gateTrustedDevice)gateTrustedDevice.checked=true;hidePassphraseGate();return true}catch(err){console.error("Trusted device auto-unlock failed",err);await clearTrustedDeviceCache();return false}}
+      async function tryAutoUnlockFromTrustedCache(){try{if(!vaultDoc)return false;const cache=getTrustedCache();if(!cache||!cache.keyBytes||!cache.vaultSaltBytes)return false;const importedKey=await crypto.subtle.importKey("raw",cache.keyBytes,{name:"AES-GCM"},true,["encrypt","decrypt"]);const activeSalt=getActiveSaltBytes(vaultDoc)||cache.vaultSaltBytes;if(!activeSalt)throw new Error("Missing vault salt for cached key.");setDerivedVaultKeyContext(importedKey,activeSalt);const decryptedText=await decryptSecret(vaultDoc,importedKey);decryptedUserPayload=parseUserPayload(decryptedText);await tryDecryptPendingProgress();setVaultUIState("unlocked");if(gateTrustedDevice)gateTrustedDevice.checked=true;hidePassphraseGate();return true}catch(err){console.error("Trusted device auto-unlock failed",err);await clearTrustedDeviceCache();return false}}
 
       function getDefaultUserPayload(){const normalized=normalizeVersionInfo(profileVersionInfo,"profile-default");profileVersionInfo=normalized;return{secret:"",displayName:"",apiKey:"",metadata:"",versionInfo:normalized}}
 
@@ -508,7 +489,6 @@
 
       function populateSettingsFields(){const payload=decryptedUserPayload||getDefaultUserPayload();settingsDisplayName.value=payload.displayName||"";settingsApiKey.value=payload.apiKey||"";settingsMetadata.value=payload.metadata||"";settingsFields.style.display="block"}
 
-
       async function saveSettings(){try{if(!vaultDoc){alert("Initialize your encrypted profile first.");return}if(!derivedVaultKey){showPassphraseGate();alert("Unlock with your passphrase before saving settings.");return}const saltBytes=getActiveSaltBytes(vaultDoc);if(!saltBytes){alert("Missing vault salt. Reinitialize the vault.");return}setSettingsStatus("Saving settings...","info");decryptedUserPayload={...getDefaultUserPayload(),...(decryptedUserPayload||{}),displayName:settingsDisplayName.value.trim(),apiKey:settingsApiKey.value.trim(),metadata:settingsMetadata.value.trim()};await persistEncryptedPayload(derivedVaultKey,saltBytes);settingsFields.style.display="block";setSettingsStatus("Settings saved with updated encryption.","success");alert("Settings saved. Keep your passphrase safe.")}catch(err){console.error("Settings save failed",err);setSettingsStatus("Could not save settings. Unlock with your passphrase and try again.","error");alert("Could not save settings. Please try again.")}}
 
       async function reencryptQuizDocs(oldKey,newKey,newSalt,missingCollections){const user=auth.currentUser;if(!user)return null;const quizRef=doc(db,"quizzes",user.uid);const snap=await getDoc(quizRef);if(!snap.exists()){missingCollections.push("quizzes");return null}const data=snap.data();if(!data.ciphertext){missingCollections.push("quizzes-unencrypted");return null}const decrypted=await decryptSecret(data,oldKey);const serialized=attachVersionMetadata(decrypted,"quizzes-reencrypt");const encrypted=await encryptSecret(serialized,newKey,newSalt);await setDoc(quizRef,encrypted);return encrypted}
@@ -517,25 +497,25 @@
 
       async function resetEncryptedAccount(){try{if(!vaultDoc){alert("No encrypted data to reset.");return}const confirmed=confirm("This will delete your encrypted data and progress. Continue?");if(!confirmed)return;const user=auth.currentUser;if(!user)return;const missingCollections=[];setSettingsStatus("Deleting encrypted documents...","info");await deleteDoc(doc(db,"userData",user.uid));await deleteDoc(doc(db,"lessonProgress",user.uid));try{await deleteDoc(doc(db,"quizzes",user.uid))}catch(err){console.error("Quiz deletion failed",err);missingCollections.push("quizzes-error")}await deleteDoc(doc(db,"userMetadata",user.uid));clearVaultState();lessonProgress={lessons:{},notes:{}};profileVersionInfo=buildVersionInfo("profile-reset");progressVersionInfo=buildVersionInfo("lesson-progress-reset");setVaultUIState("setup");await logMigrationMetadata(user,{lastResetAt:new Date().toISOString(),missingCollections});MicroModal.close("modal-settings");setSettingsStatus("Encrypted data cleared. Defaults restored.","success");showPassphraseGate();alert("Encrypted profile reset. Set up a new passphrase to start again.")}catch(err){console.error("Reset failed",err);setSettingsStatus("Could not reset encrypted data.","error");alert("Could not reset encrypted data. Try again.")}}
 
-    async function loadCourses(){try{const r=await fetch("lessons.json");if(!r.ok)throw new Error("Could not load lessons.json");return await r.json()}catch(e){console.error("Error fetching lessons.json:",e);return[]}}
+      async function loadCourses(){try{const r=await fetch("lessons.json");if(!r.ok)throw new Error("Could not load lessons.json");return await r.json()}catch(e){console.error("Error fetching lessons.json:",e);return[]}}
 
-    async function updateAllCourseStatuses(cs){const tasks=cs.map(async c=>{try{const resp=await fetch(c.file);if(!resp.ok)throw new Error("Could not load "+c.file);const yText=await resp.text();const data=jsyaml.load(yText);if(data&&data.course&&Array.isArray(data.course.lessons)){const total=data.course.lessons.length;const completed=data.course.lessons.filter(l=>{const lbl=l.title||"Lesson "+l.lesson_id;return isLessonChecked(c.file,lbl)}).length;c._status=computeCourseStatus(completed,total)}else c._status="N/A"}catch(err){console.error("Error fetching YAML for",c.file,err);c._status="N/A"}});await Promise.all(tasks)}
+      async function updateAllCourseStatuses(cs){const tasks=cs.map(async c=>{try{const resp=await fetch(c.file);if(!resp.ok)throw new Error("Could not load "+c.file);const yText=await resp.text();const data=jsyaml.load(yText);if(data&&data.course&&Array.isArray(data.course.lessons)){const total=data.course.lessons.length;const completed=data.course.lessons.filter(l=>{const lbl=l.title||"Lesson "+l.lesson_id;return isLessonChecked(c.file,lbl)}).length;c._status=computeCourseStatus(completed,total)}else c._status="N/A"}catch(err){console.error("Error fetching YAML for",c.file,err);c._status="N/A"}});await Promise.all(tasks)}
 
-    async function refreshCourseStatuses(){await updateAllCourseStatuses(allCourses);renderCourses(allCourses)}
+      async function refreshCourseStatuses(){await updateAllCourseStatuses(allCourses);renderCourses(allCourses)}
 
-    function computeCourseStatus(cmp,tot){if(tot===0)return"N/A";if(cmp===0)return"Not Started";if(cmp===tot)return"Complete";return"In Progress"}
+      function computeCourseStatus(cmp,tot){if(tot===0)return"N/A";if(cmp===0)return"Not Started";if(cmp===tot)return"Complete";return"In Progress"}
 
-    function renderCourses(cs){const cl=document.getElementById("courseList");cl.innerHTML="";cs.forEach(cr=>{const d=document.createElement("div");d.classList.add("course-card");let st="n-a";if(cr._status)st=cr._status.toLowerCase().replace(/\s+/g,"-");d.innerHTML="<h3>"+cr.title+"</h3><p>Course ID: "+cr.id+"</p><p class='course-status "+st+"'>"+(cr._status||"N/A")+"</p><button data-file='"+cr.file+"'>View Lessons</button>";cl.appendChild(d)})}
+      function renderCourses(cs){const cl=document.getElementById("courseList");cl.innerHTML="";cs.forEach(cr=>{const d=document.createElement("div");d.classList.add("course-card");let st="n-a";if(cr._status)st=cr._status.toLowerCase().replace(/\s+/g,"-");d.innerHTML="<h3>"+cr.title+"</h3><p>Course ID: "+cr.id+"</p><p class='course-status "+st+"'>"+(cr._status||"N/A")+"</p><button data-file='"+cr.file+"'>View Lessons</button>";cl.appendChild(d)})}
 
-    function filterCourses(cs,q){return cs.filter(c=>c.title.toLowerCase().includes(q.toLowerCase()))}
+      function filterCourses(cs,q){return cs.filter(c=>c.title.toLowerCase().includes(q.toLowerCase()))}
 
-    async function handleViewLessons(p){try{if(!auth.currentUser){MicroModal.show("modal-locked");return}if(!derivedVaultKey){showPassphraseGate();alert("Unlock with your passphrase to view lessons.");return}const resp=await fetch(p);if(!resp.ok)throw new Error("Unable to load YAML file: "+p);const y=await resp.text();const cd=jsyaml.load(y);currentCourseData=cd;currentCoursePath=p;currentLessonSelection=null;setActiveSection("lessons");updateQuizContext();showCourseContent(cd,p)}catch(e){console.error("Error fetching YAML:",e)}}
+      async function handleViewLessons(p){try{if(!auth.currentUser){MicroModal.show("modal-locked");return}if(!derivedVaultKey){showPassphraseGate();alert("Unlock with your passphrase to view lessons.");return}const resp=await fetch(p);if(!resp.ok)throw new Error("Unable to load YAML file: "+p);const y=await resp.text();const cd=jsyaml.load(y);currentCourseData=cd;currentCoursePath=p;currentLessonSelection=null;setActiveSection("lessons");updateQuizContext();showCourseContent(cd,p)}catch(e){console.error("Error fetching YAML:",e)}}
 
-    function showCourseContent(cd,fp){if(!cd||!cd.course)return;setActiveSection("lessons");updateQuizContext();setQuizStatus("");const cObj=cd.course;const container=document.getElementById("lessonsContainer");const cTitle=document.getElementById("selectedCourseTitle");const cDesc=document.getElementById("selectedCourseDesc");const lList=document.getElementById("lessonList");const lContent=document.getElementById("lessonContent");const lProgress=document.getElementById("lessonProgress");container.style.display="block";cTitle.textContent=cObj.title||"Untitled Course";cDesc.textContent=cObj.description||"";lList.innerHTML="";lContent.innerHTML="<p style='color:#999;'>Select a lesson on the left to see details here.</p>";(cObj.lessons||[]).forEach(lesson=>{const lbl=lesson.title||"Lesson "+lesson.lesson_id;if(lesson.section&&!document.getElementById("section-"+lesson.section)){const s=document.createElement("h4");s.id="section-"+lesson.section;s.classList.add("title-text");s.textContent=lesson.section;lList.appendChild(s)}const li=document.createElement("li");if(isLessonChecked(fp,lbl))li.classList.add("completed");const icon=lesson.type?getLessonIcon(lesson.type):'<i class="fas fa-file-alt"></i>';li.innerHTML="<div class='icon-area'>"+icon+"</div><div class='lesson-title'>"+lbl+"</div><div class='hover-checkbox'><input type='checkbox'"+(isLessonChecked(fp,lbl)?" checked":"")+" /></div>";li.addEventListener("click",e=>{if(!e.target.closest(".hover-checkbox")){if(!auth.currentUser&&fp!==defaultGuidePath&&lbl!=="Getting Started"){MicroModal.show("modal-locked");return}document.querySelectorAll("#lessonList li").forEach(n=>n.classList.remove("active"));li.classList.add("active");displayLessonContent(lesson)}});const cb=li.querySelector(".hover-checkbox input[type='checkbox']");cb.addEventListener("change",async()=>{const desiredState=cb.checked;toggleLessonChecked(fp,lbl,desiredState);li.classList.toggle("completed",desiredState);updateProgress(fp);try{const saved=await persistUserProgress();if(saved===false){cb.checked=!desiredState;toggleLessonChecked(fp,lbl,cb.checked);li.classList.toggle("completed",cb.checked);updateProgress(fp);return}}catch(err){console.error("Progress save failed",err);cb.checked=!desiredState;toggleLessonChecked(fp,lbl,cb.checked);li.classList.toggle("completed",cb.checked);updateProgress(fp);const retry=confirm("Could not save progress. Re-enter your passphrase to retry?");if(retry){try{await persistUserProgress()}catch(err2){console.error("Retry failed",err2);alert("Progress not synced. Unlock with your passphrase and try again.")}}}});if(!auth.currentUser&&fp!==defaultGuidePath&&lbl!=="Getting Started")li.classList.add("locked");lList.appendChild(li)});function updateProgress(path){const tot=(cObj.lessons||[]).length;const comp=(cObj.lessons||[]).filter(ls=>isLessonChecked(path,ls.title||"Lesson "+ls.lesson_id)).length;lProgress.textContent="Completed "+comp+" / "+tot+" lessons";let status="";if(comp===0)status="(not-started)";else if(comp===tot)status="(complete)";else status="(in-progress)";cTitle.textContent=(cObj.title||"Untitled Course")+" "+status;updateCourseCardStatus(path)}updateProgress(fp)}
+      function showCourseContent(cd,fp){if(!cd||!cd.course)return;setActiveSection("lessons");updateQuizContext();setQuizStatus("");const cObj=cd.course;const container=document.getElementById("lessonsContainer");const cTitle=document.getElementById("selectedCourseTitle");const cDesc=document.getElementById("selectedCourseDesc");const lList=document.getElementById("lessonList");const lContent=document.getElementById("lessonContent");const lProgress=document.getElementById("lessonProgress");container.style.display="block";cTitle.textContent=cObj.title||"Untitled Course";cDesc.textContent=cObj.description||"";lList.innerHTML="";lContent.innerHTML="<p style='color:#999;'>Select a lesson on the left to see details here.</p>";(cObj.lessons||[]).forEach(lesson=>{const lbl=lesson.title||"Lesson "+lesson.lesson_id;if(lesson.section&&!document.getElementById("section-"+lesson.section)){const s=document.createElement("h4");s.id="section-"+lesson.section;s.classList.add("title-text");s.textContent=lesson.section;lList.appendChild(s)}const li=document.createElement("li");if(isLessonChecked(fp,lbl))li.classList.add("completed");const icon=lesson.type?getLessonIcon(lesson.type):'<i class="fas fa-file-alt"></i>';li.innerHTML="<div class='icon-area'>"+icon+"</div><div class='lesson-title'>"+lbl+"</div><div class='hover-checkbox'><input type='checkbox'"+(isLessonChecked(fp,lbl)?" checked":"")+" /></div>";li.addEventListener("click",e=>{if(!e.target.closest(".hover-checkbox")){if(!auth.currentUser&&fp!==defaultGuidePath&&lbl!=="Getting Started"){MicroModal.show("modal-locked");return}document.querySelectorAll("#lessonList li").forEach(n=>n.classList.remove("active"));li.classList.add("active");displayLessonContent(lesson)}});const cb=li.querySelector(".hover-checkbox input[type='checkbox']");cb.addEventListener("change",async()=>{const desiredState=cb.checked;toggleLessonChecked(fp,lbl,desiredState);li.classList.toggle("completed",desiredState);updateProgress(fp);try{const saved=await persistUserProgress();if(saved===false){cb.checked=!desiredState;toggleLessonChecked(fp,lbl,cb.checked);li.classList.toggle("completed",cb.checked);updateProgress(fp);return}}catch(err){console.error("Progress save failed",err);cb.checked=!desiredState;toggleLessonChecked(fp,lbl,cb.checked);li.classList.toggle("completed",cb.checked);updateProgress(fp);const retry=confirm("Could not save progress. Re-enter your passphrase to retry?");if(retry){try{await persistUserProgress()}catch(err2){console.error("Retry failed",err2);alert("Progress not synced. Unlock with your passphrase and try again.")}}}});if(!auth.currentUser&&fp!==defaultGuidePath&&lbl!=="Getting Started")li.classList.add("locked");lList.appendChild(li)});function updateProgress(path){const tot=(cObj.lessons||[]).length;const comp=(cObj.lessons||[]).filter(ls=>isLessonChecked(path,ls.title||"Lesson "+ls.lesson_id)).length;lProgress.textContent="Completed "+comp+" / "+tot+" lessons";let status="";if(comp===0)status="(not-started)";else if(comp===tot)status="(complete)";else status="(in-progress)";cTitle.textContent=(cObj.title||"Untitled Course")+" "+status;updateCourseCardStatus(path)}updateProgress(fp)}
 
-    function displayLessonContent(lsn){const el=document.getElementById("lessonContent");el.innerHTML="";const title=lsn.title||"Lesson "+lsn.lesson_id;currentLessonSelection={title,coursePath:currentCoursePath,lesson:lsn};updateQuizContext();setQuizStatus("");const h=document.createElement("h1");h.textContent=title;el.appendChild(h);const hr=document.createElement("hr");el.appendChild(hr);if(lsn.course){const n=document.createElement("div");n.innerHTML=marked.parse(lsn.course);el.appendChild(n)}if(lsn.exercises&&Array.isArray(lsn.exercises)&&lsn.exercises.length){const exH=document.createElement("h2");exH.textContent="Exercises:";el.appendChild(exH);let m="\n";lsn.exercises.forEach((ex,i)=>{m+=(i+1)+". **"+ex.name+"** – "+ex.prompt+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.assignments&&Array.isArray(lsn.assignments)&&lsn.assignments.length){const asH=document.createElement("h2");asH.textContent="Assignments:";el.appendChild(asH);let m="\n";lsn.assignments.forEach((a,i)=>{m+=(i+1)+". **"+a.name+"** – "+a.description+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.sources&&Array.isArray(lsn.sources)&&lsn.sources.length){const srcH=document.createElement("h2");srcH.textContent="Sources:";el.appendChild(srcH);let m="\n";lsn.sources.forEach((s,i)=>{m+=(i+1)+". "+s+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}const notesWrapper=document.createElement("div");notesWrapper.className="lesson-notes";const notesHeading=document.createElement("h3");notesHeading.textContent="Your notes";const noteHint=document.createElement("p");noteHint.className="settings-note";noteHint.textContent="Notes are encrypted with your passphrase and saved per lesson.";const noteField=document.createElement("textarea");noteField.value=getLessonNote(currentCoursePath,title);noteField.placeholder="Add private notes for this lesson.";const noteActions=document.createElement("div");noteActions.className="note-actions";const saveNoteBtn=document.createElement("button");saveNoteBtn.textContent="Save notes";saveNoteBtn.addEventListener("click",async()=>{if(!auth.currentUser){alert("Sign in before saving notes.");return}if(!derivedVaultKey){showPassphraseGate();alert("Unlock with your passphrase before saving notes.");return}setLessonNote(currentCoursePath,title,noteField.value);try{await persistUserProgress();renderNotesSummary();saveNoteBtn.textContent="Saved";setTimeout(()=>saveNoteBtn.textContent="Save notes",1500)}catch(err){console.error("Note save failed",err);alert("Could not save notes. Unlock with your passphrase and try again.")}});noteActions.appendChild(saveNoteBtn);notesWrapper.appendChild(notesHeading);notesWrapper.appendChild(noteHint);notesWrapper.appendChild(noteField);notesWrapper.appendChild(noteActions);el.appendChild(notesWrapper)}
+      function displayLessonContent(lsn){const el=document.getElementById("lessonContent");el.innerHTML="";const title=lsn.title||"Lesson "+lsn.lesson_id;currentLessonSelection={title,coursePath:currentCoursePath,lesson:lsn};updateQuizContext();setQuizStatus("");const h=document.createElement("h1");h.textContent=title;el.appendChild(h);const hr=document.createElement("hr");el.appendChild(hr);if(lsn.course){const n=document.createElement("div");n.innerHTML=marked.parse(lsn.course);el.appendChild(n)}if(lsn.exercises&&Array.isArray(lsn.exercises)&&lsn.exercises.length){const exH=document.createElement("h2");exH.textContent="Exercises:";el.appendChild(exH);let m="\n";lsn.exercises.forEach((ex,i)=>{m+=(i+1)+". **"+ex.name+"** – "+ex.prompt+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.assignments&&Array.isArray(lsn.assignments)&&lsn.assignments.length){const asH=document.createElement("h2");asH.textContent="Assignments:";el.appendChild(asH);let m="\n";lsn.assignments.forEach((a,i)=>{m+=(i+1)+". **"+a.name+"** – "+a.description+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}if(lsn.sources&&Array.isArray(lsn.sources)&&lsn.sources.length){const srcH=document.createElement("h2");srcH.textContent="Sources:";el.appendChild(srcH);let m="\n";lsn.sources.forEach((s,i)=>{m+=(i+1)+". "+s+"\n"});const d=document.createElement("div");d.innerHTML=marked.parse(m);el.appendChild(d)}const notesWrapper=document.createElement("div");notesWrapper.className="lesson-notes";const notesHeading=document.createElement("h3");notesHeading.textContent="Your notes";const noteHint=document.createElement("p");noteHint.className="settings-note";noteHint.textContent="Notes are encrypted with your passphrase and saved per lesson.";const noteField=document.createElement("textarea");noteField.value=getLessonNote(currentCoursePath,title);noteField.placeholder="Add private notes for this lesson.";const noteActions=document.createElement("div");noteActions.className="note-actions";const saveNoteBtn=document.createElement("button");saveNoteBtn.textContent="Save notes";saveNoteBtn.addEventListener("click",async()=>{if(!auth.currentUser){alert("Sign in before saving notes.");return}if(!derivedVaultKey){showPassphraseGate();alert("Unlock with your passphrase before saving notes.");return}setLessonNote(currentCoursePath,title,noteField.value);try{await persistUserProgress();renderNotesSummary();saveNoteBtn.textContent="Saved";setTimeout(()=>saveNoteBtn.textContent="Save notes",1500)}catch(err){console.error("Note save failed",err);alert("Could not save notes. Unlock with your passphrase and try again.")}});noteActions.appendChild(saveNoteBtn);notesWrapper.appendChild(notesHeading);notesWrapper.appendChild(noteHint);notesWrapper.appendChild(noteField);notesWrapper.appendChild(noteActions);el.appendChild(notesWrapper)}
 
-      async function startQuizGeneration(){if(!quizStatus)return;if(!auth.currentUser){MicroModal.show("modal-locked");setQuizStatus("Sign in to generate quizzes.","error");return}if(!derivedVaultKey){showPassphraseGate();setQuizStatus("Unlock with your passphrase to generate quizzes.","error");return}if(!currentLessonSelection){setQuizStatus("Open a lesson in the Lessons page before generating a quiz.","error");return}setQuizStatus(`Starting quiz generation for ${currentLessonSelection.title}...`,`info`);try{setQuizStatus(`Quiz generation started for ${currentLessonSelection.title}. Keep this page open.`,`success`)}catch(err){console.error("Quiz generation failed",err);setQuizStatus("Could not start quiz generation. Try again after unlocking your vault.","error")}}
+      async function startQuizGeneration(){if(!quizStatus)return;if(!auth.currentUser){MicroModal.show("modal-locked");setQuizStatus("Sign in to generate quizzes.","error");return}if(!derivedVaultKey){showPassphraseGate();setQuizStatus("Unlock with your passphrase to generate quizzes.","error");return}if(!currentLessonSelection){setQuizStatus("Open a lesson in the Lessons page before generating a quiz.","error");return}setQuizStatus(`Starting quiz generation for ${currentLessonSelection.title}...`,"info");try{setQuizStatus(`Quiz generation started for ${currentLessonSelection.title}. Keep this page open.`,"success")}catch(err){console.error("Quiz generation failed",err);setQuizStatus("Could not start quiz generation. Try again after unlocking your vault.","error")}}
 
       function updateCourseCardStatus(p){const co=allCourses.find(c=>c.file===p);if(!co||!currentCourseData.course)return;const tot=(currentCourseData.course.lessons||[]).length;const comp=(currentCourseData.course.lessons||[]).filter(l=>isLessonChecked(p,l.title||"Lesson "+l.lesson_id)).length;co._status=computeCourseStatus(comp,tot);const card=document.querySelector(".course-card button[data-file='"+p+"']")?.closest(".course-card");if(card){const st=card.querySelector(".course-status");if(st){st.classList.remove("not-started","in-progress","complete","n-a");st.textContent=co._status;const cls=co._status.toLowerCase().replace(/\s+/g,"-");st.classList.add(cls)}}}
 
@@ -559,4 +539,3 @@
   </script>
 </body>
 </html>
-
