@@ -174,6 +174,7 @@ const defaultGuidePath = "lessons/0000_HowToUseThisSite.yaml";
 let isSidebarCollapsed = false;
 let currentSection = "home";
 let currentLessonSelection = null;
+let noteFocusTarget = null;
 
 function setDerivedVaultKeyContext(key, saltBytes) {
   derivedVaultKey = key;
@@ -279,12 +280,55 @@ function attachVersionMetadata(raw, reason) {
   }
 }
 
+function normalizeNoteEntry(raw, fallbackText = "") {
+  const now = new Date().toISOString();
+  if (!raw || typeof raw !== "object") {
+    const text = typeof raw === "string" ? raw : fallbackText;
+    return {
+      id: `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      text,
+      summary: buildNoteSummary(text),
+      createdAt: now,
+      updatedAt: now
+    };
+  }
+  const text = raw.text || raw.summary || fallbackText || "";
+  const createdAt = raw.createdAt || now;
+  return {
+    id: raw.id || `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    text,
+    summary: raw.summary || buildNoteSummary(text),
+    createdAt,
+    updatedAt: raw.updatedAt || createdAt
+  };
+}
+
+function normalizeNoteList(value) {
+  if (Array.isArray(value)) return value.map(v => normalizeNoteEntry(v)).filter(n => n.text || n.summary);
+  if (typeof value === "string") return [normalizeNoteEntry({ text: value })];
+  if (value && typeof value === "object") return [normalizeNoteEntry(value)];
+  return [];
+}
+
+function normalizeLessonNotes(rawNotes) {
+  const normalized = {};
+  Object.entries(rawNotes || {}).forEach(([coursePath, lessonMap]) => {
+    const lessons = {};
+    Object.entries(lessonMap || {}).forEach(([lessonTitle, noteValue]) => {
+      const entries = normalizeNoteList(noteValue);
+      if (entries.length) lessons[lessonTitle] = entries;
+    });
+    if (Object.keys(lessons).length) normalized[coursePath] = lessons;
+  });
+  return normalized;
+}
+
 function parseLessonProgressText(txt) {
   try {
     const parsed = JSON.parse(txt || "{}");
     progressVersionInfo = normalizeVersionInfo(parsed.versionInfo, "lesson-progress-import");
     const lessons = parsed?.lessons || {};
-    const notes = parsed?.notes || {};
+    const notes = normalizeLessonNotes(parsed?.notes || {});
     return { lessons, notes };
   } catch (e) {
     progressVersionInfo = buildVersionInfo("lesson-progress-legacy");
@@ -326,9 +370,11 @@ function formatQuizTimestamp(ts) {
 function serializeLessonProgress() {
   const normalized = normalizeVersionInfo(progressVersionInfo, "lesson-progress-save");
   progressVersionInfo = normalized;
+  const normalizedNotes = normalizeLessonNotes(lessonProgress.notes || {});
+  lessonProgress.notes = normalizedNotes;
   return JSON.stringify({
     lessons: lessonProgress.lessons || {},
-    notes: lessonProgress.notes || {},
+    notes: normalizedNotes,
     versionInfo: normalized
   });
 }
@@ -537,15 +583,54 @@ function toggleLessonChecked(p, t, v) {
   lessonProgress.lessons[p][t] = v;
 }
 
-function getLessonNote(p, t) {
-  const notes = lessonProgress?.notes || {};
-  return (notes[p] && notes[p][t]) || "";
+function buildNoteSummary(text = "") {
+  const trimmed = (text || "").trim();
+  if (trimmed.length <= 240) return trimmed;
+  return trimmed.slice(0, 237) + "...";
 }
 
-function setLessonNote(p, t, val) {
+function getLessonNoteEntries(p, t) {
   if (!lessonProgress.notes) lessonProgress.notes = {};
   if (!lessonProgress.notes[p]) lessonProgress.notes[p] = {};
-  lessonProgress.notes[p][t] = val;
+  const entries = normalizeNoteList(lessonProgress.notes[p][t]);
+  lessonProgress.notes[p][t] = entries;
+  return entries;
+}
+
+function upsertLessonNote(p, t, val, noteId = "") {
+  if (!lessonProgress.notes) lessonProgress.notes = {};
+  if (!lessonProgress.notes[p]) lessonProgress.notes[p] = {};
+  const entries = getLessonNoteEntries(p, t);
+  const now = new Date().toISOString();
+  if (noteId) {
+    const idx = entries.findIndex(n => n.id === noteId);
+    if (idx >= 0) {
+      entries[idx] = {
+        ...entries[idx],
+        text: val,
+        summary: buildNoteSummary(val),
+        updatedAt: now
+      };
+      lessonProgress.notes[p][t] = entries;
+      return entries[idx];
+    }
+  }
+  const entry = normalizeNoteEntry({
+    id: noteId || `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    text: val,
+    summary: buildNoteSummary(val),
+    createdAt: now,
+    updatedAt: now
+  });
+  entries.push(entry);
+  lessonProgress.notes[p][t] = entries;
+  return entry;
+}
+
+function getLatestLessonNote(p, t) {
+  const entries = getLessonNoteEntries(p, t);
+  if (!entries.length) return null;
+  return entries[entries.length - 1];
 }
 
 function getLessonIcon(t) {
@@ -562,14 +647,16 @@ function renderNotesSummary() {
   const entries = [];
   if (canRead) {
     Object.entries(lessonProgress?.notes || {}).forEach(([path, lessonMap]) => {
-      Object.entries(lessonMap || {}).forEach(([lessonTitle, text]) => {
-        if (text && text.trim()) {
-          entries.push({
-            coursePath: path,
-            lessonTitle,
-            text: text.trim()
-          });
-        }
+      Object.entries(lessonMap || {}).forEach(([lessonTitle, notes]) => {
+        normalizeNoteList(notes).forEach(note => {
+          if (note && (note.text || note.summary)) {
+            entries.push({
+              coursePath: path,
+              lessonTitle,
+              ...note
+            });
+          }
+        });
       });
     });
   }
@@ -582,21 +669,35 @@ function renderNotesSummary() {
     return;
   }
   notesEmptyState.textContent = "";
-  entries.forEach(entry => {
+  entries
+    .sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0))
+    .forEach(entry => {
     const card = document.createElement("div");
     card.className = "notes-card";
     const h = document.createElement("h4");
     h.textContent = entry.lessonTitle;
     const meta = document.createElement("p");
     meta.className = "settings-note";
-    meta.textContent = `Course file: ${entry.coursePath}`;
+    const updated = entry.updatedAt || entry.createdAt || "";
+    const updatedDisplay = updated ? new Date(updated).toLocaleString() : "";
+    meta.textContent = `Course file: ${entry.coursePath}${updatedDisplay ? " • Updated " + updatedDisplay : ""}`;
     const body = document.createElement("p");
-    body.textContent = entry.text;
+    body.textContent = entry.summary || entry.text || "(no summary)";
+    const actions = document.createElement("div");
+    actions.className = "note-actions-inline";
+    const viewBtn = document.createElement("button");
+    viewBtn.textContent = "View lesson";
+    viewBtn.addEventListener("click", () => {
+      noteFocusTarget = { coursePath: entry.coursePath, lessonTitle: entry.lessonTitle, noteId: entry.id };
+      handleViewLessons(entry.coursePath);
+    });
+    actions.appendChild(viewBtn);
     card.appendChild(h);
     card.appendChild(meta);
     card.appendChild(body);
+    card.appendChild(actions);
     notesList.appendChild(card);
-  });
+    });
 }
 
 function resetQuizState() {
@@ -1242,6 +1343,7 @@ function showCourseContent(cd, fp) {
   cDesc.textContent = cObj.description || "";
   lList.innerHTML = "";
   lContent.innerHTML = "<p style='color:#999;'>Select a lesson on the left to see details here.</p>";
+  const lessonItems = [];
   (cObj.lessons || []).forEach(lesson => {
     const lbl = lesson.title || "Lesson " + lesson.lesson_id;
     if (lesson.section && !document.getElementById("section-" + lesson.section)) {
@@ -1307,6 +1409,7 @@ function showCourseContent(cd, fp) {
     });
     if (!auth.currentUser && fp !== defaultGuidePath && lbl !== "Getting Started") li.classList.add("locked");
     lList.appendChild(li);
+    lessonItems.push({ label: lbl, element: li, lesson });
   });
   function updateProgress(path) {
     const tot = (cObj.lessons || []).length;
@@ -1320,6 +1423,15 @@ function showCourseContent(cd, fp) {
     updateCourseCardStatus(path);
   }
   updateProgress(fp);
+  if (noteFocusTarget && noteFocusTarget.coursePath === fp) {
+    const target = lessonItems.find(item => item.label === noteFocusTarget.lessonTitle);
+    if (target) {
+      document.querySelectorAll("#lessonList li").forEach(n => n.classList.remove("active"));
+      target.element.classList.add("active");
+      displayLessonContent(target.lesson);
+      target.element.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
 }
 
 function displayLessonContent(lsn) {
@@ -1381,12 +1493,21 @@ function displayLessonContent(lsn) {
   notesHeading.textContent = "Your notes";
   const noteHint = document.createElement("p");
   noteHint.className = "settings-note";
-  noteHint.textContent = "Notes are encrypted with your passphrase and saved per lesson.";
+  noteHint.textContent = "Notes are encrypted with your passphrase and saved per lesson. Use New note to append another entry.";
   const noteField = document.createElement("textarea");
-  noteField.value = getLessonNote(currentCoursePath, title);
+  const latestNote = getLatestLessonNote(currentCoursePath, title);
+  noteField.value = latestNote?.text || "";
+  if (latestNote?.id) noteField.dataset.noteId = latestNote.id;
   noteField.placeholder = "Add private notes for this lesson.";
   const noteActions = document.createElement("div");
   noteActions.className = "note-actions";
+  const newNoteBtn = document.createElement("button");
+  newNoteBtn.textContent = "New note";
+  newNoteBtn.addEventListener("click", () => {
+    noteField.value = "";
+    noteField.dataset.noteId = "";
+    noteField.focus();
+  });
   const saveNoteBtn = document.createElement("button");
   saveNoteBtn.textContent = "Save notes";
   saveNoteBtn.addEventListener("click", async () => {
@@ -1399,9 +1520,11 @@ function displayLessonContent(lsn) {
       alert("Unlock with your passphrase before saving notes.");
       return;
     }
-    setLessonNote(currentCoursePath, title, noteField.value);
+    const noteId = noteField.dataset.noteId || "";
+    const entry = upsertLessonNote(currentCoursePath, title, noteField.value, noteId);
     try {
       await persistUserProgress();
+      noteField.dataset.noteId = entry.id;
       renderNotesSummary();
       saveNoteBtn.textContent = "Saved";
       setTimeout(() => (saveNoteBtn.textContent = "Save notes"), 1500);
@@ -1410,11 +1533,29 @@ function displayLessonContent(lsn) {
       alert("Could not save notes. Unlock with your passphrase and try again.");
     }
   });
+  noteActions.appendChild(newNoteBtn);
   noteActions.appendChild(saveNoteBtn);
   notesWrapper.appendChild(notesHeading);
   notesWrapper.appendChild(noteHint);
   notesWrapper.appendChild(noteField);
   notesWrapper.appendChild(noteActions);
+  if (
+    noteFocusTarget &&
+    noteFocusTarget.coursePath === currentCoursePath &&
+    noteFocusTarget.lessonTitle === title
+  ) {
+    const focusedEntry = getLessonNoteEntries(currentCoursePath, title).find(
+      n => n.id === noteFocusTarget.noteId
+    );
+    if (focusedEntry) {
+      noteField.value = focusedEntry.text || focusedEntry.summary || "";
+      noteField.dataset.noteId = focusedEntry.id;
+    }
+    notesWrapper.classList.add("note-highlight");
+    notesWrapper.scrollIntoView({ behavior: "smooth", block: "center" });
+    setTimeout(() => notesWrapper.classList.remove("note-highlight"), 1800);
+    noteFocusTarget = null;
+  }
   el.appendChild(notesWrapper);
 }
 

@@ -539,6 +539,20 @@
       border-radius: 6px;
       background: #fffaf2;
     }
+    .notes-card .note-actions-inline {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.35rem;
+    }
+    .notes-card .note-actions-inline button {
+      background: var(--color-green);
+      color: #fff;
+      border: none;
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 700;
+    }
     .notes-card h4 {
       margin-bottom: 0.35rem;
       color: var(--color-red);
@@ -660,6 +674,8 @@
     }
     .lesson-notes .note-actions {
       display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
       justify-content: flex-end;
       margin-top: 0.5rem;
     }
@@ -671,6 +687,10 @@
       border-radius: 4px;
       font-weight: bold;
       cursor: pointer;
+    }
+    .lesson-notes.note-highlight {
+      box-shadow: 0 0 0 3px rgba(91, 145, 76, 0.25);
+      transition: box-shadow 0.3s ease;
     }
     .locked {
       opacity: 0.4;
