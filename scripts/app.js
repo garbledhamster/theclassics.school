@@ -84,6 +84,7 @@ let quizStore = getDefaultQuizStore();
 let activeQuizId = null;
 const noteModeCache = {};
 const quizAttempts = {};
+let pendingEmailLinkMode = isSignInWithEmailLink(auth, window.location.href);
 
 async function handleSendSignIn(button) {
   if (auth.currentUser) {
@@ -98,6 +99,11 @@ async function handleSendSignIn(button) {
     return;
   }
   try {
+    if (pendingEmailLinkMode) {
+      broadcastAuthStatus("Completing sign-in...");
+      await completeEmailLinkSignIn(email);
+      return;
+    }
     await sendSignInLinkToEmail(auth, email, actionCodeSettings);
     localStorage.setItem("emailForSignIn", email);
     alert("Sign-in link sent! Check your email.");
@@ -113,22 +119,22 @@ authSendButtons.forEach(btn =>
   })
 );
 
-if (isSignInWithEmailLink(auth, window.location.href)) {
-  let storedEmail = localStorage.getItem("emailForSignIn");
-  if (!storedEmail) {
-    storedEmail = window.prompt("Confirm your email to finish signing in");
-  }
+authSendButtons.forEach(btn =>
+  btn.addEventListener("click", () => {
+    handleSendSignIn(btn);
+  })
+);
+
+if (pendingEmailLinkMode) {
+  const storedEmail = localStorage.getItem("emailForSignIn");
   if (storedEmail) {
-    signInWithEmailLink(auth, storedEmail, window.location.href)
-      .then(() => {
-        localStorage.removeItem("emailForSignIn");
-        alert("You are now signed in!");
-        window.history.replaceState({}, document.title, "/");
-      })
-      .catch(e => {
-        console.error(e);
-        alert("Could not complete sign-in. Please try the link again.");
-      });
+    completeEmailLinkSignIn(storedEmail);
+  } else {
+    broadcastAuthStatus("Enter your email to finish signing in, then press Complete Sign-In.");
+    const firstEmailField = authEmailFields[0];
+    if (firstEmailField) {
+      firstEmailField.focus();
+    }
   }
 }
 
