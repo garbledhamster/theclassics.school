@@ -949,6 +949,14 @@ function renderQuizDetails(quiz) {
   const questions = Array.isArray(quiz.questions) ? quiz.questions : [];
   const attempt = getQuizAttempt(quiz.id);
   quizDetails.innerHTML = "";
+  const actions = document.createElement("div");
+  actions.className = "quiz-detail-actions";
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "quiz-delete";
+  deleteBtn.type = "button";
+  deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete quiz';
+  deleteBtn.addEventListener("click", () => deleteQuiz(quiz.id));
+  actions.appendChild(deleteBtn);
   const h = document.createElement("h4");
   h.textContent = title;
   const meta = document.createElement("div");
@@ -1090,8 +1098,16 @@ function renderQuizList() {
     const created = q?.metadata?.createdAt || q.createdAt;
     const status = q.status || q?.metadata?.status || "saved";
     btn.innerHTML =
+      `<div class="quiz-card__header">` +
       `<h4>${title}</h4>` +
+      `<button class="quiz-delete" aria-label="Delete quiz"><i class="fas fa-trash"></i></button>` +
+      `</div>` +
       `<div class="quiz-meta"><span class="quiz-status-pill">${status}</span><span>${formatQuizTimestamp(created)}</span></div>`;
+    const deleteBtn = btn.querySelector(".quiz-delete");
+    deleteBtn?.addEventListener("click", evt => {
+      evt.stopPropagation();
+      deleteQuiz(q.id);
+    });
     btn.addEventListener("click", () => {
       activeQuizId = q.id;
       renderQuizList();
