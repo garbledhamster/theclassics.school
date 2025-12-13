@@ -86,6 +86,35 @@ const noteModeCache = {};
 const quizAttempts = {};
 let pendingEmailLinkMode = isSignInWithEmailLink(auth, window.location.href);
 
+function setAuthStatus(message, type = "info") {
+  authStatusLabels.forEach(label => {
+    if (!label) return;
+    label.textContent = message;
+    label.classList.remove("info", "error", "success");
+    label.classList.add(type);
+  });
+}
+
+async function completeEmailLinkSignIn(email) {
+  const trimmedEmail = (email || "").trim();
+  if (!trimmedEmail) {
+    setAuthStatus("Enter your email to finish signing in.", "error");
+    authEmailFields[0]?.focus();
+    return;
+  }
+
+  try {
+    setAuthStatus("Completing sign-in...", "info");
+    await signInWithEmailLink(auth, trimmedEmail, window.location.href);
+    localStorage.setItem("emailForSignIn", trimmedEmail);
+    pendingEmailLinkMode = false;
+    setAuthStatus("Sign-in link verified. Finishing up...", "success");
+  } catch (e) {
+    console.error(e);
+    setAuthStatus("Unable to complete sign-in. Check that the email matches the link.", "error");
+  }
+}
+
 async function handleSendSignIn(button) {
   if (auth.currentUser) {
     await signOut(auth);
@@ -95,29 +124,22 @@ async function handleSendSignIn(button) {
   const emailInput = targetInputId ? document.getElementById(targetInputId) : authEmailFields[0];
   const email = emailInput?.value?.trim();
   if (!email) {
-    alert("Please enter your email.");
+    setAuthStatus("Please enter your email.", "error");
     return;
   }
   try {
     if (pendingEmailLinkMode) {
-      broadcastAuthStatus("Completing sign-in...");
       await completeEmailLinkSignIn(email);
       return;
     }
     await sendSignInLinkToEmail(auth, email, actionCodeSettings);
     localStorage.setItem("emailForSignIn", email);
-    alert("Sign-in link sent! Check your email.");
+    setAuthStatus("Sign-in link sent! Check your email.", "success");
   } catch (e) {
     console.error(e);
-    alert("Error sending link.");
+    setAuthStatus("Error sending link.", "error");
   }
 }
-
-authSendButtons.forEach(btn =>
-  btn.addEventListener("click", () => {
-    handleSendSignIn(btn);
-  })
-);
 
 authSendButtons.forEach(btn =>
   btn.addEventListener("click", () => {
@@ -130,7 +152,11 @@ if (pendingEmailLinkMode) {
   if (storedEmail) {
     completeEmailLinkSignIn(storedEmail);
   } else {
-    broadcastAuthStatus("Enter your email to finish signing in, then press Complete Sign-In.");
+    setAuthStatus("Enter your email to finish signing in with this link.", "info");
+    authSendButtons.forEach(btn => {
+      if (!btn) return;
+      btn.textContent = "Complete Sign-In";
+    });
     const firstEmailField = authEmailFields[0];
     if (firstEmailField) {
       firstEmailField.focus();
@@ -139,15 +165,9 @@ if (pendingEmailLinkMode) {
 }
 
 onAuthStateChanged(auth, async user => {
+  updateAuthUI(user);
   if (user) {
-    loginStatus.textContent = `Signed in as: ${user.email}`;
-    sendLinkBtn.textContent = "Sign Out";
-    emailField.style.display = "none";
   } else {
-    loginStatus.textContent = "Not signed in";
-    sendLinkBtn.textContent = "Send Sign-In Link";
-    emailField.style.display = "inline-block";
-    emailField.value = "";
     clearVaultState();
     currentCourseData = {};
     currentCoursePath = "";
@@ -278,13 +298,18 @@ function setQuizStatus(message, type = "info") {
 
 function updateAuthUI(user) {
   const isSignedIn = !!user;
-  authStatusLabels.forEach(label => {
-    if (!label) return;
-    label.textContent = isSignedIn && user?.email ? `Signed in as: ${user.email}` : "Not signed in";
-  });
+  const isPendingCompletion = pendingEmailLinkMode && !isSignedIn;
+  setAuthStatus(
+    isSignedIn && user?.email
+      ? `Signed in as: ${user.email}`
+      : isPendingCompletion
+        ? "Enter your email to finish signing in with this link."
+        : "Not signed in",
+    isSignedIn ? "success" : "info"
+  );
   authSendButtons.forEach(btn => {
     if (!btn) return;
-    btn.textContent = isSignedIn ? "Sign Out" : "Send Sign-In Link";
+    btn.textContent = isSignedIn ? "Sign Out" : isPendingCompletion ? "Complete Sign-In" : "Send Sign-In Link";
   });
   authEmailFields.forEach(input => {
     if (!input) return;

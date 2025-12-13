@@ -587,6 +587,15 @@
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
       font-weight: 600;
     }
+    .login-status.info {
+      color: #5a4a34;
+    }
+    .login-status.success {
+      color: var(--color-green);
+    }
+    .login-status.error {
+      color: var(--color-red);
+    }
     #lockedContent {
       display: block;
     }
