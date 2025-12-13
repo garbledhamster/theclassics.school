@@ -1,0 +1,1313 @@
+import {
+  actionCodeSettings,
+  auth,
+  db,
+  deleteDoc,
+  doc,
+  getDoc,
+  onAuthStateChanged,
+  runTransaction,
+  sendSignInLinkToEmail,
+  signInWithEmailLink,
+  isSignInWithEmailLink,
+  signOut,
+  setDoc
+} from './firebase-config.js';
+import { clearTrustedDeviceCache, persistTrustedCache, getTrustedCache } from './utils.js';
+import { decodeSalt, decryptSecret, deriveKeyFromPassphrase, encryptSecret, generatePassphrase } from '../vault.js';
+
+const emailField = document.getElementById("emailForSignIn");
+const sendLinkBtn = document.getElementById("sendSignInLink");
+const loginStatus = document.getElementById("loginStatus");
+const lockedContent = document.getElementById("lockedContent");
+const signedInActions = document.getElementById("signedInActions");
+const vaultContainer = document.getElementById("vaultContainer");
+const vaultHeading = document.getElementById("vaultHeading");
+const vaultDescription = document.getElementById("vaultDescription");
+const vaultPassphraseInput = document.getElementById("vaultPassphrase");
+const gate = document.getElementById("passphraseGate");
+const gatePassphraseInput = document.getElementById("gatePassphrase");
+const gateUnlockBtn = document.getElementById("gateUnlockBtn");
+const gateInitializeBtn = document.getElementById("gateInitializeBtn");
+const gateGenerateBtn = document.getElementById("gateGenerateBtn");
+const gateTrustedDevice = document.getElementById("gateTrustedDevice");
+const initializeVaultBtn = document.getElementById("initializeVaultBtn");
+const unlockVaultBtn = document.getElementById("unlockVaultBtn");
+const generatePassphraseBtn = document.getElementById("generatePassphraseBtn");
+const copyPassphraseBtn = document.getElementById("copyPassphraseBtn");
+const openSettingsBtn = document.getElementById("openSettingsBtn");
+const signOutBtn = document.getElementById("signOutBtn");
+const settingsFields = document.getElementById("settingsFields");
+const settingsDisplayName = document.getElementById("settingsDisplayName");
+const settingsApiKey = document.getElementById("settingsApiKey");
+const settingsMetadata = document.getElementById("settingsMetadata");
+const settingsNewPassphrase = document.getElementById("settingsNewPassphrase");
+const saveSettingsBtn = document.getElementById("saveSettingsBtn");
+const rotatePassphraseBtn = document.getElementById("rotatePassphraseBtn");
+const resetAccountBtn = document.getElementById("resetAccountBtn");
+const settingsStatus = document.getElementById("settingsStatus");
+const generateQuizBtn = document.getElementById("generateQuizBtn");
+const quizLessonContext = document.getElementById("quizLessonContext");
+const quizStatus = document.getElementById("quizStatus");
+const notesList = document.getElementById("notesList");
+const notesEmptyState = document.getElementById("notesEmptyState");
+
+const navLinks = {
+  home: document.getElementById("homeLink"),
+  lessons: document.getElementById("lessonsLink"),
+  quizzes: document.getElementById("quizzesLink"),
+  notes: document.getElementById("notesLink")
+};
+
+const sectionRegistry = {
+  home: document.querySelectorAll('[data-section="home"]'),
+  lessons: document.querySelectorAll('[data-section="lessons"]'),
+  quizzes: document.querySelectorAll('[data-section="quizzes"]'),
+  notes: document.querySelectorAll('[data-section="notes"]')
+};
+
+let lessonProgress = { lessons: {}, notes: {} };
+const DATA_MIGRATION_VERSION = 1;
+let profileVersionInfo = buildVersionInfo("bootstrap-profile");
+let progressVersionInfo = buildVersionInfo("bootstrap-progress");
+let vaultDoc = null;
+let derivedVaultKey = null;
+let derivedVaultSalt = null;
+let encryptedLessonProgressPayload = null;
+let pendingEncryptedProgressPayload = null;
+let decryptedUserPayload = null;
+
+sendLinkBtn.onclick = async () => {
+  if (auth.currentUser) {
+    await signOut(auth);
+    return;
+  }
+  const email = emailField.value;
+  if (!email) {
+    alert("Please enter your email.");
+    return;
+  }
+  try {
+    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+    localStorage.setItem("emailForSignIn", email);
+    alert("Sign-in link sent! Check your email.");
+  } catch (e) {
+    console.error(e);
+    alert("Error sending link.");
+  }
+};
+
+if (isSignInWithEmailLink(auth, window.location.href)) {
+  let storedEmail = localStorage.getItem("emailForSignIn");
+  if (!storedEmail) {
+    storedEmail = window.prompt("Confirm your email to finish signing in");
+  }
+  if (storedEmail) {
+    signInWithEmailLink(auth, storedEmail, window.location.href)
+      .then(() => {
+        localStorage.removeItem("emailForSignIn");
+        alert("You are now signed in!");
+        window.history.replaceState({}, document.title, "/");
+      })
+      .catch(e => {
+        console.error(e);
+        alert("Could not complete sign-in. Please try the link again.");
+      });
+  }
+}
+
+onAuthStateChanged(auth, async user => {
+  if (user) {
+    loginStatus.textContent = `Signed in as: ${user.email}`;
+    sendLinkBtn.textContent = "Send Sign-In Link";
+    emailField.style.display = "none";
+    lockedContent.style.display = "block";
+    signedInActions.style.display = "flex";
+  } else {
+    loginStatus.textContent = "Not signed in";
+    sendLinkBtn.textContent = "Send Sign-In Link";
+    emailField.style.display = "inline-block";
+    emailField.value = "";
+    lockedContent.style.display = "none";
+    signedInActions.style.display = "none";
+    clearVaultState();
+    currentCourseData = {};
+    currentCoursePath = "";
+    currentLessonSelection = null;
+    setActiveSection("home");
+    updateQuizContext();
+    setQuizStatus("");
+    renderNotesSummary();
+  }
+
+  await loadUserProgress(user);
+  await loadVaultState(user);
+  await tryAutoUnlockFromTrustedCache();
+  await refreshCourseStatuses();
+
+  if (user && !derivedVaultKey) {
+    showPassphraseGate();
+  }
+
+  if (currentCoursePath && currentCourseData.course) {
+    showCourseContent(currentCourseData, currentCoursePath);
+  } else if (user) {
+    setActiveSection("home");
+  }
+});
+
+MicroModal.init();
+
+let allCourses = [];
+let currentCourseData = {};
+let currentCoursePath = "";
+const defaultGuidePath = "lessons/0000_HowToUseThisSite.yaml";
+let isSidebarCollapsed = false;
+let currentSection = "home";
+let currentLessonSelection = null;
+
+function setDerivedVaultKeyContext(key, saltBytes) {
+  derivedVaultKey = key;
+  if (saltBytes) {
+    derivedVaultSalt = saltBytes;
+  }
+}
+
+function getActiveSaltBytes(payload) {
+  if (payload && payload.salt) return decodeSalt(payload.salt);
+  if (derivedVaultSalt) return derivedVaultSalt;
+  if (vaultDoc && vaultDoc.salt) return decodeSalt(vaultDoc.salt);
+  return null;
+}
+
+function saltsMatch(a, b) {
+  if (!a || !b || a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+function setSettingsStatus(message, type = "info") {
+  if (!settingsStatus) return;
+  settingsStatus.textContent = message;
+  settingsStatus.classList.remove("info", "error", "success");
+  settingsStatus.classList.add(type);
+}
+
+function setQuizStatus(message, type = "info") {
+  if (!quizStatus) return;
+  quizStatus.textContent = message;
+  quizStatus.classList.remove("info", "error", "success");
+  quizStatus.classList.add(type);
+}
+
+function setActiveSection(target) {
+  currentSection = target;
+  Object.entries(sectionRegistry).forEach(([key, nodes]) => {
+    nodes.forEach(node => {
+      node.classList.toggle("section-hidden", key !== target);
+    });
+  });
+  Object.entries(navLinks).forEach(([key, link]) => {
+    if (link) link.classList.toggle("active", key === target);
+  });
+  if (target === "notes") renderNotesSummary();
+}
+
+function updateQuizContext(customMessage) {
+  if (!quizLessonContext) return;
+  if (customMessage) {
+    quizLessonContext.textContent = customMessage;
+    return;
+  }
+  if (currentLessonSelection && currentLessonSelection.title) {
+    quizLessonContext.textContent = `Current lesson: ${currentLessonSelection.title}`;
+  } else if (currentCourseData?.course) {
+    quizLessonContext.textContent = "Select a lesson in the Lessons page to target your quiz.";
+  } else {
+    quizLessonContext.textContent = "Choose a course from Home to begin.";
+  }
+}
+
+function showPassphraseGate() {
+  if (gate) gate.style.display = "flex";
+}
+
+function hidePassphraseGate() {
+  if (gate) gate.style.display = "none";
+}
+
+function buildVersionInfo(reason) {
+  return {
+    version: DATA_MIGRATION_VERSION,
+    updatedAt: new Date().toISOString(),
+    reason
+  };
+}
+
+function normalizeVersionInfo(info, reason) {
+  if (!info) return buildVersionInfo(reason);
+  return {
+    ...info,
+    version: info.version || DATA_MIGRATION_VERSION,
+    updatedAt: new Date().toISOString(),
+    reason: info.reason || reason
+  };
+}
+
+function readPassphraseInput() {
+  return (gatePassphraseInput?.value || vaultPassphraseInput?.value || "").trim();
+}
+
+function attachVersionMetadata(raw, reason) {
+  try {
+    const parsed = JSON.parse(raw || "{}");
+    const versionInfo = normalizeVersionInfo(parsed.versionInfo, reason);
+    return JSON.stringify({ ...parsed, versionInfo });
+  } catch (e) {
+    return JSON.stringify({ value: raw || "", versionInfo: buildVersionInfo(reason) });
+  }
+}
+
+function parseLessonProgressText(txt) {
+  try {
+    const parsed = JSON.parse(txt || "{}");
+    progressVersionInfo = normalizeVersionInfo(parsed.versionInfo, "lesson-progress-import");
+    const lessons = parsed?.lessons || {};
+    const notes = parsed?.notes || {};
+    return { lessons, notes };
+  } catch (e) {
+    progressVersionInfo = buildVersionInfo("lesson-progress-legacy");
+    return { lessons: {}, notes: {} };
+  }
+}
+
+function serializeLessonProgress() {
+  const normalized = normalizeVersionInfo(progressVersionInfo, "lesson-progress-save");
+  progressVersionInfo = normalized;
+  return JSON.stringify({
+    lessons: lessonProgress.lessons || {},
+    notes: lessonProgress.notes || {},
+    versionInfo: normalized
+  });
+}
+
+async function decryptLessonProgressPayload(payload, key) {
+  const decryptedText = await decryptSecret(payload, key);
+  lessonProgress = parseLessonProgressText(decryptedText);
+  encryptedLessonProgressPayload = payload;
+  pendingEncryptedProgressPayload = null;
+  await refreshCourseStatuses();
+  renderNotesSummary();
+  if (currentCoursePath && currentCourseData.course) {
+    showCourseContent(currentCourseData, currentCoursePath);
+  }
+}
+
+async function tryDecryptPendingProgress() {
+  if (pendingEncryptedProgressPayload) {
+    try {
+      const { key } = await ensureProgressKey(pendingEncryptedProgressPayload);
+      await decryptLessonProgressPayload(pendingEncryptedProgressPayload, key);
+    } catch (err) {
+      console.error("Error decrypting lesson progress:", err);
+    }
+  }
+}
+
+async function ensureProgressKey(payload) {
+  const saltBytes = getActiveSaltBytes(payload);
+  if (derivedVaultKey && derivedVaultSalt && saltBytes && saltsMatch(derivedVaultSalt, saltBytes)) {
+    setDerivedVaultKeyContext(derivedVaultKey, saltBytes);
+    return { key: derivedVaultKey, saltBytes };
+  }
+  if (!saltBytes) throw new Error("Missing salt for encrypted progress.");
+  throw new Error("Missing passphrase for encrypted progress.");
+}
+
+async function loadUserProgress(user) {
+  try {
+    lessonProgress = { lessons: {}, notes: {} };
+    encryptedLessonProgressPayload = null;
+    pendingEncryptedProgressPayload = null;
+    if (!user) {
+      renderNotesSummary();
+      return;
+    }
+    const snap = await getDoc(doc(db, "lessonProgress", user.uid));
+    if (!snap.exists()) {
+      renderNotesSummary();
+      return;
+    }
+    const data = snap.data();
+    if (data && data.ciphertext) {
+      encryptedLessonProgressPayload = data;
+      if (derivedVaultKey) {
+        const { key } = await ensureProgressKey(data);
+        await decryptLessonProgressPayload(data, key);
+      } else {
+        pendingEncryptedProgressPayload = data;
+      }
+    } else if (data && (data.lessons || data.notes)) {
+      progressVersionInfo = normalizeVersionInfo(data.versionInfo, "lesson-progress-plaintext");
+      lessonProgress = {
+        lessons: data.lessons || {},
+        notes: data.notes || {}
+      };
+      renderNotesSummary();
+    }
+  } catch (e) {
+    console.error("Error loading progress:", e);
+    lessonProgress = { lessons: {}, notes: {} };
+    renderNotesSummary();
+  }
+}
+
+async function persistUserProgress() {
+  const user = auth.currentUser;
+  if (!user) return false;
+  if (!vaultDoc && !encryptedLessonProgressPayload && !derivedVaultKey) {
+    alert("Set up and unlock your vault before saving lesson progress.");
+    return false;
+  }
+  try {
+    const { key, saltBytes } = await ensureProgressKey(encryptedLessonProgressPayload || vaultDoc);
+    const encrypted = await encryptSecret(serializeLessonProgress(), key, saltBytes);
+    await setDoc(doc(db, "lessonProgress", user.uid), encrypted);
+    encryptedLessonProgressPayload = encrypted;
+    pendingEncryptedProgressPayload = null;
+    return true;
+  } catch (e) {
+    if (e && e.message && e.message.includes("Missing passphrase")) {
+      showPassphraseGate();
+      alert("Unlock your vault with your master passphrase to sync progress.");
+      return false;
+    }
+    console.error("Error saving progress:", e);
+    throw e;
+  }
+}
+
+function isLessonChecked(p, t) {
+  const lessons = lessonProgress?.lessons || {};
+  return !!(lessons[p] && lessons[p][t]);
+}
+
+function toggleLessonChecked(p, t, v) {
+  if (!lessonProgress.lessons) lessonProgress.lessons = {};
+  if (!lessonProgress.lessons[p]) lessonProgress.lessons[p] = {};
+  lessonProgress.lessons[p][t] = v;
+}
+
+function getLessonNote(p, t) {
+  const notes = lessonProgress?.notes || {};
+  return (notes[p] && notes[p][t]) || "";
+}
+
+function setLessonNote(p, t, val) {
+  if (!lessonProgress.notes) lessonProgress.notes = {};
+  if (!lessonProgress.notes[p]) lessonProgress.notes[p] = {};
+  lessonProgress.notes[p][t] = val;
+}
+
+function getLessonIcon(t) {
+  if (t === "reading") return '<i class="fas fa-book"></i>';
+  if (t === "quiz") return '<i class="fas fa-question-circle"></i>';
+  if (t === "video") return '<i class="fas fa-video"></i>';
+  return '<i class="fas fa-file-alt"></i>';
+}
+
+function renderNotesSummary() {
+  if (!notesList || !notesEmptyState) return;
+  notesList.innerHTML = "";
+  const canRead = !!derivedVaultKey;
+  const entries = [];
+  if (canRead) {
+    Object.entries(lessonProgress?.notes || {}).forEach(([path, lessonMap]) => {
+      Object.entries(lessonMap || {}).forEach(([lessonTitle, text]) => {
+        if (text && text.trim()) {
+          entries.push({
+            coursePath: path,
+            lessonTitle,
+            text: text.trim()
+          });
+        }
+      });
+    });
+  }
+  if (!canRead) {
+    notesEmptyState.textContent = "Unlock with your master passphrase to view saved notes.";
+    return;
+  }
+  if (!entries.length) {
+    notesEmptyState.textContent = "No saved notes yet. Open a lesson and add notes to see them here.";
+    return;
+  }
+  notesEmptyState.textContent = "";
+  entries.forEach(entry => {
+    const card = document.createElement("div");
+    card.className = "notes-card";
+    const h = document.createElement("h4");
+    h.textContent = entry.lessonTitle;
+    const meta = document.createElement("p");
+    meta.className = "settings-note";
+    meta.textContent = `Course file: ${entry.coursePath}`;
+    const body = document.createElement("p");
+    body.textContent = entry.text;
+    card.appendChild(h);
+    card.appendChild(meta);
+    card.appendChild(body);
+    notesList.appendChild(card);
+  });
+}
+
+function clearVaultState() {
+  derivedVaultKey = null;
+  derivedVaultSalt = null;
+  vaultDoc = null;
+  decryptedUserPayload = null;
+  encryptedLessonProgressPayload = null;
+  pendingEncryptedProgressPayload = null;
+  if (vaultPassphraseInput) vaultPassphraseInput.value = "";
+  if (gatePassphraseInput) gatePassphraseInput.value = "";
+  setVaultUIState("locked");
+  hidePassphraseGate();
+  clearTrustedDeviceCache();
+}
+
+async function handleTrustedDeviceSelection(key, saltBytes) {
+  if (gateTrustedDevice?.checked) {
+    await persistTrustedCache(key, saltBytes);
+  } else {
+    await clearTrustedDeviceCache();
+  }
+}
+
+async function tryAutoUnlockFromTrustedCache() {
+  try {
+    if (!vaultDoc) return false;
+    const cache = await getTrustedCache();
+    if (!cache || !cache.key) return false;
+    const activeSalt = getActiveSaltBytes(vaultDoc) || cache.vaultSaltBytes;
+    if (!activeSalt) throw new Error("Missing vault salt for cached key.");
+    setDerivedVaultKeyContext(cache.key, activeSalt);
+    const decryptedText = await decryptSecret(vaultDoc, cache.key);
+    decryptedUserPayload = parseUserPayload(decryptedText);
+    await tryDecryptPendingProgress();
+    setVaultUIState("unlocked");
+    if (gateTrustedDevice) gateTrustedDevice.checked = true;
+    hidePassphraseGate();
+    return true;
+  } catch (err) {
+    console.error("Trusted device auto-unlock failed", err);
+    await clearTrustedDeviceCache();
+    return false;
+  }
+}
+
+function getDefaultUserPayload() {
+  const normalized = normalizeVersionInfo(profileVersionInfo, "profile-default");
+  profileVersionInfo = normalized;
+  return {
+    secret: "",
+    displayName: "",
+    apiKey: "",
+    metadata: "",
+    versionInfo: normalized
+  };
+}
+
+function parseUserPayload(text) {
+  try {
+    const parsed = JSON.parse(text);
+    profileVersionInfo = normalizeVersionInfo(parsed.versionInfo, "profile-import");
+    return {
+      ...getDefaultUserPayload(),
+      ...parsed,
+      versionInfo: profileVersionInfo
+    };
+  } catch (e) {
+    const fallback = buildVersionInfo("profile-legacy");
+    profileVersionInfo = fallback;
+    return {
+      ...getDefaultUserPayload(),
+      secret: text || "",
+      versionInfo: fallback
+    };
+  }
+}
+
+function serializeUserPayload() {
+  const payload = {
+    ...getDefaultUserPayload(),
+    ...(decryptedUserPayload || {})
+  };
+  const normalized = normalizeVersionInfo(payload.versionInfo, "profile-save");
+  profileVersionInfo = normalized;
+  payload.versionInfo = normalized;
+  return JSON.stringify(payload);
+}
+
+async function persistEncryptedPayload(key, saltBytes) {
+  const user = auth.currentUser;
+  if (!user) return;
+  setDerivedVaultKeyContext(key, saltBytes);
+  const encrypted = await encryptSecret(serializeUserPayload(), key, saltBytes);
+  await setDoc(doc(db, "userData", user.uid), encrypted);
+  vaultDoc = encrypted;
+}
+
+async function logMigrationMetadata(user, details) {
+  try {
+    await setDoc(
+      doc(db, "userMetadata", user.uid),
+      {
+        ...details,
+        version: DATA_MIGRATION_VERSION,
+        updatedAt: new Date().toISOString()
+      },
+      { merge: true }
+    );
+  } catch (err) {
+    console.error("Metadata log failed", err);
+  }
+}
+
+function setVaultUIState(mode) {
+  if (!vaultContainer) return;
+  const hasUser = !!auth.currentUser;
+  const shouldShowCard = hasUser && mode !== "unlocked";
+  vaultContainer.style.display = shouldShowCard ? "block" : "none";
+  if (mode === "setup") {
+    vaultHeading.textContent = "Secure your account";
+    vaultDescription.textContent = "Create a master passphrase to unlock lessons, settings, and notes.";
+    initializeVaultBtn.style.display = "inline-block";
+    unlockVaultBtn.style.display = "none";
+  } else if (mode === "locked") {
+    vaultHeading.textContent = "Unlock your vault";
+    vaultDescription.textContent = "Enter your master passphrase to continue.";
+    initializeVaultBtn.style.display = "none";
+    unlockVaultBtn.style.display = "inline-block";
+  } else {
+    vaultHeading.textContent = "Vault unlocked";
+    vaultDescription.textContent = "Your session key is active. You can rotate the passphrase in Settings.";
+    initializeVaultBtn.style.display = "none";
+    unlockVaultBtn.style.display = "none";
+  }
+}
+
+async function loadVaultState(user) {
+  try {
+    if (!user) {
+      clearVaultState();
+      return;
+    }
+    const snap = await getDoc(doc(db, "userData", user.uid));
+    if (snap.exists()) {
+      vaultDoc = snap.data();
+      setVaultUIState("locked");
+    } else {
+      vaultDoc = null;
+      setVaultUIState("setup");
+    }
+  } catch (e) {
+    console.error("Error loading vault:", e);
+    setVaultUIState("setup");
+  }
+}
+
+async function initializeVault() {
+  try {
+    const user = auth.currentUser;
+    if (!user) return;
+    const passphrase = readPassphraseInput();
+    if (passphrase.length < 12) {
+      alert("Please choose a longer passphrase (at least 12 characters).");
+      return;
+    }
+    const { key, salt } = await deriveKeyFromPassphrase(passphrase);
+    setDerivedVaultKeyContext(key, salt);
+    decryptedUserPayload = { ...getDefaultUserPayload() };
+    await persistEncryptedPayload(key, salt);
+    await handleTrustedDeviceSelection(key, salt);
+    await tryDecryptPendingProgress();
+    setVaultUIState("unlocked");
+    hidePassphraseGate();
+    alert("Vault initialized. Remember to store your passphrase safely—there is no recovery option.");
+  } catch (err) {
+    console.error("Error initializing vault", err);
+    alert("Could not initialize vault. Please try again.");
+  }
+}
+
+async function loadEncryptedProfile(passphrase) {
+  if (!vaultDoc) {
+    throw new Error("No encrypted profile available.");
+  }
+  const saltBytes = vaultDoc?.salt ? decodeSalt(vaultDoc.salt) : null;
+  if (!saltBytes) throw new Error("Missing vault salt. Reinitialize the vault.");
+  const { key } = await deriveKeyFromPassphrase(passphrase, saltBytes);
+  const decryptedText = await decryptSecret(vaultDoc, key);
+  setDerivedVaultKeyContext(key, saltBytes);
+  decryptedUserPayload = parseUserPayload(decryptedText);
+  await tryDecryptPendingProgress();
+  hidePassphraseGate();
+  return { key, saltBytes };
+}
+
+async function unlockVault() {
+  try {
+    if (!vaultDoc) {
+      alert("No vault found to unlock.");
+      return;
+    }
+    const passphrase = readPassphraseInput();
+    if (!passphrase) {
+      alert("Enter your master passphrase to unlock.");
+      return;
+    }
+    const { key, saltBytes } = await loadEncryptedProfile(passphrase);
+    await handleTrustedDeviceSelection(key, saltBytes);
+    setVaultUIState("unlocked");
+    hidePassphraseGate();
+  } catch (err) {
+    console.error("Unlock failed", err);
+    alert("Could not unlock vault. Double-check your passphrase.");
+  }
+}
+
+function resetSettingsForm() {
+  settingsNewPassphrase.value = "";
+  settingsDisplayName.value = "";
+  settingsApiKey.value = "";
+  settingsMetadata.value = "";
+  settingsFields.style.display = "none";
+  setSettingsStatus("", "info");
+}
+
+function populateSettingsFields() {
+  const payload = decryptedUserPayload || getDefaultUserPayload();
+  settingsDisplayName.value = payload.displayName || "";
+  settingsApiKey.value = payload.apiKey || "";
+  settingsMetadata.value = payload.metadata || "";
+  settingsFields.style.display = "block";
+}
+
+async function saveSettings() {
+  try {
+    if (!vaultDoc) {
+      alert("Initialize your encrypted profile first.");
+      return;
+    }
+    if (!derivedVaultKey) {
+      showPassphraseGate();
+      alert("Unlock with your passphrase before saving settings.");
+      return;
+    }
+    const saltBytes = getActiveSaltBytes(vaultDoc);
+    if (!saltBytes) {
+      alert("Missing vault salt. Reinitialize the vault.");
+      return;
+    }
+    setSettingsStatus("Saving settings...", "info");
+    decryptedUserPayload = {
+      ...getDefaultUserPayload(),
+      ...(decryptedUserPayload || {}),
+      displayName: settingsDisplayName.value.trim(),
+      apiKey: settingsApiKey.value.trim(),
+      metadata: settingsMetadata.value.trim()
+    };
+    await persistEncryptedPayload(derivedVaultKey, saltBytes);
+    settingsFields.style.display = "block";
+    setSettingsStatus("Settings saved with updated encryption.", "success");
+    alert("Settings saved. Keep your passphrase safe.");
+  } catch (err) {
+    console.error("Settings save failed", err);
+    setSettingsStatus("Could not save settings. Unlock with your passphrase and try again.", "error");
+    alert("Could not save settings. Please try again.");
+  }
+}
+
+async function reencryptQuizDocs(oldKey, newKey, newSalt, missingCollections) {
+  const user = auth.currentUser;
+  if (!user) return null;
+  const quizRef = doc(db, "quizzes", user.uid);
+  const snap = await getDoc(quizRef);
+  if (!snap.exists()) {
+    missingCollections.push("quizzes");
+    return null;
+  }
+  const data = snap.data();
+  if (!data.ciphertext) {
+    missingCollections.push("quizzes-unencrypted");
+    return null;
+  }
+  const decrypted = await decryptSecret(data, oldKey);
+  const serialized = attachVersionMetadata(decrypted, "quizzes-reencrypt");
+  const encrypted = await encryptSecret(serialized, newKey, newSalt);
+  await setDoc(quizRef, encrypted);
+  return encrypted;
+}
+
+async function rotatePassphrase() {
+  try {
+    if (!vaultDoc) {
+      alert("Nothing to rotate yet. Initialize your vault first.");
+      return;
+    }
+    const user = auth.currentUser;
+    if (!user) return;
+    if (!derivedVaultKey) {
+      showPassphraseGate();
+      alert("Unlock with your passphrase to rotate it.");
+      return;
+    }
+    const newPass = settingsNewPassphrase.value.trim();
+    if (newPass.length < 12) {
+      alert("Choose a stronger new passphrase (at least 12 characters).");
+      return;
+    }
+    setSettingsStatus("Deriving new encryption key...", "info");
+    const { key: newKey, salt: newSalt } = await deriveKeyFromPassphrase(newPass);
+    setSettingsStatus("Re-encrypting profile and progress...", "info");
+
+    const updatedVaultPayload = await encryptSecret(serializeUserPayload(), newKey, newSalt);
+    const updatedProgressPayload = await encryptSecret(serializeLessonProgress(), newKey, newSalt);
+    const missingCollections = [];
+    let updatedQuizPayload = null;
+
+    try {
+      updatedQuizPayload = await reencryptQuizDocs(derivedVaultKey, newKey, newSalt, missingCollections);
+      if (updatedQuizPayload) setSettingsStatus("Re-encrypted quiz history.", "info");
+    } catch (err) {
+      console.error("Quiz re-encryption failed", err);
+      missingCollections.push("quizzes-error");
+      setSettingsStatus("Quiz data could not be re-encrypted.", "error");
+    }
+
+    setSettingsStatus("Committing rotated keys...", "info");
+
+    await runTransaction(db, async tx => {
+      tx.set(doc(db, "userData", user.uid), updatedVaultPayload);
+      tx.set(doc(db, "lessonProgress", user.uid), updatedProgressPayload);
+      if (updatedQuizPayload) tx.set(doc(db, "quizzes", user.uid), updatedQuizPayload);
+    });
+
+    setDerivedVaultKeyContext(newKey, newSalt);
+    vaultDoc = updatedVaultPayload;
+    encryptedLessonProgressPayload = updatedProgressPayload;
+    pendingEncryptedProgressPayload = null;
+    settingsNewPassphrase.value = "";
+    vaultPassphraseInput.value = "";
+
+    if (gateTrustedDevice && gateTrustedDevice.checked) {
+      await persistTrustedCache(newKey, newSalt);
+    }
+
+    await logMigrationMetadata(user, {
+      lastRotationAt: new Date().toISOString(),
+      missingCollections
+    });
+
+    const statusNote = missingCollections.length
+      ? `Rotation complete. Missing collections: ${missingCollections.join(", ")}`
+      : "Passphrase rotated and data re-encrypted.";
+    setSettingsStatus(statusNote, missingCollections.length ? "info" : "success");
+    alert("Passphrase rotated. You must remember the new passphrase to keep access.");
+
+    setVaultUIState("locked");
+    showPassphraseGate();
+  } catch (err) {
+    console.error("Passphrase rotation failed", err);
+    setSettingsStatus("Could not rotate passphrase. No changes were applied.", "error");
+    alert("Could not rotate passphrase. Confirm your passphrase and try again. If the old passphrase was incorrect, no data was changed.");
+  }
+}
+
+async function resetEncryptedAccount() {
+  try {
+    if (!vaultDoc) {
+      alert("No encrypted data to reset.");
+      return;
+    }
+    const confirmed = confirm("This will delete your encrypted data and progress. Continue?");
+    if (!confirmed) return;
+    const user = auth.currentUser;
+    if (!user) return;
+    const missingCollections = [];
+    setSettingsStatus("Deleting encrypted documents...", "info");
+    await deleteDoc(doc(db, "userData", user.uid));
+    await deleteDoc(doc(db, "lessonProgress", user.uid));
+    try {
+      await deleteDoc(doc(db, "quizzes", user.uid));
+    } catch (err) {
+      console.error("Quiz deletion failed", err);
+      missingCollections.push("quizzes-error");
+    }
+    await deleteDoc(doc(db, "userMetadata", user.uid));
+    clearVaultState();
+    lessonProgress = { lessons: {}, notes: {} };
+    profileVersionInfo = buildVersionInfo("profile-reset");
+    progressVersionInfo = buildVersionInfo("lesson-progress-reset");
+    setVaultUIState("setup");
+    await logMigrationMetadata(user, {
+      lastResetAt: new Date().toISOString(),
+      missingCollections
+    });
+    MicroModal.close("modal-settings");
+    setSettingsStatus("Encrypted data cleared. Defaults restored.", "success");
+    showPassphraseGate();
+    alert("Encrypted profile reset. Set up a new passphrase to start again.");
+  } catch (err) {
+    console.error("Reset failed", err);
+    setSettingsStatus("Could not reset encrypted data.", "error");
+    alert("Could not reset encrypted data. Try again.");
+  }
+}
+
+async function loadCourses() {
+  try {
+    const r = await fetch("lessons.json");
+    if (!r.ok) throw new Error("Could not load lessons.json");
+    return await r.json();
+  } catch (e) {
+    console.error("Error fetching lessons.json:", e);
+    return [];
+  }
+}
+
+async function updateAllCourseStatuses(cs) {
+  const tasks = cs.map(async c => {
+    try {
+      const resp = await fetch(c.file);
+      if (!resp.ok) throw new Error("Could not load " + c.file);
+      const yText = await resp.text();
+      const data = jsyaml.load(yText);
+      if (data && data.course && Array.isArray(data.course.lessons)) {
+        const total = data.course.lessons.length;
+        const completed = data.course.lessons.filter(l => {
+          const lbl = l.title || "Lesson " + l.lesson_id;
+          return isLessonChecked(c.file, lbl);
+        }).length;
+        c._status = computeCourseStatus(completed, total);
+      } else c._status = "N/A";
+    } catch (err) {
+      console.error("Error fetching YAML for", c.file, err);
+      c._status = "N/A";
+    }
+  });
+  await Promise.all(tasks);
+}
+
+async function refreshCourseStatuses() {
+  await updateAllCourseStatuses(allCourses);
+  renderCourses(allCourses);
+}
+
+function computeCourseStatus(cmp, tot) {
+  if (tot === 0) return "N/A";
+  if (cmp === 0) return "Not Started";
+  if (cmp === tot) return "Complete";
+  return "In Progress";
+}
+
+function renderCourses(cs) {
+  const cl = document.getElementById("courseList");
+  cl.innerHTML = "";
+  cs.forEach(cr => {
+    const d = document.createElement("div");
+    d.classList.add("course-card");
+    let st = "n-a";
+    if (cr._status) st = cr._status.toLowerCase().replace(/\s+/g, "-");
+    d.innerHTML =
+      "<h3>" +
+      cr.title +
+      "</h3><p>Course ID: " +
+      cr.id +
+      "</p><p class='course-status " +
+      st +
+      "'>" +
+      (cr._status || "N/A") +
+      "</p><button data-file='" +
+      cr.file +
+      "'>View Lessons</button>";
+    cl.appendChild(d);
+  });
+}
+
+function filterCourses(cs, q) {
+  return cs.filter(c => c.title.toLowerCase().includes(q.toLowerCase()));
+}
+
+async function handleViewLessons(p) {
+  try {
+    if (!auth.currentUser) {
+      MicroModal.show("modal-locked");
+      return;
+    }
+    if (!derivedVaultKey) {
+      showPassphraseGate();
+      alert("Unlock with your passphrase to view lessons.");
+      return;
+    }
+    const resp = await fetch(p);
+    if (!resp.ok) throw new Error("Unable to load YAML file: " + p);
+    const y = await resp.text();
+    const cd = jsyaml.load(y);
+    currentCourseData = cd;
+    currentCoursePath = p;
+    currentLessonSelection = null;
+    setActiveSection("lessons");
+    updateQuizContext();
+    showCourseContent(cd, p);
+  } catch (e) {
+    console.error("Error fetching YAML:", e);
+  }
+}
+
+function showCourseContent(cd, fp) {
+  if (!cd || !cd.course) return;
+  setActiveSection("lessons");
+  updateQuizContext();
+  setQuizStatus("");
+  const cObj = cd.course;
+  const container = document.getElementById("lessonsContainer");
+  const cTitle = document.getElementById("selectedCourseTitle");
+  const cDesc = document.getElementById("selectedCourseDesc");
+  const lList = document.getElementById("lessonList");
+  const lContent = document.getElementById("lessonContent");
+  const lProgress = document.getElementById("lessonProgress");
+  container.style.display = "block";
+  cTitle.textContent = cObj.title || "Untitled Course";
+  cDesc.textContent = cObj.description || "";
+  lList.innerHTML = "";
+  lContent.innerHTML = "<p style='color:#999;'>Select a lesson on the left to see details here.</p>";
+  (cObj.lessons || []).forEach(lesson => {
+    const lbl = lesson.title || "Lesson " + lesson.lesson_id;
+    if (lesson.section && !document.getElementById("section-" + lesson.section)) {
+      const s = document.createElement("h4");
+      s.id = "section-" + lesson.section;
+      s.classList.add("title-text");
+      s.textContent = lesson.section;
+      lList.appendChild(s);
+    }
+    const li = document.createElement("li");
+    if (isLessonChecked(fp, lbl)) li.classList.add("completed");
+    const icon = lesson.type ? getLessonIcon(lesson.type) : '<i class="fas fa-file-alt"></i>';
+    li.innerHTML =
+      "<div class='icon-area'>" +
+      icon +
+      "</div><div class='lesson-title'>" +
+      lbl +
+      "</div><div class='hover-checkbox'><input type='checkbox'" +
+      (isLessonChecked(fp, lbl) ? " checked" : "") +
+      " /></div>";
+    li.addEventListener("click", e => {
+      if (!e.target.closest(".hover-checkbox")) {
+        if (!auth.currentUser && fp !== defaultGuidePath && lbl !== "Getting Started") {
+          MicroModal.show("modal-locked");
+          return;
+        }
+        document.querySelectorAll("#lessonList li").forEach(n => n.classList.remove("active"));
+        li.classList.add("active");
+        displayLessonContent(lesson);
+      }
+    });
+    const cb = li.querySelector(".hover-checkbox input[type='checkbox']");
+    cb.addEventListener("change", async () => {
+      const desiredState = cb.checked;
+      toggleLessonChecked(fp, lbl, desiredState);
+      li.classList.toggle("completed", desiredState);
+      updateProgress(fp);
+      try {
+        const saved = await persistUserProgress();
+        if (saved === false) {
+          cb.checked = !desiredState;
+          toggleLessonChecked(fp, lbl, cb.checked);
+          li.classList.toggle("completed", cb.checked);
+          updateProgress(fp);
+          return;
+        }
+      } catch (err) {
+        console.error("Progress save failed", err);
+        cb.checked = !desiredState;
+        toggleLessonChecked(fp, lbl, cb.checked);
+        li.classList.toggle("completed", cb.checked);
+        updateProgress(fp);
+        const retry = confirm("Could not save progress. Re-enter your passphrase to retry?");
+        if (retry) {
+          try {
+            await persistUserProgress();
+          } catch (err2) {
+            console.error("Retry failed", err2);
+            alert("Progress not synced. Unlock with your passphrase and try again.");
+          }
+        }
+      }
+    });
+    if (!auth.currentUser && fp !== defaultGuidePath && lbl !== "Getting Started") li.classList.add("locked");
+    lList.appendChild(li);
+  });
+  function updateProgress(path) {
+    const tot = (cObj.lessons || []).length;
+    const comp = (cObj.lessons || []).filter(ls => isLessonChecked(path, ls.title || "Lesson " + ls.lesson_id)).length;
+    lProgress.textContent = "Completed " + comp + " / " + tot + " lessons";
+    let status = "";
+    if (comp === 0) status = "(not-started)";
+    else if (comp === tot) status = "(complete)";
+    else status = "(in-progress)";
+    cTitle.textContent = (cObj.title || "Untitled Course") + " " + status;
+    updateCourseCardStatus(path);
+  }
+  updateProgress(fp);
+}
+
+function displayLessonContent(lsn) {
+  const el = document.getElementById("lessonContent");
+  el.innerHTML = "";
+  const title = lsn.title || "Lesson " + lsn.lesson_id;
+  currentLessonSelection = { title, coursePath: currentCoursePath, lesson: lsn };
+  updateQuizContext();
+  setQuizStatus("");
+  const h = document.createElement("h1");
+  h.textContent = title;
+  el.appendChild(h);
+  const hr = document.createElement("hr");
+  el.appendChild(hr);
+  if (lsn.course) {
+    const n = document.createElement("div");
+    n.innerHTML = marked.parse(lsn.course);
+    el.appendChild(n);
+  }
+  if (lsn.exercises && Array.isArray(lsn.exercises) && lsn.exercises.length) {
+    const exH = document.createElement("h2");
+    exH.textContent = "Exercises:";
+    el.appendChild(exH);
+    let m = "\n";
+    lsn.exercises.forEach((ex, i) => {
+      m += i + 1 + ". **" + ex.name + "** – " + ex.prompt + "\n";
+    });
+    const d = document.createElement("div");
+    d.innerHTML = marked.parse(m);
+    el.appendChild(d);
+  }
+  if (lsn.assignments && Array.isArray(lsn.assignments) && lsn.assignments.length) {
+    const asH = document.createElement("h2");
+    asH.textContent = "Assignments:";
+    el.appendChild(asH);
+    let m = "\n";
+    lsn.assignments.forEach((a, i) => {
+      m += i + 1 + ". **" + a.name + "** – " + a.description + "\n";
+    });
+    const d = document.createElement("div");
+    d.innerHTML = marked.parse(m);
+    el.appendChild(d);
+  }
+  if (lsn.sources && Array.isArray(lsn.sources) && lsn.sources.length) {
+    const srcH = document.createElement("h2");
+    srcH.textContent = "Sources:";
+    el.appendChild(srcH);
+    let m = "\n";
+    lsn.sources.forEach((s, i) => {
+      m += i + 1 + ". " + s + "\n";
+    });
+    const d = document.createElement("div");
+    d.innerHTML = marked.parse(m);
+    el.appendChild(d);
+  }
+  const notesWrapper = document.createElement("div");
+  notesWrapper.className = "lesson-notes";
+  const notesHeading = document.createElement("h3");
+  notesHeading.textContent = "Your notes";
+  const noteHint = document.createElement("p");
+  noteHint.className = "settings-note";
+  noteHint.textContent = "Notes are encrypted with your passphrase and saved per lesson.";
+  const noteField = document.createElement("textarea");
+  noteField.value = getLessonNote(currentCoursePath, title);
+  noteField.placeholder = "Add private notes for this lesson.";
+  const noteActions = document.createElement("div");
+  noteActions.className = "note-actions";
+  const saveNoteBtn = document.createElement("button");
+  saveNoteBtn.textContent = "Save notes";
+  saveNoteBtn.addEventListener("click", async () => {
+    if (!auth.currentUser) {
+      alert("Sign in before saving notes.");
+      return;
+    }
+    if (!derivedVaultKey) {
+      showPassphraseGate();
+      alert("Unlock with your passphrase before saving notes.");
+      return;
+    }
+    setLessonNote(currentCoursePath, title, noteField.value);
+    try {
+      await persistUserProgress();
+      renderNotesSummary();
+      saveNoteBtn.textContent = "Saved";
+      setTimeout(() => (saveNoteBtn.textContent = "Save notes"), 1500);
+    } catch (err) {
+      console.error("Note save failed", err);
+      alert("Could not save notes. Unlock with your passphrase and try again.");
+    }
+  });
+  noteActions.appendChild(saveNoteBtn);
+  notesWrapper.appendChild(notesHeading);
+  notesWrapper.appendChild(noteHint);
+  notesWrapper.appendChild(noteField);
+  notesWrapper.appendChild(noteActions);
+  el.appendChild(notesWrapper);
+}
+
+async function startQuizGeneration() {
+  if (!quizStatus) return;
+  if (!auth.currentUser) {
+    MicroModal.show("modal-locked");
+    setQuizStatus("Sign in to generate quizzes.", "error");
+    return;
+  }
+  if (!derivedVaultKey) {
+    showPassphraseGate();
+    setQuizStatus("Unlock with your passphrase to generate quizzes.", "error");
+    return;
+  }
+  if (!currentLessonSelection) {
+    setQuizStatus("Open a lesson in the Lessons page before generating a quiz.", "error");
+    return;
+  }
+  setQuizStatus(`Starting quiz generation for ${currentLessonSelection.title}...`, "info");
+  try {
+    setQuizStatus(`Quiz generation started for ${currentLessonSelection.title}. Keep this page open.`, "success");
+  } catch (err) {
+    console.error("Quiz generation failed", err);
+    setQuizStatus("Could not start quiz generation. Try again after unlocking your vault.", "error");
+  }
+}
+
+function updateCourseCardStatus(p) {
+  const co = allCourses.find(c => c.file === p);
+  if (!co || !currentCourseData.course) return;
+  const tot = (currentCourseData.course.lessons || []).length;
+  const comp = (currentCourseData.course.lessons || []).filter(l =>
+    isLessonChecked(p, l.title || "Lesson " + l.lesson_id)
+  ).length;
+  co._status = computeCourseStatus(comp, tot);
+  const card = document
+    .querySelector(".course-card button[data-file='" + p + "']")
+    ?.closest(".course-card");
+  if (card) {
+    const st = card.querySelector(".course-status");
+    if (st) {
+      st.classList.remove("not-started", "in-progress", "complete", "n-a");
+      st.textContent = co._status;
+      const cls = co._status.toLowerCase().replace(/\s+/g, "-");
+      st.classList.add(cls);
+    }
+  }
+}
+
+function toggleSidebar() {
+  const sb = document.getElementById("lessonSidebar");
+  const lo = document.getElementById("lessonLayout");
+  isSidebarCollapsed = !isSidebarCollapsed;
+  if (isSidebarCollapsed) {
+    sb.classList.add("collapsed");
+    lo.classList.add("collapsed");
+  } else {
+    sb.classList.remove("collapsed");
+    lo.classList.remove("collapsed");
+  }
+}
+
+if (vaultContainer) {
+  setVaultUIState("setup");
+}
+
+generatePassphraseBtn?.addEventListener("click", () => {
+  const newPass = generatePassphrase();
+  vaultPassphraseInput.value = newPass;
+  alert("Passphrase generated. Copy it and store it somewhere safe—there is no recovery option.");
+});
+
+copyPassphraseBtn?.addEventListener("click", async () => {
+  const val = vaultPassphraseInput.value;
+  if (!val) {
+    alert("Nothing to copy yet. Enter or generate a passphrase first.");
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(val);
+    alert("Passphrase copied. Store it safely before continuing.");
+  } catch (err) {
+    console.error("Clipboard error", err);
+    alert("Could not copy automatically. Please copy the passphrase manually.");
+  }
+});
+
+initializeVaultBtn?.addEventListener("click", initializeVault);
+unlockVaultBtn?.addEventListener("click", unlockVault);
+gateUnlockBtn?.addEventListener("click", unlockVault);
+gateInitializeBtn?.addEventListener("click", initializeVault);
+gateGenerateBtn?.addEventListener("click", () => {
+  const generated = generatePassphrase();
+  gatePassphraseInput.value = generated;
+  vaultPassphraseInput.value = generated;
+  alert("Passphrase generated. Copy it and store it somewhere safe.");
+});
+
+openSettingsBtn?.addEventListener("click", () => {
+  resetSettingsForm();
+  if (!derivedVaultKey) {
+    settingsFields.style.display = "none";
+    setSettingsStatus(
+      "Unlock with your passphrase to edit settings. You can still reset your account below.",
+      "info"
+    );
+    MicroModal.show("modal-settings");
+    showPassphraseGate();
+    return;
+  }
+  populateSettingsFields();
+  setSettingsStatus("Settings unlocked for this session.", "success");
+  MicroModal.show("modal-settings");
+});
+
+signOutBtn?.addEventListener("click", async () => {
+  await signOut(auth);
+});
+
+saveSettingsBtn?.addEventListener("click", saveSettings);
+rotatePassphraseBtn?.addEventListener("click", rotatePassphrase);
+resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
+
+document.addEventListener("DOMContentLoaded", async () => {
+  allCourses = await loadCourses();
+  await refreshCourseStatuses();
+  setActiveSection("home");
+  updateQuizContext();
+  renderNotesSummary();
+  document.getElementById("courseSearch")?.addEventListener("input", e => {
+    renderCourses(filterCourses(allCourses, e.target.value));
+  });
+  document.addEventListener("click", e => {
+    const b = e.target;
+    if (b.tagName === "BUTTON" && b.hasAttribute("data-file")) {
+      handleViewLessons(b.getAttribute("data-file"));
+    }
+  });
+  Object.entries(navLinks).forEach(([section, link]) => {
+    if (!link) return;
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      if (section === "lessons" && !currentCoursePath) {
+        setActiveSection("lessons");
+        updateQuizContext("Select a course from Home to view lessons.");
+        return;
+      }
+      setActiveSection(section);
+      if (section === "quizzes") updateQuizContext();
+    });
+  });
+  document.getElementById("sidebarToggle").addEventListener("click", toggleSidebar);
+  generateQuizBtn?.addEventListener("click", startQuizGeneration);
+});
