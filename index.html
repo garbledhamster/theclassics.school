@@ -11,40 +11,30 @@
 
 </head>
 <body>
-  <div class="topbar">
-    <div class="topbar-inner">
-      <div class="auth-section topbar-auth">
-        <div class="auth-input">
-          <input id="emailForSignIn" type="email" placeholder="Enter your email" />
-        </div>
-        <button id="sendSignInLink">Send Sign-In Link</button>
-        <p id="loginStatus" class="login-status" aria-live="polite"></p>
-        <div id="signedInActions" class="account-actions" style="display:none;">
-          <button id="openSettingsBtn">Settings</button>
-        </div>
+  <nav class="primary-nav" aria-label="Primary">
+    <div class="nav-links">
+      <a href="#" id="homeLink" class="active">Home</a>
+      <a href="#" id="lessonsLink">Lessons</a>
+      <a href="#" id="quizzesLink">Quizzes</a>
+      <a href="#" id="notesLink">Notes</a>
+    </div>
+    <div class="nav-auth auth-section">
+      <div class="auth-input">
+        <input id="emailForSignIn" type="email" placeholder="Enter your email" />
+      </div>
+      <button id="sendSignInLink">Send Sign-In Link</button>
+      <p id="loginStatus" class="login-status" aria-live="polite"></p>
+      <div id="signedInActions" class="account-actions" style="display:none;">
+        <button id="openSettingsBtn">Settings</button>
       </div>
     </div>
-  </div>
+  </nav>
   <header class="site-header">
     <div class="brand">
       <h1>theclassics.school</h1>
       <p>A Place to Read, Discover, and Grow</p>
     </div>
-    <div class="header-actions">
-      <nav class="main-nav">
-        <a href="#" id="homeLink" class="active">Home</a>
-        <a href="#" id="lessonsLink">Lessons</a>
-        <a href="#" id="quizzesLink">Quizzes</a>
-        <a href="#" id="notesLink">Notes</a>
-      </nav>
-    </div>
   </header>
-  <nav>
-    <a href="#" id="homeLink" class="active">Home</a>
-    <a href="#" id="lessonsLink">Lessons</a>
-    <a href="#" id="quizzesLink">Quizzes</a>
-    <a href="#" id="notesLink">Notes</a>
-  </nav>
   <section class="hero" data-section="home">
     <h2>Welcome to theclassics.school</h2>
     <p>Here you’ll find structured lessons inspired by timeless works of literature, philosophy, and beyond.</p>
