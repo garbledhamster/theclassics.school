@@ -17,15 +17,15 @@
       <a href="#" id="lessonsLink">Lessons</a>
       <a href="#" id="quizzesLink">Quizzes</a>
       <a href="#" id="notesLink">Notes</a>
+      <a href="#" id="openSettingsBtn" class="nav-link--settings" style="display:none;">Settings</a>
     </div>
     <div class="nav-auth auth-section">
       <div class="auth-input">
         <input id="emailForSignIn" type="email" placeholder="Enter your email" />
       </div>
-      <button id="sendSignInLink">Send Sign-In Link</button>
-      <p id="loginStatus" class="login-status" aria-live="polite"></p>
-      <div id="signedInActions" class="account-actions" style="display:none;">
-        <button id="openSettingsBtn">Settings</button>
+      <div class="auth-actions">
+        <p id="loginStatus" class="login-status" aria-live="polite"></p>
+        <button id="sendSignInLink">Send Sign-In Link</button>
       </div>
     </div>
   </nav>
@@ -93,6 +93,11 @@
           <h2 id="selectedCourseTitle" style="color:var(--color-red);font-family:var(--font-classic);"></h2>
           <p id="selectedCourseDesc"></p>
           <h4 id="lessonProgress"></h4>
+          <button id="mobileSidebarToggle" class="sidebar-fab" type="button" aria-controls="lessonSidebar" aria-expanded="false">
+            <i class="fa-solid fa-bars"></i>
+            <span class="sidebar-fab__label">Lessons</span>
+          </button>
+          <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
           <div class="lesson-layout" id="lessonLayout">
             <aside class="lesson-sidebar" id="lessonSidebar">
               <div class="sidebar-header">
