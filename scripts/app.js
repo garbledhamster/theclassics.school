@@ -54,6 +54,10 @@ const quizDetails = document.getElementById("quizDetails");
 const quizLessonFilter = document.getElementById("quizLessonFilter");
 const notesList = document.getElementById("notesList");
 const notesEmptyState = document.getElementById("notesEmptyState");
+const sidebarOverlay = document.getElementById("sidebarOverlay");
+const mobileSidebarToggle = document.getElementById("mobileSidebarToggle");
+const sidebarToggleButton = document.getElementById("sidebarToggle");
+const mobileBreakpoint = window.matchMedia("(max-width: 900px)");
 
 const navLinks = {
   home: document.getElementById("homeLink"),
@@ -173,9 +177,43 @@ let currentCourseData = {};
 let currentCoursePath = "";
 const defaultGuidePath = "lessons/0000_HowToUseThisSite.yaml";
 let isSidebarCollapsed = false;
+let isSidebarOpen = false;
 let currentSection = "home";
 let currentLessonSelection = null;
 let noteFocusTarget = null;
+
+function isMobileViewport() {
+  return mobileBreakpoint.matches;
+}
+
+function setMobileSidebarOpen(open) {
+  const sidebar = document.getElementById("lessonSidebar");
+  isSidebarOpen = open;
+  sidebar?.classList.toggle("mobile-open", open);
+  sidebarOverlay?.classList.toggle("active", open);
+  document.body?.classList.toggle("sidebar-locked", open);
+  mobileSidebarToggle?.setAttribute("aria-expanded", open ? "true" : "false");
+  if (!open && sidebar) {
+    sidebar.scrollTop = 0;
+  }
+}
+
+function resetSidebarForViewport() {
+  const sidebar = document.getElementById("lessonSidebar");
+  const layout = document.getElementById("lessonLayout");
+  if (!sidebar || !layout) return;
+  if (isMobileViewport()) {
+    isSidebarCollapsed = false;
+    layout.classList.remove("collapsed");
+    sidebar.classList.remove("collapsed");
+    setMobileSidebarOpen(false);
+    return;
+  }
+  setMobileSidebarOpen(false);
+  isSidebarCollapsed = false;
+  sidebar.classList.remove("mobile-open");
+  layout.classList.remove("collapsed");
+}
 
 function setDerivedVaultKeyContext(key, saltBytes) {
   derivedVaultKey = key;
@@ -1642,6 +1680,10 @@ function displayLessonContent(lsn) {
   }
   renderNotePreview();
   el.appendChild(notesWrapper);
+  if (isMobileViewport()) {
+    setMobileSidebarOpen(false);
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 function buildQuizQuestionsFromLesson(lsn) {
@@ -1770,6 +1812,11 @@ function updateCourseCardStatus(p) {
 function toggleSidebar() {
   const sb = document.getElementById("lessonSidebar");
   const lo = document.getElementById("lessonLayout");
+  if (!sb || !lo) return;
+  if (isMobileViewport()) {
+    setMobileSidebarOpen(!isSidebarOpen);
+    return;
+  }
   isSidebarCollapsed = !isSidebarCollapsed;
   if (isSidebarCollapsed) {
     sb.classList.add("collapsed");
@@ -1873,6 +1920,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   });
-  document.getElementById("sidebarToggle").addEventListener("click", toggleSidebar);
+  resetSidebarForViewport();
+  sidebarToggleButton?.addEventListener("click", toggleSidebar);
+  mobileSidebarToggle?.addEventListener("click", toggleSidebar);
+  sidebarOverlay?.addEventListener("click", () => setMobileSidebarOpen(false));
+  if (mobileBreakpoint?.addEventListener) {
+    mobileBreakpoint.addEventListener("change", resetSidebarForViewport);
+  } else if (mobileBreakpoint?.addListener) {
+    mobileBreakpoint.addListener(resetSidebarForViewport);
+  }
+  document.addEventListener("keyup", e => {
+    if (e.key === "Escape" && isMobileViewport() && isSidebarOpen) {
+      setMobileSidebarOpen(false);
+    }
+  });
   generateQuizBtn?.addEventListener("click", startQuizGeneration);
 });
