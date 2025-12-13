@@ -133,9 +133,15 @@ if (isSignInWithEmailLink(auth, window.location.href)) {
 }
 
 onAuthStateChanged(auth, async user => {
-  updateAuthUI(user);
-
-  if (!user) {
+  if (user) {
+    loginStatus.textContent = `Signed in as: ${user.email}`;
+    sendLinkBtn.textContent = "Sign Out";
+    emailField.style.display = "none";
+  } else {
+    loginStatus.textContent = "Not signed in";
+    sendLinkBtn.textContent = "Send Sign-In Link";
+    emailField.style.display = "inline-block";
+    emailField.value = "";
     clearVaultState();
     currentCourseData = {};
     currentCoursePath = "";
