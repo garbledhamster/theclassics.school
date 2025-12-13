@@ -180,26 +180,6 @@
       align-items: flex-start;
       gap: 0.35rem;
     }
-    .auth-card__actions button {
-      background: var(--color-green);
-      color: #fff;
-      border: none;
-      padding: 0.65rem 1rem;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-      transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-    }
-    .auth-card__actions button:hover {
-      background: #70804f;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
-    }
-    .auth-card__actions button:active {
-      transform: translateY(0);
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-    }
     main {
       width: 100%;
       margin: 2rem 0;

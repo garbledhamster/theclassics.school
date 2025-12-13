@@ -86,25 +86,6 @@ const noteModeCache = {};
 const quizAttempts = {};
 let pendingEmailLinkMode = isSignInWithEmailLink(auth, window.location.href);
 
-function broadcastAuthStatus(message) {
-  authStatusLabels.forEach(label => {
-    if (label) label.textContent = message;
-  });
-}
-
-async function completeEmailLinkSignIn(email) {
-  try {
-    await signInWithEmailLink(auth, email, window.location.href);
-    localStorage.removeItem("emailForSignIn");
-    pendingEmailLinkMode = false;
-    broadcastAuthStatus("Signed in successfully.");
-    window.history.replaceState({}, document.title, "/");
-  } catch (e) {
-    console.error(e);
-    broadcastAuthStatus("Could not complete sign-in. Please request a new link.");
-  }
-}
-
 async function handleSendSignIn(button) {
   if (auth.currentUser) {
     await signOut(auth);
@@ -138,6 +119,12 @@ authSendButtons.forEach(btn =>
   })
 );
 
+authSendButtons.forEach(btn =>
+  btn.addEventListener("click", () => {
+    handleSendSignIn(btn);
+  })
+);
+
 if (pendingEmailLinkMode) {
   const storedEmail = localStorage.getItem("emailForSignIn");
   if (storedEmail) {
@@ -152,9 +139,15 @@ if (pendingEmailLinkMode) {
 }
 
 onAuthStateChanged(auth, async user => {
-  updateAuthUI(user);
-
-  if (!user) {
+  if (user) {
+    loginStatus.textContent = `Signed in as: ${user.email}`;
+    sendLinkBtn.textContent = "Sign Out";
+    emailField.style.display = "none";
+  } else {
+    loginStatus.textContent = "Not signed in";
+    sendLinkBtn.textContent = "Send Sign-In Link";
+    emailField.style.display = "inline-block";
+    emailField.value = "";
     clearVaultState();
     currentCourseData = {};
     currentCoursePath = "";
@@ -283,33 +276,15 @@ function setQuizStatus(message, type = "info") {
   quizStatus.classList.add(type);
 }
 
-function setLockedContentVisibility(isSignedIn) {
-  if (!lockedContent) return;
-  lockedContent.style.display = isSignedIn ? "" : "none";
-}
-
 function updateAuthUI(user) {
   const isSignedIn = !!user;
-  setLockedContentVisibility(isSignedIn);
   authStatusLabels.forEach(label => {
     if (!label) return;
-    if (isSignedIn && user?.email) {
-      label.textContent = `Signed in as: ${user.email}`;
-    } else if (pendingEmailLinkMode) {
-      label.textContent = "Finish signing in using the email link.";
-    } else {
-      label.textContent = "Not signed in";
-    }
+    label.textContent = isSignedIn && user?.email ? `Signed in as: ${user.email}` : "Not signed in";
   });
   authSendButtons.forEach(btn => {
     if (!btn) return;
-    if (isSignedIn) {
-      btn.textContent = "Sign Out";
-    } else if (pendingEmailLinkMode) {
-      btn.textContent = "Complete Sign-In";
-    } else {
-      btn.textContent = "Send Sign-In Link";
-    }
+    btn.textContent = isSignedIn ? "Sign Out" : "Send Sign-In Link";
   });
   authEmailFields.forEach(input => {
     if (!input) return;
@@ -318,8 +293,7 @@ function updateAuthUI(user) {
   });
   authPanels.forEach(panel => {
     if (!panel) return;
-    const hideWhenSignedIn = panel.dataset.hideWhenSignedIn === "true";
-    panel.style.display = isSignedIn && hideWhenSignedIn ? "none" : "";
+    panel.style.display = isSignedIn ? "none" : "";
   });
   scheduleStickyHeightUpdate();
 }
