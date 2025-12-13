@@ -49,6 +49,9 @@ const settingsStatus = document.getElementById("settingsStatus");
 const generateQuizBtn = document.getElementById("generateQuizBtn");
 const quizLessonContext = document.getElementById("quizLessonContext");
 const quizStatus = document.getElementById("quizStatus");
+const quizList = document.getElementById("quizList");
+const quizDetails = document.getElementById("quizDetails");
+const quizLessonFilter = document.getElementById("quizLessonFilter");
 const notesList = document.getElementById("notesList");
 const notesEmptyState = document.getElementById("notesEmptyState");
 
@@ -70,12 +73,17 @@ let lessonProgress = { lessons: {}, notes: {} };
 const DATA_MIGRATION_VERSION = 1;
 let profileVersionInfo = buildVersionInfo("bootstrap-profile");
 let progressVersionInfo = buildVersionInfo("bootstrap-progress");
+let quizVersionInfo = buildVersionInfo("bootstrap-quizzes");
 let vaultDoc = null;
 let derivedVaultKey = null;
 let derivedVaultSalt = null;
 let encryptedLessonProgressPayload = null;
 let pendingEncryptedProgressPayload = null;
+let encryptedQuizPayload = null;
+let pendingEncryptedQuizPayload = null;
 let decryptedUserPayload = null;
+let quizStore = getDefaultQuizStore();
+let activeQuizId = null;
 
 sendLinkBtn.onclick = async () => {
   if (auth.currentUser) {
@@ -142,6 +150,7 @@ onAuthStateChanged(auth, async user => {
 
   await loadUserProgress(user);
   await loadVaultState(user);
+  await loadUserQuizzes(user);
   await tryAutoUnlockFromTrustedCache();
   await refreshCourseStatuses();
 
@@ -283,6 +292,37 @@ function parseLessonProgressText(txt) {
   }
 }
 
+function getDefaultQuizStore() {
+  const normalized = normalizeVersionInfo(quizVersionInfo, "quizzes-default");
+  quizVersionInfo = normalized;
+  return { quizzes: [], versionInfo: normalized };
+}
+
+function parseQuizPayload(txt) {
+  try {
+    const parsed = JSON.parse(txt || "{}");
+    quizVersionInfo = normalizeVersionInfo(parsed.versionInfo, "quizzes-import");
+    return { quizzes: parsed.quizzes || [], versionInfo: quizVersionInfo };
+  } catch (e) {
+    const fallback = buildVersionInfo("quizzes-legacy");
+    quizVersionInfo = fallback;
+    return { quizzes: [], versionInfo: fallback };
+  }
+}
+
+function serializeQuizPayload() {
+  const normalized = normalizeVersionInfo(quizVersionInfo, "quizzes-save");
+  quizVersionInfo = normalized;
+  const quizzes = Array.isArray(quizStore?.quizzes) ? quizStore.quizzes : [];
+  return JSON.stringify({ quizzes, versionInfo: normalized });
+}
+
+function formatQuizTimestamp(ts) {
+  const d = new Date(ts);
+  if (Number.isNaN(d.getTime())) return ts || "";
+  return d.toLocaleString();
+}
+
 function serializeLessonProgress() {
   const normalized = normalizeVersionInfo(progressVersionInfo, "lesson-progress-save");
   progressVersionInfo = normalized;
@@ -326,6 +366,41 @@ async function ensureProgressKey(payload) {
   throw new Error("Missing passphrase for encrypted progress.");
 }
 
+async function ensureQuizKey(payload) {
+  const saltBytes = getActiveSaltBytes(payload);
+  if (derivedVaultKey && (!saltBytes || (derivedVaultSalt && saltBytes && saltsMatch(derivedVaultSalt, saltBytes)))) {
+    setDerivedVaultKeyContext(derivedVaultKey, saltBytes || derivedVaultSalt);
+    return { key: derivedVaultKey, saltBytes: saltBytes || derivedVaultSalt };
+  }
+  if (!saltBytes) throw new Error("Missing salt for encrypted quiz data.");
+  throw new Error("Missing passphrase for encrypted quiz data.");
+}
+
+async function decryptQuizPayload(payload, key) {
+  const decryptedText = await decryptSecret(payload, key);
+  quizStore = parseQuizPayload(decryptedText);
+  encryptedQuizPayload = payload;
+  pendingEncryptedQuizPayload = null;
+  renderQuizList();
+}
+
+async function tryDecryptPendingQuizzes() {
+  if (pendingEncryptedQuizPayload) {
+    try {
+      const { key } = await ensureQuizKey(pendingEncryptedQuizPayload);
+      await decryptQuizPayload(pendingEncryptedQuizPayload, key);
+      setQuizStatus("Quizzes unlocked for this session.", "success");
+    } catch (err) {
+      console.error("Error decrypting quizzes:", err);
+    }
+  }
+}
+
+async function tryDecryptAllPending() {
+  await tryDecryptPendingProgress();
+  await tryDecryptPendingQuizzes();
+}
+
 async function loadUserProgress(user) {
   try {
     lessonProgress = { lessons: {}, notes: {} };
@@ -364,6 +439,42 @@ async function loadUserProgress(user) {
   }
 }
 
+async function loadUserQuizzes(user) {
+  try {
+    resetQuizState();
+    if (!user) {
+      setQuizStatus("Sign in to generate and view quizzes.", "info");
+      return;
+    }
+    const snap = await getDoc(doc(db, "quizzes", user.uid));
+    if (!snap.exists()) {
+      setQuizStatus("No saved quizzes yet. Generate one from a lesson to get started.", "info");
+      return;
+    }
+    const data = snap.data();
+    if (data && data.ciphertext) {
+      encryptedQuizPayload = data;
+      if (derivedVaultKey) {
+        const { key } = await ensureQuizKey(data);
+        await decryptQuizPayload(data, key);
+        setQuizStatus("Loaded quizzes from your vault.", "success");
+      } else {
+        pendingEncryptedQuizPayload = data;
+        setQuizStatus("Unlock with your passphrase to view saved quizzes.", "info");
+      }
+    } else if (data && data.quizzes) {
+      quizVersionInfo = normalizeVersionInfo(data.versionInfo, "quizzes-plaintext");
+      quizStore = { ...getDefaultQuizStore(), ...data, versionInfo: quizVersionInfo };
+      renderQuizList();
+      setQuizStatus("Imported quizzes from a legacy format.", "success");
+    }
+  } catch (e) {
+    console.error("Error loading quizzes:", e);
+    resetQuizState();
+    setQuizStatus("Could not load quizzes. Try unlocking your vault again.", "error");
+  }
+}
+
 async function persistUserProgress() {
   const user = auth.currentUser;
   if (!user) return false;
@@ -385,6 +496,32 @@ async function persistUserProgress() {
       return false;
     }
     console.error("Error saving progress:", e);
+    throw e;
+  }
+}
+
+async function persistQuizStore() {
+  const user = auth.currentUser;
+  if (!user) return false;
+  if (!vaultDoc && !encryptedQuizPayload && !derivedVaultKey) {
+    setQuizStatus("Set up and unlock your vault before saving quizzes.", "error");
+    return false;
+  }
+  try {
+    const { key, saltBytes } = await ensureQuizKey(encryptedQuizPayload || vaultDoc);
+    const encrypted = await encryptSecret(serializeQuizPayload(), key, saltBytes);
+    await setDoc(doc(db, "quizzes", user.uid), encrypted);
+    encryptedQuizPayload = encrypted;
+    pendingEncryptedQuizPayload = null;
+    return true;
+  } catch (e) {
+    if (e && e.message && e.message.includes("Missing passphrase")) {
+      showPassphraseGate();
+      setQuizStatus("Unlock with your passphrase to save quizzes.", "error");
+      return false;
+    }
+    console.error("Error saving quizzes:", e);
+    setQuizStatus("Could not save quizzes. Try again after unlocking your vault.", "error");
     throw e;
   }
 }
@@ -462,6 +599,126 @@ function renderNotesSummary() {
   });
 }
 
+function resetQuizState() {
+  quizStore = getDefaultQuizStore();
+  encryptedQuizPayload = null;
+  pendingEncryptedQuizPayload = null;
+  activeQuizId = null;
+  renderQuizList();
+}
+
+function renderQuizDetails(quiz) {
+  if (!quizDetails) return;
+  if (!derivedVaultKey) {
+    quizDetails.innerHTML = "<p class='settings-note'>Unlock with your master passphrase to view saved quizzes.</p>";
+    return;
+  }
+  if (!quiz) {
+    quizDetails.innerHTML = "<p class='settings-note'>Select a saved quiz to see its details.</p>";
+    return;
+  }
+  const metadata = quiz.metadata || {};
+  const title = metadata.lessonTitle || quiz.lessonTitle || "Lesson quiz";
+  const courseTitle = metadata.courseTitle || metadata.coursePath || quiz.courseTitle || "";
+  const created = metadata.createdAt || metadata.generatedAt || quiz.createdAt;
+  const status = quiz.status || metadata.status || "saved";
+  const questions = Array.isArray(quiz.questions) ? quiz.questions : [];
+  quizDetails.innerHTML = "";
+  const h = document.createElement("h4");
+  h.textContent = title;
+  const meta = document.createElement("div");
+  meta.className = "quiz-meta";
+  const statusPill = document.createElement("span");
+  statusPill.className = "quiz-status-pill";
+  statusPill.innerHTML = '<i class="fas fa-check-circle"></i>' + status;
+  const time = document.createElement("span");
+  time.textContent = `Saved: ${formatQuizTimestamp(created)}`;
+  const lesson = document.createElement("span");
+  lesson.textContent = courseTitle ? `Course: ${courseTitle}` : "";
+  const count = document.createElement("span");
+  count.textContent = `Questions: ${questions.length}`;
+  meta.appendChild(statusPill);
+  meta.appendChild(time);
+  if (courseTitle) meta.appendChild(lesson);
+  meta.appendChild(count);
+  const list = document.createElement("ol");
+  list.className = "quiz-question-list";
+  if (!questions.length) {
+    const li = document.createElement("li");
+    li.textContent = "No questions were captured for this quiz.";
+    list.appendChild(li);
+  } else {
+    questions.forEach(q => {
+      const li = document.createElement("li");
+      const prompt = document.createElement("div");
+      prompt.textContent = q.prompt || q.question || "Review this lesson.";
+      li.appendChild(prompt);
+      if (q.detail) {
+        const detail = document.createElement("div");
+        detail.className = "settings-note";
+        detail.textContent = q.detail;
+        li.appendChild(detail);
+      }
+      list.appendChild(li);
+    });
+  }
+  quizDetails.appendChild(h);
+  quizDetails.appendChild(meta);
+  quizDetails.appendChild(list);
+}
+
+function renderQuizList() {
+  if (!quizList || !quizDetails) return;
+  quizList.innerHTML = "";
+  const canRead = !!derivedVaultKey;
+  const filterValue = (quizLessonFilter?.value || "").toLowerCase().trim();
+  if (!canRead) {
+    quizList.innerHTML = "<p class='settings-note'>Unlock with your master passphrase to view saved quizzes.</p>";
+    renderQuizDetails(null);
+    return;
+  }
+  const entries = Array.isArray(quizStore?.quizzes) ? [...quizStore.quizzes] : [];
+  const sorted = entries.sort((a, b) => {
+    const aDate = new Date(a?.metadata?.createdAt || a?.createdAt || 0).getTime();
+    const bDate = new Date(b?.metadata?.createdAt || b?.createdAt || 0).getTime();
+    return bDate - aDate;
+  });
+  const filtered = sorted.filter(q => {
+    if (!filterValue) return true;
+    const lessonName = (q?.metadata?.lessonTitle || q?.lessonTitle || "").toLowerCase();
+    return lessonName.includes(filterValue);
+  });
+  if (!filtered.length) {
+    const emptyCopy = entries.length
+      ? "No saved quizzes match this lesson filter yet."
+      : "No saved quizzes yet. Generate one from a lesson to see it here.";
+    quizList.innerHTML = `<p class='settings-note'>${emptyCopy}</p>`;
+    activeQuizId = null;
+    renderQuizDetails(null);
+    return;
+  }
+  if (!activeQuizId || !filtered.some(q => q.id === activeQuizId)) {
+    activeQuizId = filtered[0].id;
+  }
+  filtered.forEach(q => {
+    const btn = document.createElement("button");
+    btn.className = "quiz-card" + (q.id === activeQuizId ? " active" : "");
+    const title = q?.metadata?.lessonTitle || q.lessonTitle || "Lesson quiz";
+    const created = q?.metadata?.createdAt || q.createdAt;
+    const status = q.status || q?.metadata?.status || "saved";
+    btn.innerHTML =
+      `<h4>${title}</h4>` +
+      `<div class="quiz-meta"><span class="quiz-status-pill">${status}</span><span>${formatQuizTimestamp(created)}</span></div>`;
+    btn.addEventListener("click", () => {
+      activeQuizId = q.id;
+      renderQuizList();
+    });
+    quizList.appendChild(btn);
+  });
+  const activeQuiz = filtered.find(q => q.id === activeQuizId) || null;
+  renderQuizDetails(activeQuiz);
+}
+
 function clearVaultState() {
   derivedVaultKey = null;
   derivedVaultSalt = null;
@@ -469,6 +726,7 @@ function clearVaultState() {
   decryptedUserPayload = null;
   encryptedLessonProgressPayload = null;
   pendingEncryptedProgressPayload = null;
+  resetQuizState();
   if (vaultPassphraseInput) vaultPassphraseInput.value = "";
   if (gatePassphraseInput) gatePassphraseInput.value = "";
   setVaultUIState("locked");
@@ -494,7 +752,7 @@ async function tryAutoUnlockFromTrustedCache() {
     setDerivedVaultKeyContext(cache.key, activeSalt);
     const decryptedText = await decryptSecret(vaultDoc, cache.key);
     decryptedUserPayload = parseUserPayload(decryptedText);
-    await tryDecryptPendingProgress();
+    await tryDecryptAllPending();
     setVaultUIState("unlocked");
     if (gateTrustedDevice) gateTrustedDevice.checked = true;
     hidePassphraseGate();
@@ -631,7 +889,7 @@ async function initializeVault() {
     decryptedUserPayload = { ...getDefaultUserPayload() };
     await persistEncryptedPayload(key, salt);
     await handleTrustedDeviceSelection(key, salt);
-    await tryDecryptPendingProgress();
+    await tryDecryptAllPending();
     setVaultUIState("unlocked");
     hidePassphraseGate();
     alert("Vault initialized. Remember to store your passphrase safely—there is no recovery option.");
@@ -651,7 +909,7 @@ async function loadEncryptedProfile(passphrase) {
   const decryptedText = await decryptSecret(vaultDoc, key);
   setDerivedVaultKeyContext(key, saltBytes);
   decryptedUserPayload = parseUserPayload(decryptedText);
-  await tryDecryptPendingProgress();
+  await tryDecryptAllPending();
   hidePassphraseGate();
   return { key, saltBytes };
 }
@@ -850,6 +1108,7 @@ async function resetEncryptedAccount() {
     lessonProgress = { lessons: {}, notes: {} };
     profileVersionInfo = buildVersionInfo("profile-reset");
     progressVersionInfo = buildVersionInfo("lesson-progress-reset");
+    setQuizStatus("Quiz history cleared from your vault.", "info");
     setVaultUIState("setup");
     await logMigrationMetadata(user, {
       lastResetAt: new Date().toISOString(),
@@ -1159,6 +1418,65 @@ function displayLessonContent(lsn) {
   el.appendChild(notesWrapper);
 }
 
+function buildQuizQuestionsFromLesson(lsn) {
+  const questions = [];
+  if (Array.isArray(lsn.exercises) && lsn.exercises.length) {
+    lsn.exercises.slice(0, 3).forEach(ex => {
+      questions.push({
+        prompt: ex.name ? `${ex.name}: ${ex.prompt || "Review this exercise."}` : ex.prompt || "Reflect on this exercise.",
+        detail: "Draw from the lesson exercises to craft your answer."
+      });
+    });
+  }
+  if (Array.isArray(lsn.assignments) && lsn.assignments.length) {
+    const assignment = lsn.assignments[0];
+    questions.push({
+      prompt: assignment.name ? `Assignment: ${assignment.name}` : "Summarize this week's assignment.",
+      detail: assignment.description || "Explain how you would approach the assignment."
+    });
+  }
+  if (Array.isArray(lsn.sources) && lsn.sources.length) {
+    questions.push({
+      prompt: "Which source from this lesson felt most relevant, and why?",
+      detail: lsn.sources.join(", ")
+    });
+  }
+  if (lsn.course) {
+    questions.push({
+      prompt: `What is the central idea of "${lsn.title || "this lesson"}"?`,
+      detail: "Provide a concise summary in your own words."
+    });
+  }
+  if (!questions.length) {
+    questions.push({
+      prompt: `What stood out to you in ${lsn.title || "this lesson"}?`,
+      detail: "Capture one key takeaway and one open question."
+    });
+  }
+  return questions;
+}
+
+function buildQuizRecordFromLesson(selection) {
+  const now = new Date().toISOString();
+  const quizId = crypto.randomUUID ? crypto.randomUUID() : `quiz-${Date.now()}`;
+  const lesson = selection.lesson || {};
+  const questions = buildQuizQuestionsFromLesson(lesson);
+  return {
+    id: quizId,
+    metadata: {
+      lessonTitle: selection.title,
+      lessonId: lesson.lesson_id || selection.title,
+      courseTitle: currentCourseData?.course?.title || "",
+      coursePath: selection.coursePath,
+      createdAt: now,
+      status: "saved",
+      questionCount: questions.length
+    },
+    questions,
+    status: "saved"
+  };
+}
+
 async function startQuizGeneration() {
   if (!quizStatus) return;
   if (!auth.currentUser) {
@@ -1176,11 +1494,28 @@ async function startQuizGeneration() {
     return;
   }
   setQuizStatus(`Starting quiz generation for ${currentLessonSelection.title}...`, "info");
+  const previousQuizzes = Array.isArray(quizStore?.quizzes) ? [...quizStore.quizzes] : [];
   try {
-    setQuizStatus(`Quiz generation started for ${currentLessonSelection.title}. Keep this page open.`, "success");
+    const quiz = buildQuizRecordFromLesson(currentLessonSelection);
+    const existing = Array.isArray(quizStore?.quizzes) ? quizStore.quizzes.filter(q => q.id !== quiz.id) : [];
+    quizStore.quizzes = [quiz, ...existing];
+    activeQuizId = quiz.id;
+    setQuizStatus(`Encrypting and saving quiz for ${currentLessonSelection.title}...`, "info");
+    const saved = await persistQuizStore();
+    if (!saved) {
+      quizStore.quizzes = previousQuizzes;
+      activeQuizId = previousQuizzes[0]?.id || null;
+      renderQuizList();
+      return;
+    }
+    setQuizStatus(`Quiz saved for ${currentLessonSelection.title}.`, "success");
+    renderQuizList();
   } catch (err) {
     console.error("Quiz generation failed", err);
-    setQuizStatus("Could not start quiz generation. Try again after unlocking your vault.", "error");
+    quizStore.quizzes = previousQuizzes;
+    activeQuizId = previousQuizzes[0]?.id || null;
+    renderQuizList();
+    setQuizStatus("Could not generate or save the quiz. Unlock with your passphrase and try again.", "error");
   }
 }
 
@@ -1289,6 +1624,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("courseSearch")?.addEventListener("input", e => {
     renderCourses(filterCourses(allCourses, e.target.value));
   });
+  quizLessonFilter?.addEventListener("input", renderQuizList);
   document.addEventListener("click", e => {
     const b = e.target;
     if (b.tagName === "BUTTON" && b.hasAttribute("data-file")) {
@@ -1305,7 +1641,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
       setActiveSection(section);
-      if (section === "quizzes") updateQuizContext();
+      if (section === "quizzes") {
+        updateQuizContext();
+        renderQuizList();
+      }
     });
   });
   document.getElementById("sidebarToggle").addEventListener("click", toggleSidebar);

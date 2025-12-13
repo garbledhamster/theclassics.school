@@ -111,8 +111,18 @@
           <h3>Quizzes</h3>
           <p class="helper-text">Generate quizzes for the lesson you’re currently studying. Unlock with your passphrase first.</p>
           <p id="quizLessonContext" class="settings-note"></p>
-          <div class="vault-actions">
+          <div class="quiz-actions">
             <button id="generateQuizBtn">Generate Quiz</button>
+            <div class="quiz-filter">
+              <label for="quizLessonFilter">Filter by lesson</label>
+              <input id="quizLessonFilter" type="text" placeholder="Start typing a lesson title" />
+            </div>
+          </div>
+          <div class="quiz-layout">
+            <div class="quiz-list" id="quizList"></div>
+            <div class="quiz-details" id="quizDetails">
+              <p class="settings-note">Select a saved quiz to see its details.</p>
+            </div>
           </div>
           <p id="quizStatus" class="settings-status info" role="status"></p>
         </div>
