@@ -54,24 +54,6 @@
   </div>
   <main>
     <div id="lockedContent">
-      <section id="vaultContainer" class="vault-card" style="display:none;" hidden aria-hidden="true">
-        <h3 id="vaultHeading">Secure your account</h3>
-        <p id="vaultDescription" class="helper-text">Enter or set a master passphrase to unlock lessons, settings, and notes. We cannot recover it if lost.</p>
-        <div class="vault-field">
-          <label for="vaultPassphrase">Master passphrase</label>
-          <input id="vaultPassphrase" type="password" autocomplete="new-password" placeholder="Enter or paste your master passphrase" />
-          <p class="passphrase-warning">Keep this somewhere safe before you continue. Losing it means losing access to your encrypted data.</p>
-          <div class="vault-actions">
-            <button id="generatePassphraseBtn">Generate strong passphrase</button>
-            <button id="copyPassphraseBtn" class="secondary">Copy passphrase</button>
-          </div>
-          <p class="copy-hint">Stored only in this session. We never send the passphrase to the server.</p>
-        </div>
-        <div class="vault-actions">
-          <button id="initializeVaultBtn">Save &amp; initialize vault</button>
-          <button id="unlockVaultBtn" class="secondary">Unlock existing vault</button>
-        </div>
-      </section>
       <section id="homeSection" class="page-section" data-section="home">
         <div class="course-search">
           <input type="text" id="courseSearch" placeholder="Search for a course..." />
