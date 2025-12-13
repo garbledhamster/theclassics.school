@@ -1733,62 +1733,90 @@ function displayLessonContent(lsn) {
   }
 }
 
-function buildQuizQuestionsFromLesson(lsn) {
-  const questions = [];
-  if (Array.isArray(lsn.exercises) && lsn.exercises.length) {
-    lsn.exercises.slice(0, 3).forEach(ex => {
-      questions.push({
-        prompt: ex.name ? `${ex.name}: ${ex.prompt || "Review this exercise."}` : ex.prompt || "Reflect on this exercise.",
-        detail: "Draw from the lesson exercises to craft your answer."
-      });
-    });
-  }
-  if (Array.isArray(lsn.assignments) && lsn.assignments.length) {
-    const assignment = lsn.assignments[0];
-    questions.push({
-      prompt: assignment.name ? `Assignment: ${assignment.name}` : "Summarize this week's assignment.",
-      detail: assignment.description || "Explain how you would approach the assignment."
-    });
-  }
-  if (Array.isArray(lsn.sources) && lsn.sources.length) {
-    questions.push({
-      prompt: "Which source from this lesson felt most relevant, and why?",
-      detail: lsn.sources.join(", ")
-    });
-  }
-  if (lsn.course) {
-    questions.push({
-      prompt: `What is the central idea of "${lsn.title || "this lesson"}"?`,
-      detail: "Provide a concise summary in your own words."
-    });
-  }
-  if (!questions.length) {
-    questions.push({
-      prompt: `What stood out to you in ${lsn.title || "this lesson"}?`,
-      detail: "Capture one key takeaway and one open question."
-    });
-  }
-  return questions;
+function buildLessonContext(selection) {
+  const course = currentCourseData?.course || {};
+  const lesson = selection.lesson || {};
+  const base = [
+    `Course Title: ${course.title || "Untitled"}`,
+    course.description ? `Course Description: ${course.description}` : null,
+    `Lesson Title: ${lesson.title || selection.title}`,
+    lesson.course ? `Lesson Overview: ${lesson.course}` : null
+  ].filter(Boolean);
+  const exercises = Array.isArray(lesson.exercises)
+    ? lesson.exercises
+        .map(ex => `${ex.name || "Exercise"}: ${ex.prompt || ex.description || ""}`)
+        .filter(Boolean)
+    : [];
+  const assignments = Array.isArray(lesson.assignments)
+    ? lesson.assignments.map(a => `${a.name || "Assignment"}: ${a.description || ""}`).filter(Boolean)
+    : [];
+  const sources = Array.isArray(lesson.sources) ? lesson.sources.filter(Boolean) : [];
+  if (exercises.length) base.push(`Exercises: ${exercises.join(" | ")}`);
+  if (assignments.length) base.push(`Assignments: ${assignments.join(" | ")}`);
+  if (sources.length) base.push(`Sources: ${sources.join(", ")}`);
+  return base.join("\n");
 }
 
-function buildQuizRecordFromLesson(selection) {
+async function generateQuizWithOpenAI(selection) {
+  const apiKey = (decryptedUserPayload || {}).apiKey;
+  if (!apiKey) {
+    throw new Error("Add your OpenAI API key in Settings before generating quizzes.");
+  }
   const now = new Date().toISOString();
   const quizId = crypto.randomUUID ? crypto.randomUUID() : `quiz-${Date.now()}`;
+  const context = buildLessonContext(selection);
+  const prompt = [
+    "You are a tutor generating reflective quiz questions for a student.",
+    "Create concise, open-ended questions that reference the supplied lesson context.",
+    "Return a JSON object with keys: id (string), status (string), metadata (object), questions (array of {prompt, detail}).",
+    "Metadata should include lessonTitle, courseTitle, createdAt, and questionCount.",
+    "Respond ONLY with valid JSON."
+  ].join(" \n");
+  const userMessage = `Lesson context:\n${context}\nGenerate 5 thoughtful questions tailored to this lesson.`;
+  const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: prompt },
+        { role: "user", content: userMessage }
+      ],
+      response_format: { type: "json_object" }
+    })
+  });
+  if (!resp.ok) {
+    const detail = await resp.text();
+    throw new Error(`OpenAI request failed: ${resp.status} ${detail}`);
+  }
+  const data = await resp.json();
+  const content = data?.choices?.[0]?.message?.content;
+  if (!content) throw new Error("OpenAI returned an empty response.");
+  let parsed = null;
+  try {
+    parsed = JSON.parse(content);
+  } catch (err) {
+    console.error("Could not parse quiz JSON", content);
+    throw new Error("OpenAI response was not valid JSON.");
+  }
   const lesson = selection.lesson || {};
-  const questions = buildQuizQuestionsFromLesson(lesson);
+  const questions = Array.isArray(parsed.questions) ? parsed.questions : [];
   return {
-    id: quizId,
+    id: parsed.id || quizId,
     metadata: {
       lessonTitle: selection.title,
       lessonId: lesson.lesson_id || selection.title,
       courseTitle: currentCourseData?.course?.title || "",
       coursePath: selection.coursePath,
-      createdAt: now,
-      status: "saved",
-      questionCount: questions.length
+      createdAt: parsed?.metadata?.createdAt || now,
+      status: parsed?.metadata?.status || parsed.status || "generated",
+      questionCount: parsed?.metadata?.questionCount || questions.length
     },
     questions,
-    status: "saved"
+    status: parsed.status || "generated"
   };
 }
 
@@ -1811,7 +1839,8 @@ async function startQuizGeneration() {
   setQuizStatus(`Starting quiz generation for ${currentLessonSelection.title}...`, "info");
   const previousQuizzes = Array.isArray(quizStore?.quizzes) ? [...quizStore.quizzes] : [];
   try {
-    const quiz = buildQuizRecordFromLesson(currentLessonSelection);
+    setQuizStatus(`Contacting OpenAI with ${currentLessonSelection.title}...`, "info");
+    const quiz = await generateQuizWithOpenAI(currentLessonSelection);
     const existing = Array.isArray(quizStore?.quizzes) ? quizStore.quizzes.filter(q => q.id !== quiz.id) : [];
     quizStore.quizzes = [quiz, ...existing];
     activeQuizId = quiz.id;
@@ -1830,7 +1859,10 @@ async function startQuizGeneration() {
     quizStore.quizzes = previousQuizzes;
     activeQuizId = previousQuizzes[0]?.id || null;
     renderQuizList();
-    setQuizStatus("Could not generate or save the quiz. Unlock with your passphrase and try again.", "error");
+    const message = err?.message
+      ? `Could not generate quiz: ${err.message}`
+      : "Could not generate or save the quiz. Unlock with your passphrase and try again.";
+    setQuizStatus(message, "error");
   }
 }
 
