@@ -11,16 +11,31 @@
 
 </head>
 <body>
-  <header>
-    <h1>theclassics.school</h1>
-    <p>A Place to Read, Discover, and Grow</p>
+  <header class="site-header">
+    <div class="brand">
+      <h1>theclassics.school</h1>
+      <p>A Place to Read, Discover, and Grow</p>
+    </div>
+    <div class="header-actions">
+      <nav class="main-nav">
+        <a href="#" id="homeLink" class="active">Home</a>
+        <a href="#" id="lessonsLink">Lessons</a>
+        <a href="#" id="quizzesLink">Quizzes</a>
+        <a href="#" id="notesLink">Notes</a>
+      </nav>
+      <div class="auth-section nav-auth">
+        <div class="auth-input">
+          <input id="emailForSignIn" type="email" placeholder="Enter your email" />
+        </div>
+        <button id="sendSignInLink">Send Sign-In Link</button>
+        <p id="loginStatus" class="login-status" aria-live="polite"></p>
+        <div id="signedInActions" class="account-actions" style="display:none;">
+          <button id="openSettingsBtn">Settings</button>
+          <button id="signOutBtn" class="secondary">Sign Out</button>
+        </div>
+      </div>
+    </div>
   </header>
-  <nav>
-    <a href="#" id="homeLink" class="active">Home</a>
-    <a href="#" id="lessonsLink">Lessons</a>
-    <a href="#" id="quizzesLink">Quizzes</a>
-    <a href="#" id="notesLink">Notes</a>
-  </nav>
   <section class="hero" data-section="home">
     <h2>Welcome to theclassics.school</h2>
     <p>Here you’ll find structured lessons inspired by timeless works of literature, philosophy, and beyond.</p>
@@ -49,17 +64,6 @@
     </div>
   </div>
   <main>
-    <div class="auth-section">
-      <div>
-        <input id="emailForSignIn" type="email" placeholder="Enter your email" />
-      </div>
-      <button id="sendSignInLink">Send Sign-In Link</button>
-      <p id="loginStatus" style="margin-top:0.5rem;color:var(--color-orange);"></p>
-      <div id="signedInActions" class="account-actions" style="display:none;">
-        <button id="openSettingsBtn">Settings</button>
-        <button id="signOutBtn" class="secondary">Sign Out</button>
-      </div>
-    </div>
     <div id="lockedContent">
       <section id="vaultContainer" class="vault-card" style="display:none;">
         <h3 id="vaultHeading">Secure your account</h3>
