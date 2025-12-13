@@ -754,3 +754,107 @@
     tbody tr:nth-child(even) {
       background-color: #f5f0e6;
     }
+
+    .quiz-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+    }
+
+    .quiz-filter {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      min-width: 220px;
+    }
+
+    .quiz-filter input {
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--color-gray);
+    }
+
+    .quiz-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .quiz-list {
+      background: #fff;
+      border: 1px solid #e0d7ca;
+      border-radius: 12px;
+      padding: 0.5rem;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+
+    .quiz-card {
+      width: 100%;
+      text-align: left;
+      border: 1px solid #e0d7ca;
+      background: #f9f4ec;
+      border-radius: 10px;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .quiz-card:hover,
+    .quiz-card.active {
+      border-color: var(--color-green);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .quiz-card h4 {
+      margin: 0 0 0.35rem;
+      font-family: var(--font-classic);
+      color: var(--color-red);
+    }
+
+    .quiz-meta {
+      font-size: 0.9rem;
+      color: #666;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+
+    .quiz-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      background: rgba(65, 131, 215, 0.15);
+      color: #2c6faa;
+    }
+
+    .quiz-details {
+      background: #fff;
+      border: 1px solid #e0d7ca;
+      border-radius: 12px;
+      padding: 1rem;
+      min-height: 200px;
+    }
+
+    .quiz-question-list {
+      list-style: decimal inside;
+      padding-left: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    .quiz-question-list li {
+      margin-bottom: 0.6rem;
+    }
+
+    @media (max-width: 900px) {
+      .quiz-layout {
+        grid-template-columns: 1fr;
+      }
+    }
