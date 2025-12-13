@@ -128,15 +128,11 @@ onAuthStateChanged(auth, async user => {
     loginStatus.textContent = `Signed in as: ${user.email}`;
     sendLinkBtn.textContent = "Sign Out";
     emailField.style.display = "none";
-    lockedContent.style.display = "block";
-    openSettingsBtn?.style.setProperty("display", "inline-flex");
   } else {
     loginStatus.textContent = "Not signed in";
     sendLinkBtn.textContent = "Send Sign-In Link";
     emailField.style.display = "inline-block";
     emailField.value = "";
-    lockedContent.style.display = "none";
-    openSettingsBtn?.style.setProperty("display", "none");
     clearVaultState();
     currentCourseData = {};
     currentCoursePath = "";
@@ -949,14 +945,14 @@ function renderQuizDetails(quiz) {
   const questions = Array.isArray(quiz.questions) ? quiz.questions : [];
   const attempt = getQuizAttempt(quiz.id);
   quizDetails.innerHTML = "";
-  const actions = document.createElement("div");
-  actions.className = "quiz-detail-actions";
+  const detailActions = document.createElement("div");
+  detailActions.className = "quiz-detail-actions";
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "quiz-delete";
   deleteBtn.type = "button";
   deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete quiz';
   deleteBtn.addEventListener("click", () => deleteQuiz(quiz.id));
-  actions.appendChild(deleteBtn);
+  detailActions.appendChild(deleteBtn);
   const h = document.createElement("h4");
   h.textContent = title;
   const meta = document.createElement("div");
@@ -1036,26 +1032,27 @@ function renderQuizDetails(quiz) {
       list.appendChild(li);
     });
   }
-  const actions = document.createElement("div");
-  actions.className = "quiz-response-actions";
+  const responseActions = document.createElement("div");
+  responseActions.className = "quiz-response-actions";
   const submitBtn = document.createElement("button");
   submitBtn.type = "button";
   submitBtn.textContent = attempt.submitting ? "Submitting..." : "Submit responses";
   submitBtn.disabled = attempt.submitting || !questions.length;
   submitBtn.addEventListener("click", () => submitQuizForGrading(quiz));
-  actions.appendChild(submitBtn);
+  responseActions.appendChild(submitBtn);
   const statusNote = document.createElement("p");
   const statusClass = attempt.error ? "error" : feedback ? "success" : "info";
   statusNote.className = `settings-status ${statusClass}`;
   statusNote.textContent = attempt.error
     ? attempt.error
     : attempt.status || "Responses are kept locally and not saved to your vault.";
-  actions.appendChild(statusNote);
+  responseActions.appendChild(statusNote);
   quizDetails.appendChild(h);
   quizDetails.appendChild(meta);
   quizDetails.appendChild(gradingSummary);
   quizDetails.appendChild(list);
-  quizDetails.appendChild(actions);
+  quizDetails.appendChild(responseActions);
+  quizDetails.appendChild(detailActions);
 }
 
 function renderQuizList() {
