@@ -56,7 +56,7 @@ const notesEmptyState = document.getElementById("notesEmptyState");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
 const mobileSidebarToggle = document.getElementById("mobileSidebarToggle");
 const sidebarToggleButton = document.getElementById("sidebarToggle");
-const mobileBreakpoint = window.matchMedia("(max-width: 900px)");
+const mobileBreakpoint = window.matchMedia("(max-width: 1024px)");
 
 const navLinks = {
   home: document.getElementById("homeLink"),
@@ -181,6 +181,17 @@ let currentSection = "home";
 let currentLessonSelection = null;
 let noteFocusTarget = null;
 
+function updateStickyHeights() {
+  const root = document.documentElement;
+  const topbar = document.querySelector(".topbar");
+  const header = document.querySelector("header");
+  const topbarHeight = topbar?.offsetHeight || 0;
+  const headerHeight = header?.offsetHeight || 0;
+  root.style.setProperty("--topbar-height", `${topbarHeight}px`);
+  root.style.setProperty("--header-height", `${headerHeight}px`);
+  root.style.setProperty("--header-stack-height", `${topbarHeight + headerHeight}px`);
+}
+
 function isMobileViewport() {
   return mobileBreakpoint.matches;
 }
@@ -198,6 +209,7 @@ function setMobileSidebarOpen(open) {
 }
 
 function resetSidebarForViewport() {
+  updateStickyHeights();
   const sidebar = document.getElementById("lessonSidebar");
   const layout = document.getElementById("lessonLayout");
   if (!sidebar || !layout) return;
@@ -1884,6 +1896,7 @@ rotatePassphraseBtn?.addEventListener("click", rotatePassphrase);
 resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
 
 document.addEventListener("DOMContentLoaded", async () => {
+  updateStickyHeights();
   allCourses = await loadCourses();
   await refreshCourseStatuses();
   setActiveSection("home");
@@ -1924,6 +1937,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   } else if (mobileBreakpoint?.addListener) {
     mobileBreakpoint.addListener(resetSidebarForViewport);
   }
+  window.addEventListener("resize", updateStickyHeights);
   document.addEventListener("keyup", e => {
     if (e.key === "Escape" && isMobileViewport() && isSidebarOpen) {
       setMobileSidebarOpen(false);
