@@ -23,7 +23,9 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const actionCodeSettings = {
-  url: "https://theclassics.school",
+  // Use the current origin so email links work in production and on local previews
+  // without needing to change Firebase settings.
+  url: `${window.location.origin}${window.location.pathname}`.replace(/\/$/, ""),
   handleCodeInApp: true
 };
 
