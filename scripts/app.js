@@ -20,7 +20,6 @@ const emailField = document.getElementById("emailForSignIn");
 const sendLinkBtn = document.getElementById("sendSignInLink");
 const loginStatus = document.getElementById("loginStatus");
 const lockedContent = document.getElementById("lockedContent");
-const signedInActions = document.getElementById("signedInActions");
 const vaultContainer = document.getElementById("vaultContainer");
 const vaultHeading = document.getElementById("vaultHeading");
 const vaultDescription = document.getElementById("vaultDescription");
@@ -134,14 +133,14 @@ onAuthStateChanged(auth, async user => {
     sendLinkBtn.textContent = "Sign Out";
     emailField.style.display = "none";
     lockedContent.style.display = "block";
-    signedInActions.style.display = "flex";
+    openSettingsBtn?.style.setProperty("display", "inline-flex");
   } else {
     loginStatus.textContent = "Not signed in";
     sendLinkBtn.textContent = "Send Sign-In Link";
     emailField.style.display = "inline-block";
     emailField.value = "";
     lockedContent.style.display = "none";
-    signedInActions.style.display = "none";
+    openSettingsBtn?.style.setProperty("display", "none");
     clearVaultState();
     currentCourseData = {};
     currentCoursePath = "";
@@ -1878,7 +1877,8 @@ gateGenerateBtn?.addEventListener("click", () => {
   alert("Passphrase generated. Copy it and store it somewhere safe.");
 });
 
-openSettingsBtn?.addEventListener("click", () => {
+openSettingsBtn?.addEventListener("click", e => {
+  e.preventDefault();
   resetSettingsForm();
   if (!derivedVaultKey) {
     settingsFields.style.display = "none";
