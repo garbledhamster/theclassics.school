@@ -553,6 +553,17 @@
       cursor: pointer;
       font-weight: 700;
     }
+    .notes-card .notes-card-body {
+      margin-top: 0.35rem;
+      color: #2a2217;
+    }
+    .notes-card .notes-card-body .note-empty {
+      color: #6b5c3f;
+      font-style: italic;
+    }
+    .notes-card .notes-card-body p {
+      margin: 0.2rem 0;
+    }
     .notes-card h4 {
       margin-bottom: 0.35rem;
       color: var(--color-red);
@@ -687,6 +698,27 @@
       border-radius: 4px;
       font-weight: bold;
       cursor: pointer;
+    }
+    .lesson-notes .note-mode {
+      justify-content: flex-start;
+      margin-top: 0.5rem;
+    }
+    .lesson-notes .note-mode button.active {
+      background: var(--color-orange);
+      color: #fff;
+    }
+    .lesson-notes .note-preview {
+      border: 1px solid #c9b28d;
+      border-radius: 6px;
+      padding: 0.75rem;
+      background: #fff;
+      min-height: 120px;
+      margin-top: 0.5rem;
+    }
+    .lesson-notes .note-preview .note-empty {
+      color: #6b5c3f;
+      font-style: italic;
+      margin: 0;
     }
     .lesson-notes.note-highlight {
       box-shadow: 0 0 0 3px rgba(91, 145, 76, 0.25);
