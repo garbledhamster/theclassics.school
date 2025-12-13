@@ -272,6 +272,7 @@ function updateSettingsSectionState() {
     return;
   }
   if (derivedVaultKey) {
+    settingsFields.style.display = "";
     populateSettingsFields();
     setSettingsStatus("Settings unlocked for this session.", "success");
   } else {
