@@ -11,32 +11,19 @@
 
 </head>
 <body>
-  <div class="topbar">
-    <div class="topbar-inner">
-      <div class="auth-section topbar-auth">
-        <div class="auth-input">
-          <input id="emailForSignIn" type="email" placeholder="Enter your email" />
-        </div>
-        <button id="sendSignInLink">Send Sign-In Link</button>
-        <p id="loginStatus" class="login-status" aria-live="polite"></p>
-        <div id="signedInActions" class="account-actions" style="display:none;">
-          <button id="openSettingsBtn">Settings</button>
-        </div>
-      </div>
+  <div class="topbar" aria-live="polite">
+    <div class="topbar-user" id="userBadge">Guest</div>
+    <div class="topbar-controls">
+      <input id="emailForSignIn" type="email" placeholder="Enter your email" />
+      <button id="sendSignInLink">Send Sign-In Link</button>
+      <button id="openSettingsBtn" class="secondary">Settings</button>
+      <p id="loginStatus" class="topbar-status"></p>
     </div>
   </div>
-  <header class="site-header">
-    <div class="brand">
+  <header>
+    <div class="header-inner">
       <h1>theclassics.school</h1>
       <p>A Place to Read, Discover, and Grow</p>
-    </div>
-    <div class="header-actions">
-      <nav class="main-nav">
-        <a href="#" id="homeLink" class="active">Home</a>
-        <a href="#" id="lessonsLink">Lessons</a>
-        <a href="#" id="quizzesLink">Quizzes</a>
-        <a href="#" id="notesLink">Notes</a>
-      </nav>
     </div>
   </header>
   <section class="hero" data-section="home">
@@ -112,6 +99,7 @@
                 <ul id="lessonList" class="lesson-list"></ul>
               </div>
             </aside>
+            <div id="sidebarScrim" class="sidebar-scrim" aria-hidden="true"></div>
             <div id="lessonContent" class="lesson-content">
               <p style="color:#999;">Select a lesson on the left to see details here.</p>
             </div>
@@ -119,22 +107,21 @@
         </div>
       </section>
       <section id="quizzesSection" class="page-section section-hidden" data-section="quizzes">
-        <div class="vault-card">
-          <h3>Quizzes</h3>
-          <p class="helper-text">Generate quizzes for the lesson you’re currently studying. Unlock with your passphrase first.</p>
-          <p id="quizLessonContext" class="settings-note"></p>
-          <div class="quiz-actions">
-            <button id="generateQuizBtn">Generate Quiz</button>
-            <div class="quiz-filter">
-              <label for="quizLessonFilter">Filter by lesson</label>
-              <input id="quizLessonFilter" type="text" placeholder="Start typing a lesson title" />
+        <div class="vault-card quizzes-shell">
+          <div class="quiz-header">
+            <div>
+              <h3>Quizzes</h3>
+              <p class="helper-text">Generate interactive quizzes with ChatGPT and keep them encrypted to your account.</p>
+              <p id="quizLessonContext" class="settings-note"></p>
+            </div>
+            <div class="quiz-actions">
+              <input id="quizSearch" type="search" placeholder="Filter quizzes..." />
+              <button id="generateQuizBtn">Generate Quiz</button>
             </div>
           </div>
           <div class="quiz-layout">
             <div class="quiz-list" id="quizList"></div>
-            <div class="quiz-details" id="quizDetails">
-              <p class="settings-note">Select a saved quiz to see its details.</p>
-            </div>
+            <div class="quiz-detail" id="quizDetail"></div>
           </div>
           <p id="quizStatus" class="settings-status info" role="status"></p>
         </div>

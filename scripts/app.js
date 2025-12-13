@@ -19,8 +19,8 @@ import { decodeSalt, decryptSecret, deriveKeyFromPassphrase, encryptSecret, gene
 const emailField = document.getElementById("emailForSignIn");
 const sendLinkBtn = document.getElementById("sendSignInLink");
 const loginStatus = document.getElementById("loginStatus");
+const userBadge = document.getElementById("userBadge");
 const lockedContent = document.getElementById("lockedContent");
-const signedInActions = document.getElementById("signedInActions");
 const vaultContainer = document.getElementById("vaultContainer");
 const vaultHeading = document.getElementById("vaultHeading");
 const vaultDescription = document.getElementById("vaultDescription");
@@ -48,15 +48,12 @@ const settingsStatus = document.getElementById("settingsStatus");
 const generateQuizBtn = document.getElementById("generateQuizBtn");
 const quizLessonContext = document.getElementById("quizLessonContext");
 const quizStatus = document.getElementById("quizStatus");
-const quizList = document.getElementById("quizList");
-const quizDetails = document.getElementById("quizDetails");
-const quizLessonFilter = document.getElementById("quizLessonFilter");
+const quizListEl = document.getElementById("quizList");
+const quizDetailEl = document.getElementById("quizDetail");
+const quizSearchInput = document.getElementById("quizSearch");
 const notesList = document.getElementById("notesList");
 const notesEmptyState = document.getElementById("notesEmptyState");
-const sidebarOverlay = document.getElementById("sidebarOverlay");
-const mobileSidebarToggle = document.getElementById("mobileSidebarToggle");
-const sidebarToggleButton = document.getElementById("sidebarToggle");
-const mobileBreakpoint = window.matchMedia("(max-width: 1024px)");
+const sidebarScrim = document.getElementById("sidebarScrim");
 
 const navLinks = {
   home: document.getElementById("homeLink"),
@@ -76,22 +73,18 @@ let lessonProgress = { lessons: {}, notes: {} };
 const DATA_MIGRATION_VERSION = 1;
 let profileVersionInfo = buildVersionInfo("bootstrap-profile");
 let progressVersionInfo = buildVersionInfo("bootstrap-progress");
-let quizVersionInfo = buildVersionInfo("bootstrap-quizzes");
 let vaultDoc = null;
 let derivedVaultKey = null;
 let derivedVaultSalt = null;
 let encryptedLessonProgressPayload = null;
 let pendingEncryptedProgressPayload = null;
-let encryptedQuizPayload = null;
-let pendingEncryptedQuizPayload = null;
 let decryptedUserPayload = null;
-let quizStore = getDefaultQuizStore();
-let activeQuizId = null;
-const noteModeCache = {};
 
 sendLinkBtn.onclick = async () => {
   if (auth.currentUser) {
     await signOut(auth);
+    sendLinkBtn.textContent = "Send Sign-In Link";
+    emailField.style.display = "inline-block";
     return;
   }
   const email = emailField.value;
@@ -130,18 +123,18 @@ if (isSignInWithEmailLink(auth, window.location.href)) {
 
 onAuthStateChanged(auth, async user => {
   if (user) {
-    loginStatus.textContent = `Signed in as: ${user.email}`;
+    loginStatus.textContent = "Signed in";
+    if (userBadge) userBadge.textContent = user.email || "Signed in";
     sendLinkBtn.textContent = "Sign Out";
     emailField.style.display = "none";
     lockedContent.style.display = "block";
-    signedInActions.style.display = "flex";
   } else {
     loginStatus.textContent = "Not signed in";
+    if (userBadge) userBadge.textContent = "Guest";
     sendLinkBtn.textContent = "Send Sign-In Link";
     emailField.style.display = "inline-block";
     emailField.value = "";
     lockedContent.style.display = "none";
-    signedInActions.style.display = "none";
     clearVaultState();
     currentCourseData = {};
     currentCoursePath = "";
@@ -150,12 +143,15 @@ onAuthStateChanged(auth, async user => {
     updateQuizContext();
     setQuizStatus("");
     renderNotesSummary();
+    renderQuizBrowser();
   }
 
   await loadUserProgress(user);
   await loadVaultState(user);
-  await loadUserQuizzes(user);
   await tryAutoUnlockFromTrustedCache();
+  if (derivedVaultKey) {
+    await loadQuizHistory();
+  }
   await refreshCourseStatuses();
 
   if (user && !derivedVaultKey) {
@@ -176,55 +172,13 @@ let currentCourseData = {};
 let currentCoursePath = "";
 const defaultGuidePath = "lessons/0000_HowToUseThisSite.yaml";
 let isSidebarCollapsed = false;
-let isSidebarOpen = false;
 let currentSection = "home";
 let currentLessonSelection = null;
-let noteFocusTarget = null;
-
-function updateStickyHeights() {
-  const root = document.documentElement;
-  const topbar = document.querySelector(".topbar");
-  const header = document.querySelector("header");
-  const topbarHeight = topbar?.offsetHeight || 0;
-  const headerHeight = header?.offsetHeight || 0;
-  root.style.setProperty("--topbar-height", `${topbarHeight}px`);
-  root.style.setProperty("--header-height", `${headerHeight}px`);
-  root.style.setProperty("--header-stack-height", `${topbarHeight + headerHeight}px`);
-}
-
-function isMobileViewport() {
-  return mobileBreakpoint.matches;
-}
-
-function setMobileSidebarOpen(open) {
-  const sidebar = document.getElementById("lessonSidebar");
-  isSidebarOpen = open;
-  sidebar?.classList.toggle("mobile-open", open);
-  sidebarOverlay?.classList.toggle("active", open);
-  document.body?.classList.toggle("sidebar-locked", open);
-  mobileSidebarToggle?.setAttribute("aria-expanded", open ? "true" : "false");
-  if (!open && sidebar) {
-    sidebar.scrollTop = 0;
-  }
-}
-
-function resetSidebarForViewport() {
-  updateStickyHeights();
-  const sidebar = document.getElementById("lessonSidebar");
-  const layout = document.getElementById("lessonLayout");
-  if (!sidebar || !layout) return;
-  if (isMobileViewport()) {
-    isSidebarCollapsed = false;
-    layout.classList.remove("collapsed");
-    sidebar.classList.remove("collapsed");
-    setMobileSidebarOpen(false);
-    return;
-  }
-  setMobileSidebarOpen(false);
-  isSidebarCollapsed = false;
-  sidebar.classList.remove("mobile-open");
-  layout.classList.remove("collapsed");
-}
+let quizRecords = [];
+let activeQuizId = null;
+let pendingNoteJump = null;
+let activeNoteId = null;
+let activeNoteMode = "edit";
 
 function setDerivedVaultKeyContext(key, saltBytes) {
   derivedVaultKey = key;
@@ -281,12 +235,13 @@ function updateQuizContext(customMessage) {
     quizLessonContext.textContent = customMessage;
     return;
   }
+  const savedNote = quizRecords.length ? ` • ${quizRecords.length} saved quizzes` : "";
   if (currentLessonSelection && currentLessonSelection.title) {
-    quizLessonContext.textContent = `Current lesson: ${currentLessonSelection.title}`;
+    quizLessonContext.textContent = `Current lesson: ${currentLessonSelection.title}${savedNote}`;
   } else if (currentCourseData?.course) {
-    quizLessonContext.textContent = "Select a lesson in the Lessons page to target your quiz.";
+    quizLessonContext.textContent = `Select a lesson in the Lessons page to target your quiz${savedNote ? ` (${savedNote.trim()})` : ""}.`;
   } else {
-    quizLessonContext.textContent = "Choose a course from Home to begin.";
+    quizLessonContext.textContent = `Choose a course from Home to begin${savedNote ? ` (${savedNote.trim()})` : ""}.`;
   }
 }
 
@@ -330,55 +285,12 @@ function attachVersionMetadata(raw, reason) {
   }
 }
 
-function normalizeNoteEntry(raw, fallbackText = "") {
-  const now = new Date().toISOString();
-  if (!raw || typeof raw !== "object") {
-    const text = typeof raw === "string" ? raw : fallbackText;
-    return {
-      id: `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-      text,
-      summary: buildNoteSummary(text),
-      createdAt: now,
-      updatedAt: now
-    };
-  }
-  const text = raw.text || raw.summary || fallbackText || "";
-  const createdAt = raw.createdAt || now;
-  return {
-    id: raw.id || `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-    text,
-    summary: raw.summary || buildNoteSummary(text),
-    createdAt,
-    updatedAt: raw.updatedAt || createdAt
-  };
-}
-
-function normalizeNoteList(value) {
-  if (Array.isArray(value)) return value.map(v => normalizeNoteEntry(v)).filter(n => n.text || n.summary);
-  if (typeof value === "string") return [normalizeNoteEntry({ text: value })];
-  if (value && typeof value === "object") return [normalizeNoteEntry(value)];
-  return [];
-}
-
-function normalizeLessonNotes(rawNotes) {
-  const normalized = {};
-  Object.entries(rawNotes || {}).forEach(([coursePath, lessonMap]) => {
-    const lessons = {};
-    Object.entries(lessonMap || {}).forEach(([lessonTitle, noteValue]) => {
-      const entries = normalizeNoteList(noteValue);
-      if (entries.length) lessons[lessonTitle] = entries;
-    });
-    if (Object.keys(lessons).length) normalized[coursePath] = lessons;
-  });
-  return normalized;
-}
-
 function parseLessonProgressText(txt) {
   try {
     const parsed = JSON.parse(txt || "{}");
     progressVersionInfo = normalizeVersionInfo(parsed.versionInfo, "lesson-progress-import");
     const lessons = parsed?.lessons || {};
-    const notes = normalizeLessonNotes(parsed?.notes || {});
+    const notes = normalizeNotesObject(parsed?.notes || {});
     return { lessons, notes };
   } catch (e) {
     progressVersionInfo = buildVersionInfo("lesson-progress-legacy");
@@ -386,47 +298,45 @@ function parseLessonProgressText(txt) {
   }
 }
 
-function getDefaultQuizStore() {
-  const normalized = normalizeVersionInfo(quizVersionInfo, "quizzes-default");
-  quizVersionInfo = normalized;
-  return { quizzes: [], versionInfo: normalized };
-}
-
-function parseQuizPayload(txt) {
-  try {
-    const parsed = JSON.parse(txt || "{}");
-    quizVersionInfo = normalizeVersionInfo(parsed.versionInfo, "quizzes-import");
-    return { quizzes: parsed.quizzes || [], versionInfo: quizVersionInfo };
-  } catch (e) {
-    const fallback = buildVersionInfo("quizzes-legacy");
-    quizVersionInfo = fallback;
-    return { quizzes: [], versionInfo: fallback };
-  }
-}
-
-function serializeQuizPayload() {
-  const normalized = normalizeVersionInfo(quizVersionInfo, "quizzes-save");
-  quizVersionInfo = normalized;
-  const quizzes = Array.isArray(quizStore?.quizzes) ? quizStore.quizzes : [];
-  return JSON.stringify({ quizzes, versionInfo: normalized });
-}
-
-function formatQuizTimestamp(ts) {
-  const d = new Date(ts);
-  if (Number.isNaN(d.getTime())) return ts || "";
-  return d.toLocaleString();
-}
-
 function serializeLessonProgress() {
   const normalized = normalizeVersionInfo(progressVersionInfo, "lesson-progress-save");
   progressVersionInfo = normalized;
-  const normalizedNotes = normalizeLessonNotes(lessonProgress.notes || {});
-  lessonProgress.notes = normalizedNotes;
+  lessonProgress.notes = normalizeNotesObject(lessonProgress.notes || {});
   return JSON.stringify({
     lessons: lessonProgress.lessons || {},
-    notes: normalizedNotes,
+    notes: lessonProgress.notes || {},
     versionInfo: normalized
   });
+}
+
+function normalizeNotesObject(notes) {
+  const result = {};
+  const now = new Date().toISOString();
+  Object.entries(notes || {}).forEach(([coursePath, lessonMap]) => {
+    result[coursePath] = {};
+    Object.entries(lessonMap || {}).forEach(([lessonTitle, raw]) => {
+      if (Array.isArray(raw)) {
+        result[coursePath][lessonTitle] = raw.map(n => ({
+          id: n.id || `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+          body: n.body || n.text || "",
+          createdAt: n.createdAt || now,
+          updatedAt: n.updatedAt || n.createdAt || now
+        }));
+      } else if (typeof raw === "string") {
+        result[coursePath][lessonTitle] = [
+          {
+            id: `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+            body: raw,
+            createdAt: now,
+            updatedAt: now
+          }
+        ];
+      } else {
+        result[coursePath][lessonTitle] = [];
+      }
+    });
+  });
+  return result;
 }
 
 async function decryptLessonProgressPayload(payload, key) {
@@ -436,6 +346,7 @@ async function decryptLessonProgressPayload(payload, key) {
   pendingEncryptedProgressPayload = null;
   await refreshCourseStatuses();
   renderNotesSummary();
+  await loadQuizHistory();
   if (currentCoursePath && currentCourseData.course) {
     showCourseContent(currentCourseData, currentCoursePath);
   }
@@ -460,41 +371,6 @@ async function ensureProgressKey(payload) {
   }
   if (!saltBytes) throw new Error("Missing salt for encrypted progress.");
   throw new Error("Missing passphrase for encrypted progress.");
-}
-
-async function ensureQuizKey(payload) {
-  const saltBytes = getActiveSaltBytes(payload);
-  if (derivedVaultKey && (!saltBytes || (derivedVaultSalt && saltBytes && saltsMatch(derivedVaultSalt, saltBytes)))) {
-    setDerivedVaultKeyContext(derivedVaultKey, saltBytes || derivedVaultSalt);
-    return { key: derivedVaultKey, saltBytes: saltBytes || derivedVaultSalt };
-  }
-  if (!saltBytes) throw new Error("Missing salt for encrypted quiz data.");
-  throw new Error("Missing passphrase for encrypted quiz data.");
-}
-
-async function decryptQuizPayload(payload, key) {
-  const decryptedText = await decryptSecret(payload, key);
-  quizStore = parseQuizPayload(decryptedText);
-  encryptedQuizPayload = payload;
-  pendingEncryptedQuizPayload = null;
-  renderQuizList();
-}
-
-async function tryDecryptPendingQuizzes() {
-  if (pendingEncryptedQuizPayload) {
-    try {
-      const { key } = await ensureQuizKey(pendingEncryptedQuizPayload);
-      await decryptQuizPayload(pendingEncryptedQuizPayload, key);
-      setQuizStatus("Quizzes unlocked for this session.", "success");
-    } catch (err) {
-      console.error("Error decrypting quizzes:", err);
-    }
-  }
-}
-
-async function tryDecryptAllPending() {
-  await tryDecryptPendingProgress();
-  await tryDecryptPendingQuizzes();
 }
 
 async function loadUserProgress(user) {
@@ -524,7 +400,7 @@ async function loadUserProgress(user) {
       progressVersionInfo = normalizeVersionInfo(data.versionInfo, "lesson-progress-plaintext");
       lessonProgress = {
         lessons: data.lessons || {},
-        notes: data.notes || {}
+        notes: normalizeNotesObject(data.notes || {})
       };
       renderNotesSummary();
     }
@@ -532,42 +408,6 @@ async function loadUserProgress(user) {
     console.error("Error loading progress:", e);
     lessonProgress = { lessons: {}, notes: {} };
     renderNotesSummary();
-  }
-}
-
-async function loadUserQuizzes(user) {
-  try {
-    resetQuizState();
-    if (!user) {
-      setQuizStatus("Sign in to generate and view quizzes.", "info");
-      return;
-    }
-    const snap = await getDoc(doc(db, "quizzes", user.uid));
-    if (!snap.exists()) {
-      setQuizStatus("No saved quizzes yet. Generate one from a lesson to get started.", "info");
-      return;
-    }
-    const data = snap.data();
-    if (data && data.ciphertext) {
-      encryptedQuizPayload = data;
-      if (derivedVaultKey) {
-        const { key } = await ensureQuizKey(data);
-        await decryptQuizPayload(data, key);
-        setQuizStatus("Loaded quizzes from your vault.", "success");
-      } else {
-        pendingEncryptedQuizPayload = data;
-        setQuizStatus("Unlock with your passphrase to view saved quizzes.", "info");
-      }
-    } else if (data && data.quizzes) {
-      quizVersionInfo = normalizeVersionInfo(data.versionInfo, "quizzes-plaintext");
-      quizStore = { ...getDefaultQuizStore(), ...data, versionInfo: quizVersionInfo };
-      renderQuizList();
-      setQuizStatus("Imported quizzes from a legacy format.", "success");
-    }
-  } catch (e) {
-    console.error("Error loading quizzes:", e);
-    resetQuizState();
-    setQuizStatus("Could not load quizzes. Try unlocking your vault again.", "error");
   }
 }
 
@@ -596,30 +436,36 @@ async function persistUserProgress() {
   }
 }
 
-async function persistQuizStore() {
-  const user = auth.currentUser;
-  if (!user) return false;
-  if (!vaultDoc && !encryptedQuizPayload && !derivedVaultKey) {
-    setQuizStatus("Set up and unlock your vault before saving quizzes.", "error");
-    return false;
-  }
+async function loadQuizHistory() {
+  if (!auth.currentUser || !derivedVaultKey) return;
   try {
-    const { key, saltBytes } = await ensureQuizKey(encryptedQuizPayload || vaultDoc);
-    const encrypted = await encryptSecret(serializeQuizPayload(), key, saltBytes);
-    await setDoc(doc(db, "quizzes", user.uid), encrypted);
-    encryptedQuizPayload = encrypted;
-    pendingEncryptedQuizPayload = null;
-    return true;
-  } catch (e) {
-    if (e && e.message && e.message.includes("Missing passphrase")) {
-      showPassphraseGate();
-      setQuizStatus("Unlock with your passphrase to save quizzes.", "error");
-      return false;
+    const snap = await getDoc(doc(db, "quizzes", auth.currentUser.uid));
+    if (!snap.exists()) {
+      quizRecords = [];
+      renderQuizBrowser();
+      return;
     }
-    console.error("Error saving quizzes:", e);
-    setQuizStatus("Could not save quizzes. Try again after unlocking your vault.", "error");
-    throw e;
+    const decrypted = await decryptSecret(snap.data(), derivedVaultKey);
+    const parsed = JSON.parse(decrypted || "{}");
+    quizRecords = parsed.quizzes || [];
+    renderQuizBrowser();
+    updateQuizContext();
+  } catch (err) {
+    console.error("Quiz load failed", err);
+    setQuizStatus("Could not load quizzes. Unlock with your passphrase and try again.", "error");
   }
+}
+
+async function persistQuizHistory() {
+  if (!auth.currentUser || !derivedVaultKey) return;
+  const saltBytes = getActiveSaltBytes(vaultDoc) || derivedVaultSalt;
+  if (!saltBytes) {
+    console.warn("Missing salt for quiz persistence");
+    return;
+  }
+  const payload = JSON.stringify({ quizzes: quizRecords, versionInfo: buildVersionInfo("quiz-save") });
+  const encrypted = await encryptSecret(payload, derivedVaultKey, saltBytes);
+  await setDoc(doc(db, "quizzes", auth.currentUser.uid), encrypted);
 }
 
 function isLessonChecked(p, t) {
@@ -633,85 +479,53 @@ function toggleLessonChecked(p, t, v) {
   lessonProgress.lessons[p][t] = v;
 }
 
-function buildNoteSummary(text = "") {
-  const trimmed = (text || "").trim();
-  if (trimmed.length <= 240) return trimmed;
-  return trimmed.slice(0, 237) + "...";
+function ensureLessonNotes(path, title) {
+  lessonProgress.notes = normalizeNotesObject(lessonProgress.notes || {});
+  if (!lessonProgress.notes[path]) lessonProgress.notes[path] = {};
+  if (!lessonProgress.notes[path][title]) lessonProgress.notes[path][title] = [];
+  return lessonProgress.notes[path][title];
 }
 
-function sanitizeHtml(html) {
-  const parser = new DOMParser();
-  const parsed = parser.parseFromString(html || "", "text/html");
-  parsed.querySelectorAll("script, style").forEach(node => node.remove());
-  parsed.querySelectorAll("*").forEach(node => {
-    Array.from(node.attributes).forEach(attr => {
-      const name = attr.name.toLowerCase();
-      if (name.startsWith("on") || name === "srcdoc" || name === "data" || name === "srcset") {
-        node.removeAttribute(attr.name);
-        return;
-      }
-      if ((name === "href" || name === "src" || name === "xlink:href") && /^(javascript:|data:)/i.test(attr.value)) {
-        node.removeAttribute(attr.name);
-      }
-    });
-  });
-  return parsed.body.innerHTML;
+function getLessonNotes(path, title) {
+  lessonProgress.notes = normalizeNotesObject(lessonProgress.notes || {});
+  if (!lessonProgress.notes[path]) lessonProgress.notes[path] = {};
+  if (!lessonProgress.notes[path][title]) lessonProgress.notes[path][title] = [];
+  return lessonProgress.notes[path][title];
 }
 
-function getNoteModeKey(coursePath, lessonTitle, noteId = "") {
-  return `${coursePath || ""}::${lessonTitle || ""}::${noteId || "draft"}`;
-}
-
-function getNoteMode(coursePath, lessonTitle, noteId = "") {
-  return noteModeCache[getNoteModeKey(coursePath, lessonTitle, noteId)] || "edit";
-}
-
-function setNoteMode(coursePath, lessonTitle, noteId = "", mode = "edit") {
-  noteModeCache[getNoteModeKey(coursePath, lessonTitle, noteId)] = mode;
-}
-
-function getLessonNoteEntries(p, t) {
-  if (!lessonProgress.notes) lessonProgress.notes = {};
-  if (!lessonProgress.notes[p]) lessonProgress.notes[p] = {};
-  const entries = normalizeNoteList(lessonProgress.notes[p][t]);
-  lessonProgress.notes[p][t] = entries;
-  return entries;
-}
-
-function upsertLessonNote(p, t, val, noteId = "") {
-  if (!lessonProgress.notes) lessonProgress.notes = {};
-  if (!lessonProgress.notes[p]) lessonProgress.notes[p] = {};
-  const entries = getLessonNoteEntries(p, t);
-  const now = new Date().toISOString();
-  if (noteId) {
-    const idx = entries.findIndex(n => n.id === noteId);
-    if (idx >= 0) {
-      entries[idx] = {
-        ...entries[idx],
-        text: val,
-        summary: buildNoteSummary(val),
-        updatedAt: now
-      };
-      lessonProgress.notes[p][t] = entries;
-      return entries[idx];
-    }
+function upsertLessonNote(path, title, note) {
+  const bucket = ensureLessonNotes(path, title);
+  const idx = bucket.findIndex(n => n.id === note.id);
+  const normalized = {
+    id: note.id || `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    body: note.body || "",
+    createdAt: note.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  if (idx >= 0) {
+    bucket[idx] = { ...bucket[idx], ...normalized };
+  } else {
+    bucket.push(normalized);
   }
-  const entry = normalizeNoteEntry({
-    id: noteId || `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-    text: val,
-    summary: buildNoteSummary(val),
+  lessonProgress.notes = normalizeNotesObject(lessonProgress.notes || {});
+  return normalized;
+}
+
+function getNoteById(path, title, noteId) {
+  const bucket = getLessonNotes(path, title);
+  return bucket.find(n => n.id === noteId) || null;
+}
+
+function createNewLessonNote(path, title) {
+  const now = new Date().toISOString();
+  const newNote = {
+    id: `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    body: "",
     createdAt: now,
     updatedAt: now
-  });
-  entries.push(entry);
-  lessonProgress.notes[p][t] = entries;
-  return entry;
-}
-
-function getLatestLessonNote(p, t) {
-  const entries = getLessonNoteEntries(p, t);
-  if (!entries.length) return null;
-  return entries[entries.length - 1];
+  };
+  upsertLessonNote(path, title, newNote);
+  return newNote;
 }
 
 function getLessonIcon(t) {
@@ -724,24 +538,18 @@ function getLessonIcon(t) {
 function renderNotesSummary() {
   if (!notesList || !notesEmptyState) return;
   notesList.innerHTML = "";
-  const canRead = !!derivedVaultKey;
-  const entries = [];
-  if (canRead) {
-    Object.entries(lessonProgress?.notes || {}).forEach(([path, lessonMap]) => {
-      Object.entries(lessonMap || {}).forEach(([lessonTitle, notes]) => {
-        normalizeNoteList(notes).forEach(note => {
-          if (note && (note.text || note.summary)) {
-            entries.push({
-              coursePath: path,
-              lessonTitle,
-              ...note
-            });
-          }
-        });
-      });
-    });
+  if (!auth.currentUser) {
+    notesEmptyState.textContent = "Sign in to view and edit your notes.";
+    return;
   }
-  if (!canRead) {
+  const normalized = normalizeNotesObject(lessonProgress?.notes || {});
+  const entries = [];
+  Object.entries(normalized).forEach(([coursePath, lessonMap]) => {
+    Object.entries(lessonMap || {}).forEach(([lessonTitle, arr]) => {
+      (arr || []).forEach(note => entries.push({ coursePath, lessonTitle, note }));
+    });
+  });
+  if (!derivedVaultKey) {
     notesEmptyState.textContent = "Unlock with your master passphrase to view saved notes.";
     return;
   }
@@ -751,159 +559,41 @@ function renderNotesSummary() {
   }
   notesEmptyState.textContent = "";
   entries
-    .sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0))
+    .sort((a, b) => new Date(b.note.updatedAt) - new Date(a.note.updatedAt))
     .forEach(entry => {
-    const card = document.createElement("div");
-    card.className = "notes-card";
-    const h = document.createElement("h4");
-    h.textContent = entry.lessonTitle;
-    const meta = document.createElement("p");
-    meta.className = "settings-note";
-    const updated = entry.updatedAt || entry.createdAt || "";
-    const updatedDisplay = updated ? new Date(updated).toLocaleString() : "";
-    meta.textContent = `Course file: ${entry.coursePath}${updatedDisplay ? " • Updated " + updatedDisplay : ""}`;
-    const body = document.createElement("div");
-    body.className = "notes-card-body";
-    const noteContent = entry.text || entry.summary || "";
-    const previewHtml = noteContent.trim()
-      ? sanitizeHtml(marked.parse(noteContent))
-      : '<p class="note-empty">No note content saved yet.</p>';
-    body.innerHTML = previewHtml;
-    const actions = document.createElement("div");
-    actions.className = "note-actions-inline";
-    const viewBtn = document.createElement("button");
-    viewBtn.textContent = "View lesson";
-    viewBtn.addEventListener("click", () => {
-      noteFocusTarget = { coursePath: entry.coursePath, lessonTitle: entry.lessonTitle, noteId: entry.id };
-      handleViewLessons(entry.coursePath);
-    });
-    actions.appendChild(viewBtn);
-    card.appendChild(h);
-    card.appendChild(meta);
-    card.appendChild(body);
-    card.appendChild(actions);
-    notesList.appendChild(card);
+      const card = document.createElement("div");
+      card.className = "notes-card";
+      const h = document.createElement("h4");
+      h.textContent = entry.lessonTitle;
+      const meta = document.createElement("p");
+      meta.className = "settings-note";
+      meta.textContent = `${entry.coursePath} • Updated ${new Date(entry.note.updatedAt).toLocaleString()}`;
+      const body = document.createElement("div");
+      body.innerHTML = marked.parse(entry.note.body || "(empty note)");
+      const openBtn = document.createElement("button");
+      openBtn.textContent = "Open note";
+      openBtn.addEventListener("click", () => jumpToNote(entry.coursePath, entry.lessonTitle, entry.note.id));
+      card.appendChild(h);
+      card.appendChild(meta);
+      card.appendChild(body);
+      card.appendChild(openBtn);
+      notesList.appendChild(card);
     });
 }
 
-function resetQuizState() {
-  quizStore = getDefaultQuizStore();
-  encryptedQuizPayload = null;
-  pendingEncryptedQuizPayload = null;
-  activeQuizId = null;
-  renderQuizList();
-}
-
-function renderQuizDetails(quiz) {
-  if (!quizDetails) return;
-  if (!derivedVaultKey) {
-    quizDetails.innerHTML = "<p class='settings-note'>Unlock with your master passphrase to view saved quizzes.</p>";
-    return;
+async function jumpToNote(coursePath, lessonTitle, noteId) {
+  pendingNoteJump = { coursePath, lessonTitle, noteId };
+  setActiveSection("lessons");
+  if (currentCoursePath !== coursePath) {
+    await handleViewLessons(coursePath);
   }
-  if (!quiz) {
-    quizDetails.innerHTML = "<p class='settings-note'>Select a saved quiz to see its details.</p>";
-    return;
+  const lessons = currentCourseData?.course?.lessons || [];
+  const lesson = lessons.find(
+    l => (l.title || "Lesson " + l.lesson_id) === lessonTitle
+  );
+  if (lesson) {
+    displayLessonContent(lesson);
   }
-  const metadata = quiz.metadata || {};
-  const title = metadata.lessonTitle || quiz.lessonTitle || "Lesson quiz";
-  const courseTitle = metadata.courseTitle || metadata.coursePath || quiz.courseTitle || "";
-  const created = metadata.createdAt || metadata.generatedAt || quiz.createdAt;
-  const status = quiz.status || metadata.status || "saved";
-  const questions = Array.isArray(quiz.questions) ? quiz.questions : [];
-  quizDetails.innerHTML = "";
-  const h = document.createElement("h4");
-  h.textContent = title;
-  const meta = document.createElement("div");
-  meta.className = "quiz-meta";
-  const statusPill = document.createElement("span");
-  statusPill.className = "quiz-status-pill";
-  statusPill.innerHTML = '<i class="fas fa-check-circle"></i>' + status;
-  const time = document.createElement("span");
-  time.textContent = `Saved: ${formatQuizTimestamp(created)}`;
-  const lesson = document.createElement("span");
-  lesson.textContent = courseTitle ? `Course: ${courseTitle}` : "";
-  const count = document.createElement("span");
-  count.textContent = `Questions: ${questions.length}`;
-  meta.appendChild(statusPill);
-  meta.appendChild(time);
-  if (courseTitle) meta.appendChild(lesson);
-  meta.appendChild(count);
-  const list = document.createElement("ol");
-  list.className = "quiz-question-list";
-  if (!questions.length) {
-    const li = document.createElement("li");
-    li.textContent = "No questions were captured for this quiz.";
-    list.appendChild(li);
-  } else {
-    questions.forEach(q => {
-      const li = document.createElement("li");
-      const prompt = document.createElement("div");
-      prompt.textContent = q.prompt || q.question || "Review this lesson.";
-      li.appendChild(prompt);
-      if (q.detail) {
-        const detail = document.createElement("div");
-        detail.className = "settings-note";
-        detail.textContent = q.detail;
-        li.appendChild(detail);
-      }
-      list.appendChild(li);
-    });
-  }
-  quizDetails.appendChild(h);
-  quizDetails.appendChild(meta);
-  quizDetails.appendChild(list);
-}
-
-function renderQuizList() {
-  if (!quizList || !quizDetails) return;
-  quizList.innerHTML = "";
-  const canRead = !!derivedVaultKey;
-  const filterValue = (quizLessonFilter?.value || "").toLowerCase().trim();
-  if (!canRead) {
-    quizList.innerHTML = "<p class='settings-note'>Unlock with your master passphrase to view saved quizzes.</p>";
-    renderQuizDetails(null);
-    return;
-  }
-  const entries = Array.isArray(quizStore?.quizzes) ? [...quizStore.quizzes] : [];
-  const sorted = entries.sort((a, b) => {
-    const aDate = new Date(a?.metadata?.createdAt || a?.createdAt || 0).getTime();
-    const bDate = new Date(b?.metadata?.createdAt || b?.createdAt || 0).getTime();
-    return bDate - aDate;
-  });
-  const filtered = sorted.filter(q => {
-    if (!filterValue) return true;
-    const lessonName = (q?.metadata?.lessonTitle || q?.lessonTitle || "").toLowerCase();
-    return lessonName.includes(filterValue);
-  });
-  if (!filtered.length) {
-    const emptyCopy = entries.length
-      ? "No saved quizzes match this lesson filter yet."
-      : "No saved quizzes yet. Generate one from a lesson to see it here.";
-    quizList.innerHTML = `<p class='settings-note'>${emptyCopy}</p>`;
-    activeQuizId = null;
-    renderQuizDetails(null);
-    return;
-  }
-  if (!activeQuizId || !filtered.some(q => q.id === activeQuizId)) {
-    activeQuizId = filtered[0].id;
-  }
-  filtered.forEach(q => {
-    const btn = document.createElement("button");
-    btn.className = "quiz-card" + (q.id === activeQuizId ? " active" : "");
-    const title = q?.metadata?.lessonTitle || q.lessonTitle || "Lesson quiz";
-    const created = q?.metadata?.createdAt || q.createdAt;
-    const status = q.status || q?.metadata?.status || "saved";
-    btn.innerHTML =
-      `<h4>${title}</h4>` +
-      `<div class="quiz-meta"><span class="quiz-status-pill">${status}</span><span>${formatQuizTimestamp(created)}</span></div>`;
-    btn.addEventListener("click", () => {
-      activeQuizId = q.id;
-      renderQuizList();
-    });
-    quizList.appendChild(btn);
-  });
-  const activeQuiz = filtered.find(q => q.id === activeQuizId) || null;
-  renderQuizDetails(activeQuiz);
 }
 
 function clearVaultState() {
@@ -913,7 +603,8 @@ function clearVaultState() {
   decryptedUserPayload = null;
   encryptedLessonProgressPayload = null;
   pendingEncryptedProgressPayload = null;
-  resetQuizState();
+  quizRecords = [];
+  activeQuizId = null;
   if (vaultPassphraseInput) vaultPassphraseInput.value = "";
   if (gatePassphraseInput) gatePassphraseInput.value = "";
   setVaultUIState("locked");
@@ -939,7 +630,7 @@ async function tryAutoUnlockFromTrustedCache() {
     setDerivedVaultKeyContext(cache.key, activeSalt);
     const decryptedText = await decryptSecret(vaultDoc, cache.key);
     decryptedUserPayload = parseUserPayload(decryptedText);
-    await tryDecryptAllPending();
+    await tryDecryptPendingProgress();
     setVaultUIState("unlocked");
     if (gateTrustedDevice) gateTrustedDevice.checked = true;
     hidePassphraseGate();
@@ -1076,7 +767,7 @@ async function initializeVault() {
     decryptedUserPayload = { ...getDefaultUserPayload() };
     await persistEncryptedPayload(key, salt);
     await handleTrustedDeviceSelection(key, salt);
-    await tryDecryptAllPending();
+    await tryDecryptPendingProgress();
     setVaultUIState("unlocked");
     hidePassphraseGate();
     alert("Vault initialized. Remember to store your passphrase safely—there is no recovery option.");
@@ -1096,7 +787,7 @@ async function loadEncryptedProfile(passphrase) {
   const decryptedText = await decryptSecret(vaultDoc, key);
   setDerivedVaultKeyContext(key, saltBytes);
   decryptedUserPayload = parseUserPayload(decryptedText);
-  await tryDecryptAllPending();
+  await tryDecryptPendingProgress();
   hidePassphraseGate();
   return { key, saltBytes };
 }
@@ -1295,7 +986,6 @@ async function resetEncryptedAccount() {
     lessonProgress = { lessons: {}, notes: {} };
     profileVersionInfo = buildVersionInfo("profile-reset");
     progressVersionInfo = buildVersionInfo("lesson-progress-reset");
-    setQuizStatus("Quiz history cleared from your vault.", "info");
     setVaultUIState("setup");
     await logMigrationMetadata(user, {
       lastResetAt: new Date().toISOString(),
@@ -1429,7 +1119,6 @@ function showCourseContent(cd, fp) {
   cDesc.textContent = cObj.description || "";
   lList.innerHTML = "";
   lContent.innerHTML = "<p style='color:#999;'>Select a lesson on the left to see details here.</p>";
-  const lessonItems = [];
   (cObj.lessons || []).forEach(lesson => {
     const lbl = lesson.title || "Lesson " + lesson.lesson_id;
     if (lesson.section && !document.getElementById("section-" + lesson.section)) {
@@ -1495,7 +1184,6 @@ function showCourseContent(cd, fp) {
     });
     if (!auth.currentUser && fp !== defaultGuidePath && lbl !== "Getting Started") li.classList.add("locked");
     lList.appendChild(li);
-    lessonItems.push({ label: lbl, element: li, lesson });
   });
   function updateProgress(path) {
     const tot = (cObj.lessons || []).length;
@@ -1509,15 +1197,6 @@ function showCourseContent(cd, fp) {
     updateCourseCardStatus(path);
   }
   updateProgress(fp);
-  if (noteFocusTarget && noteFocusTarget.coursePath === fp) {
-    const target = lessonItems.find(item => item.label === noteFocusTarget.lessonTitle);
-    if (target) {
-      document.querySelectorAll("#lessonList li").forEach(n => n.classList.remove("active"));
-      target.element.classList.add("active");
-      displayLessonContent(target.lesson);
-      target.element.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }
 }
 
 function displayLessonContent(lsn) {
@@ -1525,6 +1204,13 @@ function displayLessonContent(lsn) {
   el.innerHTML = "";
   const title = lsn.title || "Lesson " + lsn.lesson_id;
   currentLessonSelection = { title, coursePath: currentCoursePath, lesson: lsn };
+  if (window.matchMedia("(max-width: 768px)").matches) {
+    toggleSidebar(false);
+  }
+  document.querySelectorAll("#lessonList li").forEach(li => {
+    const label = li.querySelector(".lesson-title")?.textContent;
+    li.classList.toggle("active", label === title);
+  });
   updateQuizContext();
   setQuizStatus("");
   const h = document.createElement("h1");
@@ -1579,37 +1265,94 @@ function displayLessonContent(lsn) {
   notesHeading.textContent = "Your notes";
   const noteHint = document.createElement("p");
   noteHint.className = "settings-note";
-  noteHint.textContent = "Notes are encrypted with your passphrase and saved per lesson. Use New note to append another entry.";
-  const noteField = document.createElement("textarea");
-  const latestNote = getLatestLessonNote(currentCoursePath, title);
-  noteField.value = latestNote?.text || "";
-  if (latestNote?.id) noteField.dataset.noteId = latestNote.id;
-  noteField.placeholder = "Add private notes for this lesson.";
-  const notePreview = document.createElement("div");
-  notePreview.className = "note-preview";
-  const notePreviewContent = document.createElement("div");
-  notePreviewContent.className = "note-preview-body";
-  notePreview.appendChild(notePreviewContent);
-  const noteModeActions = document.createElement("div");
-  noteModeActions.className = "note-actions note-mode";
+  noteHint.textContent = "Notes are encrypted with your passphrase and saved per lesson.";
+
+  const noteTabs = document.createElement("div");
+  noteTabs.className = "note-tabs";
+  const noteModeToggle = document.createElement("div");
+  noteModeToggle.className = "note-mode-toggle";
   const editModeBtn = document.createElement("button");
   editModeBtn.textContent = "Edit";
   const previewModeBtn = document.createElement("button");
   previewModeBtn.textContent = "Preview";
-  noteModeActions.appendChild(editModeBtn);
-  noteModeActions.appendChild(previewModeBtn);
+  noteModeToggle.append(editModeBtn, previewModeBtn);
+
+  const noteField = document.createElement("textarea");
+  noteField.placeholder = "Add private notes for this lesson.";
+  const notePreview = document.createElement("div");
+  notePreview.className = "note-preview";
+  notePreview.style.display = "none";
+
   const noteActions = document.createElement("div");
   noteActions.className = "note-actions";
+  const saveNoteBtn = document.createElement("button");
+  saveNoteBtn.textContent = "Save note";
   const newNoteBtn = document.createElement("button");
   newNoteBtn.textContent = "New note";
-  newNoteBtn.addEventListener("click", () => {
-    noteField.value = "";
-    noteField.dataset.noteId = "";
-    noteField.focus();
-    applyNoteMode(getNoteMode(currentCoursePath, title, ""), "");
+  newNoteBtn.className = "secondary";
+
+  const coursePath = currentCoursePath;
+  let lessonNotes = getLessonNotes(coursePath, title);
+  if (!lessonNotes.length) {
+    const created = createNewLessonNote(coursePath, title);
+    lessonNotes = getLessonNotes(coursePath, title);
+    activeNoteId = created.id;
+  }
+  if (pendingNoteJump && pendingNoteJump.noteId) {
+    activeNoteId = pendingNoteJump.noteId;
+  }
+  if (!activeNoteId || !lessonNotes.find(n => n.id === activeNoteId)) {
+    activeNoteId = lessonNotes[0]?.id;
+  }
+
+  function renderNoteTabs() {
+    noteTabs.innerHTML = "";
+    getLessonNotes(coursePath, title).forEach(n => {
+      const tab = document.createElement("button");
+      tab.className = "note-tab" + (n.id === activeNoteId ? " active" : "");
+      const label = n.body?.split("\n")[0] || "Untitled note";
+      tab.textContent = label.substring(0, 40) || "Untitled note";
+      tab.addEventListener("click", () => selectNote(n.id));
+      noteTabs.appendChild(tab);
+    });
+  }
+
+  function setMode(mode) {
+    activeNoteMode = mode;
+    editModeBtn.classList.toggle("active", mode === "edit");
+    previewModeBtn.classList.toggle("active", mode === "preview");
+    if (mode === "edit") {
+      noteField.style.display = "block";
+      notePreview.style.display = "none";
+    } else {
+      noteField.style.display = "none";
+      notePreview.style.display = "block";
+      notePreview.innerHTML = marked.parse(noteField.value || "(no content)");
+    }
+  }
+
+  function selectNote(noteId) {
+    activeNoteId = noteId;
+    const note = getNoteById(coursePath, title, noteId);
+    noteField.value = note?.body || "";
+    renderNoteTabs();
+    setMode(activeNoteMode);
+    pendingNoteJump = null;
+    setTimeout(() => notesWrapper.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
+  }
+
+  editModeBtn.addEventListener("click", () => setMode("edit"));
+  previewModeBtn.addEventListener("click", () => setMode("preview"));
+
+  newNoteBtn.addEventListener("click", async () => {
+    const created = createNewLessonNote(coursePath, title);
+    activeNoteId = created.id;
+    await persistUserProgress();
+    renderNoteTabs();
+    selectNote(created.id);
+    renderNotesSummary();
   });
-  const saveNoteBtn = document.createElement("button");
-  saveNoteBtn.textContent = "Save notes";
+
   saveNoteBtn.addEventListener("click", async () => {
     if (!auth.currentUser) {
       alert("Sign in before saving notes.");
@@ -1620,140 +1363,34 @@ function displayLessonContent(lsn) {
       alert("Unlock with your passphrase before saving notes.");
       return;
     }
-    const noteId = noteField.dataset.noteId || "";
-    const entry = upsertLessonNote(currentCoursePath, title, noteField.value, noteId);
+    const note = getNoteById(coursePath, title, activeNoteId) || createNewLessonNote(coursePath, title);
+    note.body = noteField.value;
+    upsertLessonNote(coursePath, title, note);
     try {
       await persistUserProgress();
-      noteField.dataset.noteId = entry.id;
-      applyNoteMode(currentNoteMode, entry.id);
       renderNotesSummary();
       saveNoteBtn.textContent = "Saved";
-      setTimeout(() => (saveNoteBtn.textContent = "Save notes"), 1500);
+      setTimeout(() => (saveNoteBtn.textContent = "Save note"), 1500);
+      setMode(activeNoteMode);
     } catch (err) {
       console.error("Note save failed", err);
       alert("Could not save notes. Unlock with your passphrase and try again.");
     }
   });
-  let currentNoteMode = getNoteMode(currentCoursePath, title, noteField.dataset.noteId || "");
-  function renderNotePreview() {
-    const noteContent = noteField.value.trim();
-    if (!noteContent) {
-      notePreviewContent.innerHTML = '<p class="note-empty">No content to preview yet.</p>';
-      return;
-    }
-    notePreviewContent.innerHTML = sanitizeHtml(marked.parse(noteContent));
-  }
-  function applyNoteMode(mode, noteIdOverride = null) {
-    currentNoteMode = mode;
-    const activeNoteId = noteIdOverride !== null ? noteIdOverride : noteField.dataset.noteId || "";
-    setNoteMode(currentCoursePath, title, activeNoteId, mode);
-    editModeBtn.classList.toggle("active", mode === "edit");
-    previewModeBtn.classList.toggle("active", mode === "preview");
-    noteField.style.display = mode === "edit" ? "block" : "none";
-    notePreview.style.display = mode === "preview" ? "block" : "none";
-    if (mode === "preview") {
-      renderNotePreview();
-    }
-  }
-  noteField.addEventListener("input", () => {
-    if (currentNoteMode === "preview") {
-      renderNotePreview();
-    }
-  });
-  editModeBtn.addEventListener("click", () => applyNoteMode("edit"));
-  previewModeBtn.addEventListener("click", () => applyNoteMode("preview"));
-  applyNoteMode(currentNoteMode);
-  noteActions.appendChild(newNoteBtn);
-  noteActions.appendChild(saveNoteBtn);
+
   notesWrapper.appendChild(notesHeading);
   notesWrapper.appendChild(noteHint);
-  notesWrapper.appendChild(noteModeActions);
+  notesWrapper.appendChild(noteTabs);
+  notesWrapper.appendChild(noteModeToggle);
   notesWrapper.appendChild(noteField);
   notesWrapper.appendChild(notePreview);
+  noteActions.appendChild(newNoteBtn);
+  noteActions.appendChild(saveNoteBtn);
   notesWrapper.appendChild(noteActions);
-  if (
-    noteFocusTarget &&
-    noteFocusTarget.coursePath === currentCoursePath &&
-    noteFocusTarget.lessonTitle === title
-  ) {
-    const focusedEntry = getLessonNoteEntries(currentCoursePath, title).find(
-      n => n.id === noteFocusTarget.noteId
-    );
-    if (focusedEntry) {
-      noteField.value = focusedEntry.text || focusedEntry.summary || "";
-      noteField.dataset.noteId = focusedEntry.id;
-      applyNoteMode(getNoteMode(currentCoursePath, title, focusedEntry.id), focusedEntry.id);
-    }
-    notesWrapper.classList.add("note-highlight");
-    notesWrapper.scrollIntoView({ behavior: "smooth", block: "center" });
-    setTimeout(() => notesWrapper.classList.remove("note-highlight"), 1800);
-    noteFocusTarget = null;
-  }
-  renderNotePreview();
   el.appendChild(notesWrapper);
-  if (isMobileViewport()) {
-    setMobileSidebarOpen(false);
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-}
 
-function buildQuizQuestionsFromLesson(lsn) {
-  const questions = [];
-  if (Array.isArray(lsn.exercises) && lsn.exercises.length) {
-    lsn.exercises.slice(0, 3).forEach(ex => {
-      questions.push({
-        prompt: ex.name ? `${ex.name}: ${ex.prompt || "Review this exercise."}` : ex.prompt || "Reflect on this exercise.",
-        detail: "Draw from the lesson exercises to craft your answer."
-      });
-    });
-  }
-  if (Array.isArray(lsn.assignments) && lsn.assignments.length) {
-    const assignment = lsn.assignments[0];
-    questions.push({
-      prompt: assignment.name ? `Assignment: ${assignment.name}` : "Summarize this week's assignment.",
-      detail: assignment.description || "Explain how you would approach the assignment."
-    });
-  }
-  if (Array.isArray(lsn.sources) && lsn.sources.length) {
-    questions.push({
-      prompt: "Which source from this lesson felt most relevant, and why?",
-      detail: lsn.sources.join(", ")
-    });
-  }
-  if (lsn.course) {
-    questions.push({
-      prompt: `What is the central idea of "${lsn.title || "this lesson"}"?`,
-      detail: "Provide a concise summary in your own words."
-    });
-  }
-  if (!questions.length) {
-    questions.push({
-      prompt: `What stood out to you in ${lsn.title || "this lesson"}?`,
-      detail: "Capture one key takeaway and one open question."
-    });
-  }
-  return questions;
-}
-
-function buildQuizRecordFromLesson(selection) {
-  const now = new Date().toISOString();
-  const quizId = crypto.randomUUID ? crypto.randomUUID() : `quiz-${Date.now()}`;
-  const lesson = selection.lesson || {};
-  const questions = buildQuizQuestionsFromLesson(lesson);
-  return {
-    id: quizId,
-    metadata: {
-      lessonTitle: selection.title,
-      lessonId: lesson.lesson_id || selection.title,
-      courseTitle: currentCourseData?.course?.title || "",
-      coursePath: selection.coursePath,
-      createdAt: now,
-      status: "saved",
-      questionCount: questions.length
-    },
-    questions,
-    status: "saved"
-  };
+  renderNoteTabs();
+  selectNote(activeNoteId);
 }
 
 async function startQuizGeneration() {
@@ -1772,30 +1409,270 @@ async function startQuizGeneration() {
     setQuizStatus("Open a lesson in the Lessons page before generating a quiz.", "error");
     return;
   }
-  setQuizStatus(`Starting quiz generation for ${currentLessonSelection.title}...`, "info");
-  const previousQuizzes = Array.isArray(quizStore?.quizzes) ? [...quizStore.quizzes] : [];
+  const apiKey = (decryptedUserPayload?.apiKey || "").trim();
+  if (!apiKey) {
+    setQuizStatus("Add your OpenAI API key in Settings to generate quizzes.", "error");
+    return;
+  }
+  setQuizStatus(`Generating quiz with ChatGPT for ${currentLessonSelection.title}...`, "info");
   try {
-    const quiz = buildQuizRecordFromLesson(currentLessonSelection);
-    const existing = Array.isArray(quizStore?.quizzes) ? quizStore.quizzes.filter(q => q.id !== quiz.id) : [];
-    quizStore.quizzes = [quiz, ...existing];
-    activeQuizId = quiz.id;
-    setQuizStatus(`Encrypting and saving quiz for ${currentLessonSelection.title}...`, "info");
-    const saved = await persistQuizStore();
-    if (!saved) {
-      quizStore.quizzes = previousQuizzes;
-      activeQuizId = previousQuizzes[0]?.id || null;
-      renderQuizList();
-      return;
-    }
-    setQuizStatus(`Quiz saved for ${currentLessonSelection.title}.`, "success");
-    renderQuizList();
+    const lessonSummary = buildLessonSummary(currentLessonSelection.lesson || {});
+    const quizPayload = await requestQuizFromOpenAI(apiKey, currentLessonSelection.title, lessonSummary);
+    if (!quizPayload?.questions?.length) throw new Error("No quiz questions returned");
+    const quizRecord = {
+      id: `quiz-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      lessonTitle: currentLessonSelection.title,
+      coursePath: currentCoursePath,
+      createdAt: new Date().toISOString(),
+      status: "new",
+      questions: quizPayload.questions,
+      answersHidden: true,
+      userResponses: [],
+      feedback: "",
+      score: null
+    };
+    quizRecords = [quizRecord, ...quizRecords];
+    activeQuizId = quizRecord.id;
+    await persistQuizHistory();
+    renderQuizBrowser();
+    updateQuizContext();
+    setQuizStatus("Quiz generated and saved.", "success");
   } catch (err) {
     console.error("Quiz generation failed", err);
-    quizStore.quizzes = previousQuizzes;
-    activeQuizId = previousQuizzes[0]?.id || null;
-    renderQuizList();
-    setQuizStatus("Could not generate or save the quiz. Unlock with your passphrase and try again.", "error");
+    setQuizStatus("Could not start quiz generation. Try again after unlocking your vault.", "error");
   }
+}
+
+function renderQuizBrowser() {
+  if (!quizListEl || !quizDetailEl) return;
+  quizListEl.innerHTML = "";
+  quizDetailEl.innerHTML = "";
+  const filter = (quizSearchInput?.value || "").toLowerCase();
+  if (!auth.currentUser) {
+    quizListEl.innerHTML = "<p class='settings-note'>Sign in to view quizzes.</p>";
+    quizDetailEl.innerHTML = "<p class='settings-note'>Select a course and generate a quiz to begin.</p>";
+    return;
+  }
+  if (!derivedVaultKey) {
+    quizListEl.innerHTML = "<p class='settings-note'>Unlock with your passphrase to browse quizzes.</p>";
+    return;
+  }
+  const filtered = quizRecords
+    .filter(q =>
+      q.lessonTitle.toLowerCase().includes(filter) ||
+      (q.status || "").toLowerCase().includes(filter)
+    )
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  if (!filtered.length) {
+    quizListEl.innerHTML = "<p class='settings-note'>No quizzes yet. Generate one from an open lesson.</p>";
+    quizDetailEl.innerHTML = "<p class='settings-note'>Select a lesson and tap Generate Quiz.</p>";
+    return;
+  }
+  filtered.forEach(q => {
+    const card = document.createElement("div");
+    card.className = "quiz-card" + (q.id === activeQuizId ? " active" : "");
+    const h = document.createElement("h4");
+    h.textContent = q.lessonTitle;
+    const meta = document.createElement("small");
+    const status = q.score !== null ? `Completed • ${q.score}%` : "Draft";
+    meta.textContent = `${new Date(q.createdAt).toLocaleString()} • ${status}`;
+    card.appendChild(h);
+    card.appendChild(meta);
+    card.addEventListener("click", () => {
+      activeQuizId = q.id;
+      renderQuizBrowser();
+    });
+    quizListEl.appendChild(card);
+  });
+  const active = filtered.find(q => q.id === activeQuizId) || filtered[0];
+  activeQuizId = active?.id || null;
+  if (active) {
+    renderQuizDetail(active);
+  }
+}
+
+function renderQuizDetail(quiz) {
+  if (!quizDetailEl) return;
+  quizDetailEl.innerHTML = "";
+  const meta = document.createElement("div");
+  meta.className = "quiz-meta";
+  meta.innerHTML = `<span><strong>Lesson:</strong> ${quiz.lessonTitle}</span><span>${new Date(quiz.createdAt).toLocaleString()}</span>`;
+  const form = document.createElement("form");
+  quiz.questions.forEach((q, idx) => {
+    const wrap = document.createElement("div");
+    wrap.className = "quiz-question";
+    const title = document.createElement("h5");
+    title.textContent = `Q${idx + 1}. ${q.prompt || q.question}`;
+    wrap.appendChild(title);
+    const optionsContainer = document.createElement("div");
+    optionsContainer.className = "quiz-options";
+    (q.options || []).forEach((opt, optIdx) => {
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = `question-${idx}`;
+      input.value = optIdx;
+      if (quiz.userResponses && quiz.userResponses[idx] === optIdx) input.checked = true;
+      label.appendChild(input);
+      const span = document.createElement("span");
+      span.textContent = opt;
+      label.appendChild(span);
+      if (!quiz.answersHidden && q.answerIndex === optIdx) {
+        label.style.fontWeight = "700";
+      }
+      optionsContainer.appendChild(label);
+    });
+    wrap.appendChild(optionsContainer);
+    if (!quiz.answersHidden && q.explanation) {
+      const expl = document.createElement("div");
+      expl.className = "quiz-result";
+      expl.textContent = q.explanation;
+      wrap.appendChild(expl);
+    }
+    form.appendChild(wrap);
+  });
+  const submit = document.createElement("button");
+  submit.type = "submit";
+  submit.textContent = quiz.score !== null ? "Rescore with AI" : "Submit quiz";
+  submit.className = "primary";
+  form.appendChild(submit);
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    scoreActiveQuiz();
+  });
+  quizDetailEl.appendChild(meta);
+  quizDetailEl.appendChild(form);
+  if (quiz.score !== null) {
+    const result = document.createElement("div");
+    result.className = "quiz-result";
+    result.innerHTML = `<strong>Score:</strong> ${quiz.score}%` + (quiz.feedback ? `<br />${quiz.feedback}` : "");
+    quizDetailEl.appendChild(result);
+  }
+}
+
+function collectQuizResponses(quiz) {
+  const responses = [];
+  quiz.questions.forEach((q, idx) => {
+    const selected = quizDetailEl?.querySelector(`input[name='question-${idx}']:checked`);
+    responses[idx] = selected ? parseInt(selected.value, 10) : null;
+  });
+  return responses;
+}
+
+async function scoreActiveQuiz() {
+  if (!activeQuizId) return;
+  const quiz = quizRecords.find(q => q.id === activeQuizId);
+  if (!quiz) return;
+  const responses = collectQuizResponses(quiz);
+  if (responses.some(r => r === null || Number.isNaN(r))) {
+    setQuizStatus("Please answer every question before submitting.", "error");
+    return;
+  }
+  quiz.userResponses = responses;
+  const correct = responses.filter((r, idx) => r === quiz.questions[idx].answerIndex).length;
+  quiz.score = Math.round((correct / quiz.questions.length) * 100);
+  quiz.status = "completed";
+  quiz.answersHidden = false;
+  setQuizStatus(`Quiz scored: ${quiz.score}% (AI feedback pending)`, "info");
+  try {
+    const feedback = await scoreQuizWithAI(quiz);
+    if (feedback) {
+      quiz.feedback = feedback;
+      setQuizStatus("Quiz scored with AI feedback.", "success");
+    } else {
+      setQuizStatus(`Quiz scored: ${quiz.score}%`, "success");
+    }
+  } catch (err) {
+    console.error("AI scoring failed", err);
+    setQuizStatus(`Quiz scored: ${quiz.score}% (AI feedback unavailable)`, "error");
+  }
+  await persistQuizHistory();
+  renderQuizBrowser();
+}
+
+async function requestQuizFromOpenAI(apiKey, lessonTitle, lessonSummary) {
+  const prompt = `Create a JSON quiz with 5 concise multiple-choice questions about ${lessonTitle}. Each item should have 4 options, an answerIndex (0-based), and a short explanation. Lesson context: ${lessonSummary}`;
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "You are a tutor generating tight quizzes." },
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.7
+    })
+  });
+  const data = await res.json();
+  const rawContent = data?.choices?.[0]?.message?.content?.replace(/```json|```/g, "")?.trim();
+  let parsed;
+  try {
+    parsed = JSON.parse(rawContent);
+  } catch (err) {
+    console.error("Quiz JSON parse failed", err, rawContent);
+  }
+  const questions = (parsed?.questions || []).map(q => ({
+    prompt: q.question || q.prompt || "",
+    options: q.options || q.answers || [],
+    answerIndex:
+      typeof q.answerIndex === "number"
+        ? q.answerIndex
+        : typeof q.correctIndex === "number"
+        ? q.correctIndex
+        : typeof q.answer === "number"
+        ? q.answer
+        : 0,
+    explanation: q.explanation || ""
+  }));
+  if (questions.length) return { questions };
+  const fallback = Array.from({ length: 3 }).map((_, i) => ({
+    prompt: `What is a key idea from ${lessonTitle}? (${i + 1})`,
+    options: ["Main theme", "Secondary detail", "Unrelated", "Character only"],
+    answerIndex: 0,
+    explanation: "Revisit the lesson summary for the main idea."
+  }));
+  return { questions: fallback };
+}
+
+async function scoreQuizWithAI(quiz) {
+  const apiKey = (decryptedUserPayload?.apiKey || "").trim();
+  if (!apiKey) return null;
+  const payload = quiz.questions.map((q, idx) => ({
+    question: q.prompt,
+    options: q.options,
+    correctAnswer: q.options[q.answerIndex],
+    userAnswer: q.options[quiz.userResponses[idx]]
+  }));
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "You are an encouraging teacher. Summarize correctness and provide one actionable tip." },
+        { role: "user", content: `Evaluate these answers and return brief feedback: ${JSON.stringify(payload)}` }
+      ],
+      temperature: 0.4
+    })
+  });
+  const data = await res.json();
+  return data?.choices?.[0]?.message?.content?.trim() || null;
+}
+
+function buildLessonSummary(lesson) {
+  const parts = [];
+  if (lesson.course) parts.push(lesson.course);
+  if (lesson.description) parts.push(lesson.description);
+  if (lesson.exercises) parts.push(JSON.stringify(lesson.exercises));
+  if (lesson.assignments) parts.push(JSON.stringify(lesson.assignments));
+  return parts.join("\n").slice(0, 1500);
 }
 
 function updateCourseCardStatus(p) {
@@ -1820,12 +1697,15 @@ function updateCourseCardStatus(p) {
   }
 }
 
-function toggleSidebar() {
+function toggleSidebar(forceOpen = null) {
   const sb = document.getElementById("lessonSidebar");
   const lo = document.getElementById("lessonLayout");
   if (!sb || !lo) return;
-  if (isMobileViewport()) {
-    setMobileSidebarOpen(!isSidebarOpen);
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+  if (isMobile) {
+    const shouldOpen = forceOpen !== null ? forceOpen : !sb.classList.contains("open");
+    sb.classList.toggle("open", shouldOpen);
+    if (sidebarScrim) sidebarScrim.classList.toggle("active", shouldOpen);
     return;
   }
   isSidebarCollapsed = !isSidebarCollapsed;
@@ -1896,16 +1776,15 @@ rotatePassphraseBtn?.addEventListener("click", rotatePassphrase);
 resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
 
 document.addEventListener("DOMContentLoaded", async () => {
-  updateStickyHeights();
   allCourses = await loadCourses();
   await refreshCourseStatuses();
   setActiveSection("home");
   updateQuizContext();
+  renderQuizBrowser();
   renderNotesSummary();
   document.getElementById("courseSearch")?.addEventListener("input", e => {
     renderCourses(filterCourses(allCourses, e.target.value));
   });
-  quizLessonFilter?.addEventListener("input", renderQuizList);
   document.addEventListener("click", e => {
     const b = e.target;
     if (b.tagName === "BUTTON" && b.hasAttribute("data-file")) {
@@ -1922,26 +1801,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
       setActiveSection(section);
-      if (section === "quizzes") {
-        updateQuizContext();
-        renderQuizList();
-      }
+      if (section === "quizzes") updateQuizContext();
     });
   });
-  resetSidebarForViewport();
-  sidebarToggleButton?.addEventListener("click", toggleSidebar);
-  mobileSidebarToggle?.addEventListener("click", toggleSidebar);
-  sidebarOverlay?.addEventListener("click", () => setMobileSidebarOpen(false));
-  if (mobileBreakpoint?.addEventListener) {
-    mobileBreakpoint.addEventListener("change", resetSidebarForViewport);
-  } else if (mobileBreakpoint?.addListener) {
-    mobileBreakpoint.addListener(resetSidebarForViewport);
-  }
-  window.addEventListener("resize", updateStickyHeights);
-  document.addEventListener("keyup", e => {
-    if (e.key === "Escape" && isMobileViewport() && isSidebarOpen) {
-      setMobileSidebarOpen(false);
-    }
-  });
+  document.getElementById("sidebarToggle")?.addEventListener("click", () => toggleSidebar());
+  sidebarScrim?.addEventListener("click", () => toggleSidebar(false));
+  quizSearchInput?.addEventListener("input", renderQuizBrowser);
   generateQuizBtn?.addEventListener("click", startQuizGeneration);
 });
