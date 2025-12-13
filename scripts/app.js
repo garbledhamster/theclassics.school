@@ -320,6 +320,16 @@ function hidePassphraseGate() {
   if (gate) gate.style.display = "none";
 }
 
+function openPassphraseGate(preferredAction = "unlock") {
+  showPassphraseGate();
+  if (gatePassphraseInput) gatePassphraseInput.focus();
+  if (preferredAction === "initialize") {
+    gateInitializeBtn?.focus();
+  } else if (preferredAction === "unlock") {
+    gateUnlockBtn?.focus();
+  }
+}
+
 function buildVersionInfo(reason) {
   return {
     version: DATA_MIGRATION_VERSION,
@@ -1045,8 +1055,11 @@ async function logMigrationMetadata(user, details) {
 function setVaultUIState(mode) {
   if (!vaultContainer) return;
   const hasUser = !!auth.currentUser;
-  const shouldShowCard = hasUser && mode !== "unlocked";
-  vaultContainer.style.display = shouldShowCard ? "block" : "none";
+  vaultContainer.hidden = true;
+  vaultContainer.style.display = "none";
+  if (hasUser && mode !== "unlocked") {
+    openPassphraseGate(mode === "setup" ? "initialize" : "unlock");
+  }
   if (mode === "setup") {
     vaultHeading.textContent = "Secure your account";
     vaultDescription.textContent = "Create a master passphrase to unlock lessons, settings, and notes.";
@@ -1886,8 +1899,14 @@ copyPassphraseBtn?.addEventListener("click", async () => {
   }
 });
 
-initializeVaultBtn?.addEventListener("click", initializeVault);
-unlockVaultBtn?.addEventListener("click", unlockVault);
+initializeVaultBtn?.addEventListener("click", e => {
+  e.preventDefault();
+  openPassphraseGate("initialize");
+});
+unlockVaultBtn?.addEventListener("click", e => {
+  e.preventDefault();
+  openPassphraseGate("unlock");
+});
 gateUnlockBtn?.addEventListener("click", unlockVault);
 gateInitializeBtn?.addEventListener("click", initializeVault);
 gateGenerateBtn?.addEventListener("click", () => {
