@@ -14,7 +14,7 @@ import {
   setDoc
 } from './firebase-config.js';
 import { clearTrustedDeviceCache, persistTrustedCache, getTrustedCache } from './utils.js';
-import { decodeSalt, decryptSecret, deriveKeyFromPassphrase, encryptSecret, generatePassphrase } from '../vault.js';
+import { decodeSalt, decryptSecret, deriveKeyFromPassphrase, encryptSecret, generatePassphrase } from './vault.js';
 
 const emailField = document.getElementById("emailForSignIn");
 const sendLinkBtn = document.getElementById("sendSignInLink");
