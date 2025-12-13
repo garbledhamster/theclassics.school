@@ -128,15 +128,11 @@ onAuthStateChanged(auth, async user => {
     loginStatus.textContent = `Signed in as: ${user.email}`;
     sendLinkBtn.textContent = "Sign Out";
     emailField.style.display = "none";
-    lockedContent.style.display = "block";
-    openSettingsBtn?.style.setProperty("display", "inline-flex");
   } else {
     loginStatus.textContent = "Not signed in";
     sendLinkBtn.textContent = "Send Sign-In Link";
     emailField.style.display = "inline-block";
     emailField.value = "";
-    lockedContent.style.display = "none";
-    openSettingsBtn?.style.setProperty("display", "none");
     clearVaultState();
     currentCourseData = {};
     currentCoursePath = "";
