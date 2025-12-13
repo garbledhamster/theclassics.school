@@ -22,8 +22,36 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const CANONICAL_REDIRECT_URL = "https://theclassics.school";
+const ALLOWED_REDIRECT_ORIGINS = new Set([
+  CANONICAL_REDIRECT_URL,
+  "http://localhost:3000",
+  "http://localhost:4173",
+  "http://127.0.0.1:5500"
+]);
+
+function deriveRedirectUrl() {
+  try {
+    const { origin, pathname } = new URL(window.location.href);
+    const normalizedPath = pathname === "/" ? "" : pathname.replace(/\/$/, "");
+    const candidate = `${origin}${normalizedPath}`;
+
+    if (ALLOWED_REDIRECT_ORIGINS.has(candidate) || ALLOWED_REDIRECT_ORIGINS.has(origin)) {
+      return candidate;
+    }
+
+    console.warn(`Redirect origin not whitelisted: ${origin}. Falling back to canonical domain.`);
+  } catch (e) {
+    console.warn("Could not derive redirect URL; falling back to canonical domain.", e);
+  }
+
+  return CANONICAL_REDIRECT_URL;
+}
+
 const actionCodeSettings = {
-  url: "https://theclassics.school",
+  // Use the current origin when it's authorized in Firebase, otherwise fall back to the
+  // canonical production domain so sending sign-in links never fails with a 400.
+  url: deriveRedirectUrl(),
   handleCodeInApp: true
 };
 

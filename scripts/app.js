@@ -86,6 +86,21 @@ const noteModeCache = {};
 const quizAttempts = {};
 let pendingEmailLinkMode = isSignInWithEmailLink(auth, window.location.href);
 
+function getEmailFromQuerystring() {
+  try {
+    const url = new URL(window.location.href);
+    return url.searchParams.get("email")?.trim() || "";
+  } catch (e) {
+    console.warn("Unable to parse email from link", e);
+    return "";
+  }
+}
+
+function stripEmailLinkParams() {
+  const cleanUrl = `${window.location.origin}${window.location.pathname}${window.location.hash || ""}`;
+  window.history.replaceState({}, document.title, cleanUrl);
+}
+
 function setAuthStatus(message, type = "info") {
   authStatusLabels.forEach(label => {
     if (!label) return;
@@ -108,6 +123,7 @@ async function completeEmailLinkSignIn(email) {
     await signInWithEmailLink(auth, trimmedEmail, window.location.href);
     localStorage.setItem("emailForSignIn", trimmedEmail);
     pendingEmailLinkMode = false;
+    stripEmailLinkParams();
     setAuthStatus("Sign-in link verified. Finishing up...", "success");
   } catch (e) {
     console.error(e);
@@ -137,7 +153,10 @@ async function handleSendSignIn(button) {
     setAuthStatus("Sign-in link sent! Check your email.", "success");
   } catch (e) {
     console.error(e);
-    setAuthStatus("Error sending link.", "error");
+    const reason = e?.code === "auth/invalid-continue-uri"
+      ? "Redirect URL is not allowed."
+      : e?.message || "Error sending link.";
+    setAuthStatus(reason, "error");
   }
 }
 
@@ -149,8 +168,9 @@ authSendButtons.forEach(btn =>
 
 if (pendingEmailLinkMode) {
   const storedEmail = localStorage.getItem("emailForSignIn");
-  if (storedEmail) {
-    completeEmailLinkSignIn(storedEmail);
+  const linkEmail = storedEmail || getEmailFromQuerystring();
+  if (linkEmail) {
+    completeEmailLinkSignIn(linkEmail);
   } else {
     setAuthStatus("Enter your email to finish signing in with this link.", "info");
     authSendButtons.forEach(btn => {
