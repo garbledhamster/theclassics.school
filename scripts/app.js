@@ -16,10 +16,11 @@ import {
 import { clearTrustedDeviceCache, persistTrustedCache, getTrustedCache } from './utils.js';
 import { decodeSalt, decryptSecret, deriveKeyFromPassphrase, encryptSecret, generatePassphrase } from './vault.js';
 
+const authPanels = Array.from(document.querySelectorAll("[data-auth-panel]"));
+const authEmailFields = Array.from(document.querySelectorAll("[data-auth-email]"));
+const authSendButtons = Array.from(document.querySelectorAll("[data-auth-send]"));
+const authStatusLabels = Array.from(document.querySelectorAll("[data-auth-status]"));
 const settingsSection = document.querySelector('[data-section="settings"]');
-const emailField = settingsSection?.querySelector("#emailForSignIn");
-const sendLinkBtn = settingsSection?.querySelector("#sendSignInLink");
-const loginStatus = settingsSection?.querySelector("#loginStatus");
 const lockedContent = document.getElementById("lockedContent");
 const gate = document.getElementById("passphraseGate");
 const gatePassphraseInput = document.getElementById("gatePassphrase");
@@ -84,12 +85,14 @@ let activeQuizId = null;
 const noteModeCache = {};
 const quizAttempts = {};
 
-sendLinkBtn.onclick = async () => {
+async function handleSendSignIn(button) {
   if (auth.currentUser) {
     await signOut(auth);
     return;
   }
-  const email = emailField.value;
+  const targetInputId = button?.dataset?.emailField;
+  const emailInput = targetInputId ? document.getElementById(targetInputId) : authEmailFields[0];
+  const email = emailInput?.value?.trim();
   if (!email) {
     alert("Please enter your email.");
     return;
@@ -102,7 +105,13 @@ sendLinkBtn.onclick = async () => {
     console.error(e);
     alert("Error sending link.");
   }
-};
+}
+
+authSendButtons.forEach(btn =>
+  btn.addEventListener("click", () => {
+    handleSendSignIn(btn);
+  })
+);
 
 if (isSignInWithEmailLink(auth, window.location.href)) {
   let storedEmail = localStorage.getItem("emailForSignIn");
@@ -142,8 +151,6 @@ onAuthStateChanged(auth, async user => {
     setQuizStatus("");
     renderNotesSummary();
   }
-
-  scheduleStickyHeightUpdate();
 
   await loadUserProgress(user);
   await loadVaultState(user);
@@ -261,6 +268,28 @@ function setQuizStatus(message, type = "info") {
   quizStatus.textContent = message;
   quizStatus.classList.remove("info", "error", "success");
   quizStatus.classList.add(type);
+}
+
+function updateAuthUI(user) {
+  const isSignedIn = !!user;
+  authStatusLabels.forEach(label => {
+    if (!label) return;
+    label.textContent = isSignedIn && user?.email ? `Signed in as: ${user.email}` : "Not signed in";
+  });
+  authSendButtons.forEach(btn => {
+    if (!btn) return;
+    btn.textContent = isSignedIn ? "Sign Out" : "Send Sign-In Link";
+  });
+  authEmailFields.forEach(input => {
+    if (!input) return;
+    input.style.display = isSignedIn ? "none" : "inline-block";
+    if (!isSignedIn) input.value = "";
+  });
+  authPanels.forEach(panel => {
+    if (!panel) return;
+    panel.style.display = isSignedIn ? "none" : "";
+  });
+  scheduleStickyHeightUpdate();
 }
 
 function updateSettingsSectionState() {
