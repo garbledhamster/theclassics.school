@@ -154,6 +154,8 @@ onAuthStateChanged(auth, async user => {
     renderNotesSummary();
   }
 
+  scheduleStickyHeightUpdate();
+
   await loadUserProgress(user);
   await loadVaultState(user);
   await loadUserQuizzes(user);
@@ -169,6 +171,8 @@ onAuthStateChanged(auth, async user => {
   } else if (user) {
     setActiveSection("home");
   }
+
+  scheduleStickyHeightUpdate();
 });
 
 let allCourses = [];
@@ -194,6 +198,10 @@ function updateStickyHeights() {
   root.style.setProperty("--header-height", `${headerHeight}px`);
   root.style.setProperty("--header-stack-height", `${stackHeight}px`);
   root.style.setProperty("--sticky-offset", `${stackHeight}px`);
+}
+
+function scheduleStickyHeightUpdate() {
+  requestAnimationFrame(updateStickyHeights);
 }
 
 function isMobileViewport() {
