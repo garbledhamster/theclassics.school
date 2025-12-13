@@ -60,31 +60,41 @@
     }
     header {
       background-color: var(--color-beige);
-      padding: 1rem;
-      text-align: center;
+      padding: 0.75rem 1rem 0.5rem;
       position: sticky;
       top: 0;
       z-index: 1000;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     }
-    header h1 {
+    .site-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .brand h1 {
       color: var(--color-red);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.35rem;
       line-height: 1.2;
     }
-    header p {
+    .brand p {
       color: var(--color-green);
-      font-size: 1.125rem;
-      line-height: 1.4;
+      font-size: 1.05rem;
+      line-height: 1.35;
     }
-    nav {
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .main-nav {
       background-color: var(--color-orange);
       display: flex;
-      justify-content: center;
-      padding: 0.5rem;
-      position: sticky;
-      top: 60px;
-      z-index: 999;
-      gap: 1rem;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
       flex-wrap: wrap;
     }
     nav a {
@@ -101,6 +111,18 @@
     nav a.active {
       background-color: var(--color-red);
       color: #fff;
+    }
+    .nav-auth {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-auth .auth-input {
+      min-width: 220px;
+      max-width: 280px;
+      flex: 1 1 220px;
     }
     .hero {
       background-color: var(--color-yellow);
@@ -369,17 +391,19 @@
       }
     }
     .auth-section {
-      text-align: center;
-      margin-top: 1rem;
-      margin-bottom: 2rem;
+      text-align: left;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
     #emailForSignIn {
       padding: 0.5rem;
       border: 2px solid var(--color-green);
       border-radius: 4px;
       font-family: var(--font-base);
-      width: 280px;
-      margin-bottom: 0.5rem;
+      width: 100%;
     }
     #sendSignInLink {
       background-color: var(--color-green);
@@ -391,10 +415,14 @@
       font-weight: bold;
       font-size: 1rem;
       line-height: 1.5;
-      margin: 0.5rem;
+      margin: 0;
     }
     #sendSignInLink:hover {
       background-color: #6e7a4b;
+    }
+    .login-status {
+      margin-top: 0.25rem;
+      color: var(--color-orange);
     }
     #lockedContent {
       display: none;
@@ -402,8 +430,8 @@
     .account-actions {
       display: flex;
       gap: 0.5rem;
-      justify-content: center;
-      margin-bottom: 1rem;
+      justify-content: flex-start;
+      margin-bottom: 0.5rem;
       flex-wrap: wrap;
     }
     .account-actions button {
