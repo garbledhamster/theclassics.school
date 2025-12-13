@@ -21,20 +21,12 @@ const emailField = settingsSection?.querySelector("#emailForSignIn");
 const sendLinkBtn = settingsSection?.querySelector("#sendSignInLink");
 const loginStatus = settingsSection?.querySelector("#loginStatus");
 const lockedContent = document.getElementById("lockedContent");
-const vaultContainer = document.getElementById("vaultContainer");
-const vaultHeading = document.getElementById("vaultHeading");
-const vaultDescription = document.getElementById("vaultDescription");
-const vaultPassphraseInput = document.getElementById("vaultPassphrase");
 const gate = document.getElementById("passphraseGate");
 const gatePassphraseInput = document.getElementById("gatePassphrase");
 const gateUnlockBtn = document.getElementById("gateUnlockBtn");
 const gateInitializeBtn = document.getElementById("gateInitializeBtn");
 const gateGenerateBtn = document.getElementById("gateGenerateBtn");
 const gateTrustedDevice = document.getElementById("gateTrustedDevice");
-const initializeVaultBtn = document.getElementById("initializeVaultBtn");
-const unlockVaultBtn = document.getElementById("unlockVaultBtn");
-const generatePassphraseBtn = document.getElementById("generatePassphraseBtn");
-const copyPassphraseBtn = document.getElementById("copyPassphraseBtn");
 const openSettingsBtn = document.getElementById("openSettingsBtn");
 const settingsFields = document.getElementById("settingsFields");
 const settingsDisplayName = document.getElementById("settingsDisplayName");
@@ -358,7 +350,7 @@ function normalizeVersionInfo(info, reason) {
 }
 
 function readPassphraseInput() {
-  return (gatePassphraseInput?.value || vaultPassphraseInput?.value || "").trim();
+  return (gatePassphraseInput?.value || "").trim();
 }
 
 function attachVersionMetadata(raw, reason) {
@@ -956,7 +948,6 @@ function clearVaultState() {
   encryptedLessonProgressPayload = null;
   pendingEncryptedProgressPayload = null;
   resetQuizState();
-  if (vaultPassphraseInput) vaultPassphraseInput.value = "";
   if (gatePassphraseInput) gatePassphraseInput.value = "";
   setVaultUIState("locked");
   hidePassphraseGate();
@@ -1062,28 +1053,12 @@ async function logMigrationMetadata(user, details) {
 }
 
 function setVaultUIState(mode) {
-  if (!vaultContainer) return;
   const hasUser = !!auth.currentUser;
-  vaultContainer.hidden = true;
-  vaultContainer.style.display = "none";
   if (hasUser && mode !== "unlocked") {
     openPassphraseGate(mode === "setup" ? "initialize" : "unlock");
   }
-  if (mode === "setup") {
-    vaultHeading.textContent = "Secure your account";
-    vaultDescription.textContent = "Create a master passphrase to unlock lessons, settings, and notes.";
-    initializeVaultBtn.style.display = "inline-block";
-    unlockVaultBtn.style.display = "none";
-  } else if (mode === "locked") {
-    vaultHeading.textContent = "Unlock your vault";
-    vaultDescription.textContent = "Enter your master passphrase to continue.";
-    initializeVaultBtn.style.display = "none";
-    unlockVaultBtn.style.display = "inline-block";
-  } else {
-    vaultHeading.textContent = "Vault unlocked";
-    vaultDescription.textContent = "Your session key is active. You can rotate the passphrase in Settings.";
-    initializeVaultBtn.style.display = "none";
-    unlockVaultBtn.style.display = "none";
+  if (mode === "unlocked") {
+    hidePassphraseGate();
   }
   updateSettingsSectionState();
 }
@@ -1290,7 +1265,6 @@ async function rotatePassphrase() {
     encryptedLessonProgressPayload = updatedProgressPayload;
     pendingEncryptedProgressPayload = null;
     settingsNewPassphrase.value = "";
-    vaultPassphraseInput.value = "";
 
     if (gateTrustedDevice && gateTrustedDevice.checked) {
       await persistTrustedCache(newKey, newSalt);
@@ -1915,45 +1889,11 @@ function toggleSidebar() {
   }
 }
 
-if (vaultContainer) {
-  setVaultUIState("setup");
-}
-
-generatePassphraseBtn?.addEventListener("click", () => {
-  const newPass = generatePassphrase();
-  vaultPassphraseInput.value = newPass;
-  alert("Passphrase generated. Copy it and store it somewhere safe—there is no recovery option.");
-});
-
-copyPassphraseBtn?.addEventListener("click", async () => {
-  const val = vaultPassphraseInput.value;
-  if (!val) {
-    alert("Nothing to copy yet. Enter or generate a passphrase first.");
-    return;
-  }
-  try {
-    await navigator.clipboard.writeText(val);
-    alert("Passphrase copied. Store it safely before continuing.");
-  } catch (err) {
-    console.error("Clipboard error", err);
-    alert("Could not copy automatically. Please copy the passphrase manually.");
-  }
-});
-
-initializeVaultBtn?.addEventListener("click", e => {
-  e.preventDefault();
-  openPassphraseGate("initialize");
-});
-unlockVaultBtn?.addEventListener("click", e => {
-  e.preventDefault();
-  openPassphraseGate("unlock");
-});
 gateUnlockBtn?.addEventListener("click", unlockVault);
 gateInitializeBtn?.addEventListener("click", initializeVault);
 gateGenerateBtn?.addEventListener("click", () => {
   const generated = generatePassphrase();
   gatePassphraseInput.value = generated;
-  vaultPassphraseInput.value = generated;
   alert("Passphrase generated. Copy it and store it somewhere safe.");
 });
 
