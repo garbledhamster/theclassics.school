@@ -16,10 +16,11 @@ import {
 import { clearTrustedDeviceCache, persistTrustedCache, getTrustedCache } from './utils.js';
 import { decodeSalt, decryptSecret, deriveKeyFromPassphrase, encryptSecret, generatePassphrase } from './vault.js';
 
+const authPanels = Array.from(document.querySelectorAll("[data-auth-panel]"));
+const authEmailFields = Array.from(document.querySelectorAll("[data-auth-email]"));
+const authSendButtons = Array.from(document.querySelectorAll("[data-auth-send]"));
+const authStatusLabels = Array.from(document.querySelectorAll("[data-auth-status]"));
 const settingsSection = document.querySelector('[data-section="settings"]');
-const emailField = settingsSection?.querySelector("#emailForSignIn");
-const sendLinkBtn = settingsSection?.querySelector("#sendSignInLink");
-const loginStatus = settingsSection?.querySelector("#loginStatus");
 const lockedContent = document.getElementById("lockedContent");
 const gate = document.getElementById("passphraseGate");
 const gatePassphraseInput = document.getElementById("gatePassphrase");
@@ -84,12 +85,14 @@ let activeQuizId = null;
 const noteModeCache = {};
 const quizAttempts = {};
 
-sendLinkBtn.onclick = async () => {
+async function handleSendSignIn(button) {
   if (auth.currentUser) {
     await signOut(auth);
     return;
   }
-  const email = emailField.value;
+  const targetInputId = button?.dataset?.emailField;
+  const emailInput = targetInputId ? document.getElementById(targetInputId) : authEmailFields[0];
+  const email = emailInput?.value?.trim();
   if (!email) {
     alert("Please enter your email.");
     return;
@@ -102,7 +105,13 @@ sendLinkBtn.onclick = async () => {
     console.error(e);
     alert("Error sending link.");
   }
-};
+}
+
+authSendButtons.forEach(btn =>
+  btn.addEventListener("click", () => {
+    handleSendSignIn(btn);
+  })
+);
 
 if (isSignInWithEmailLink(auth, window.location.href)) {
   let storedEmail = localStorage.getItem("emailForSignIn");
@@ -124,19 +133,9 @@ if (isSignInWithEmailLink(auth, window.location.href)) {
 }
 
 onAuthStateChanged(auth, async user => {
-  if (user) {
-    loginStatus.textContent = `Signed in as: ${user.email}`;
-    sendLinkBtn.textContent = "Sign Out";
-    emailField.style.display = "none";
-    lockedContent.style.display = "block";
-    openSettingsBtn?.style.setProperty("display", "inline-flex");
-  } else {
-    loginStatus.textContent = "Not signed in";
-    sendLinkBtn.textContent = "Send Sign-In Link";
-    emailField.style.display = "inline-block";
-    emailField.value = "";
-    lockedContent.style.display = "none";
-    openSettingsBtn?.style.setProperty("display", "none");
+  updateAuthUI(user);
+
+  if (!user) {
     clearVaultState();
     currentCourseData = {};
     currentCoursePath = "";
@@ -146,8 +145,6 @@ onAuthStateChanged(auth, async user => {
     setQuizStatus("");
     renderNotesSummary();
   }
-
-  scheduleStickyHeightUpdate();
 
   await loadUserProgress(user);
   await loadVaultState(user);
@@ -265,6 +262,29 @@ function setQuizStatus(message, type = "info") {
   quizStatus.textContent = message;
   quizStatus.classList.remove("info", "error", "success");
   quizStatus.classList.add(type);
+}
+
+function updateAuthUI(user) {
+  const isSignedIn = !!user;
+  authStatusLabels.forEach(label => {
+    if (!label) return;
+    label.textContent = isSignedIn && user?.email ? `Signed in as: ${user.email}` : "Not signed in";
+  });
+  authSendButtons.forEach(btn => {
+    if (!btn) return;
+    btn.textContent = isSignedIn ? "Sign Out" : "Send Sign-In Link";
+  });
+  authEmailFields.forEach(input => {
+    if (!input) return;
+    input.style.display = isSignedIn ? "none" : "inline-block";
+    if (!isSignedIn) input.value = "";
+  });
+  authPanels.forEach(panel => {
+    if (!panel) return;
+    const hideWhenSignedIn = panel.dataset.hideWhenSignedIn === "true";
+    panel.style.display = isSignedIn && hideWhenSignedIn ? "none" : "";
+  });
+  scheduleStickyHeightUpdate();
 }
 
 function updateSettingsSectionState() {
@@ -949,14 +969,14 @@ function renderQuizDetails(quiz) {
   const questions = Array.isArray(quiz.questions) ? quiz.questions : [];
   const attempt = getQuizAttempt(quiz.id);
   quizDetails.innerHTML = "";
-  const actions = document.createElement("div");
-  actions.className = "quiz-detail-actions";
+  const detailActions = document.createElement("div");
+  detailActions.className = "quiz-detail-actions";
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "quiz-delete";
   deleteBtn.type = "button";
   deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete quiz';
   deleteBtn.addEventListener("click", () => deleteQuiz(quiz.id));
-  actions.appendChild(deleteBtn);
+  detailActions.appendChild(deleteBtn);
   const h = document.createElement("h4");
   h.textContent = title;
   const meta = document.createElement("div");
@@ -1036,26 +1056,27 @@ function renderQuizDetails(quiz) {
       list.appendChild(li);
     });
   }
-  const actions = document.createElement("div");
-  actions.className = "quiz-response-actions";
+  const responseActions = document.createElement("div");
+  responseActions.className = "quiz-response-actions";
   const submitBtn = document.createElement("button");
   submitBtn.type = "button";
   submitBtn.textContent = attempt.submitting ? "Submitting..." : "Submit responses";
   submitBtn.disabled = attempt.submitting || !questions.length;
   submitBtn.addEventListener("click", () => submitQuizForGrading(quiz));
-  actions.appendChild(submitBtn);
+  responseActions.appendChild(submitBtn);
   const statusNote = document.createElement("p");
   const statusClass = attempt.error ? "error" : feedback ? "success" : "info";
   statusNote.className = `settings-status ${statusClass}`;
   statusNote.textContent = attempt.error
     ? attempt.error
     : attempt.status || "Responses are kept locally and not saved to your vault.";
-  actions.appendChild(statusNote);
+  responseActions.appendChild(statusNote);
   quizDetails.appendChild(h);
   quizDetails.appendChild(meta);
   quizDetails.appendChild(gradingSummary);
   quizDetails.appendChild(list);
-  quizDetails.appendChild(actions);
+  quizDetails.appendChild(responseActions);
+  quizDetails.appendChild(detailActions);
 }
 
 function renderQuizList() {

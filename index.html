@@ -16,7 +16,7 @@
       <a href="#" id="lessonsLink">Lessons</a>
       <a href="#" id="quizzesLink">Quizzes</a>
       <a href="#" id="notesLink">Notes</a>
-      <a href="#" id="openSettingsBtn" class="nav-link--settings" style="display:none;">Settings</a>
+      <a href="#" id="openSettingsBtn" class="nav-link--settings">Settings</a>
     </div>
   </nav>
   <header class="site-header">
@@ -28,6 +28,22 @@
   <section class="hero" data-section="home">
     <h2>Welcome to theclassics.school</h2>
     <p>Here you’ll find structured lessons inspired by timeless works of literature, philosophy, and beyond.</p>
+  </section>
+  <section class="auth-card" id="homeAuthPanel" data-auth-panel data-hide-when-signed-in="true" data-section="home">
+    <div class="auth-card__header">
+      <h3>Sign in to continue</h3>
+      <p class="helper-text">Send a secure sign-in link to your email. The prompt will disappear after you’re signed in.</p>
+    </div>
+    <div class="auth-card__body">
+      <div class="auth-card__fields">
+        <label for="emailForSignInHome">Account email</label>
+        <input id="emailForSignInHome" data-auth-email type="email" placeholder="Enter your email" />
+      </div>
+      <div class="auth-card__actions">
+        <p class="login-status" data-auth-status aria-live="polite">Not signed in</p>
+        <button id="sendSignInLinkHome" data-auth-send data-email-field="emailForSignInHome">Send Sign-In Link</button>
+      </div>
+    </div>
   </section>
   <div id="passphraseGate" class="passphrase-gate" aria-live="polite">
     <div class="passphrase-card">
@@ -120,18 +136,18 @@
           <h3>Account Settings</h3>
           <p class="settings-warning">Never lose your master passphrase. Without it, your encrypted data—including these settings—cannot be recovered.</p>
           <div id="settingsStatus" class="settings-status info" role="status" aria-live="polite"></div>
-          <div class="settings-auth">
-            <div class="settings-auth__grid">
-              <div class="settings-field auth-input">
-                <label for="emailForSignIn">Account email</label>
-                <input id="emailForSignIn" type="email" placeholder="Enter your email" />
-              </div>
-              <div class="settings-auth__actions">
-                <p id="loginStatus" class="login-status" aria-live="polite"></p>
-                <button id="sendSignInLink">Send Sign-In Link</button>
-              </div>
-            </div>
+      <div class="settings-auth" data-auth-panel>
+        <div class="settings-auth__grid">
+          <div class="settings-field auth-input">
+            <label for="emailForSignIn">Account email</label>
+            <input id="emailForSignIn" data-auth-email type="email" placeholder="Enter your email" />
           </div>
+          <div class="settings-auth__actions">
+            <p id="loginStatus" class="login-status" data-auth-status aria-live="polite"></p>
+            <button id="sendSignInLink" data-auth-send data-email-field="emailForSignIn">Send Sign-In Link</button>
+          </div>
+        </div>
+      </div>
           <div id="settingsFields" style="display:none;">
             <div class="settings-field">
               <label for="settingsDisplayName">Display name</label>
