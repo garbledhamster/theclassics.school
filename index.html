@@ -6,7 +6,6 @@
   <title>theclassics.school – How to Use This Site</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&display=swap" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://unpkg.com/micromodal/dist/micromodal.min.css" />
   <link rel="stylesheet" href="./styles.css" />
 
 </head>
@@ -143,36 +142,9 @@
           <p id="notesEmptyState" class="settings-note"></p>
         </div>
       </section>
-    </div>
-  </main>
-  <footer>
-    <p>© 2025 theclassics.school</p>
-    <p>For inquiries, email <a href="mailto:info@theclassics.school" style="color:#fff;text-decoration:underline;">info@theclassics.school</a></p>
-  </footer>
-  <div class="modal micromodal-slide" id="modal-locked" aria-hidden="true">
-    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-      <div class="modal__container" role="dialog" aria-modal="true">
-        <header class="modal__header">
-          <h2 class="modal__title">Lesson Locked</h2>
-          <button class="modal__close" data-micromodal-close></button>
-        </header>
-        <main class="modal__content">
-          <p>Please sign in to access this lesson.</p>
-        </main>
-        <footer class="modal__footer">
-          <button class="modal__btn" data-micromodal-close>Close</button>
-        </footer>
-      </div>
-    </div>
-  </div>
-  <div class="modal micromodal-slide" id="modal-settings" aria-hidden="true">
-    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-      <div class="modal__container settings-modal" role="dialog" aria-modal="true">
-        <header class="modal__header">
-          <h2 class="modal__title">Account Settings</h2>
-          <button class="modal__close" data-micromodal-close></button>
-        </header>
-        <main class="modal__content">
+      <section id="settingsSection" class="page-section section-hidden" data-section="settings">
+        <div class="vault-card settings-panel">
+          <h3>Account Settings</h3>
           <p class="settings-warning">Never lose your master passphrase. Without it, your encrypted data—including these settings—cannot be recovered.</p>
           <div id="settingsStatus" class="settings-status info" role="status" aria-live="polite"></div>
           <div id="settingsFields" style="display:none;">
@@ -196,18 +168,21 @@
             <input id="settingsNewPassphrase" type="password" autocomplete="new-password" placeholder="Enter a new master passphrase" />
             <div class="settings-note">Rotating creates a new encryption key. You must remember the new passphrase to keep access.</div>
           </div>
-        </main>
-        <footer class="modal__footer" style="display:flex;flex-direction:column;gap:0.5rem;align-items:flex-end;">
-          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:flex-end;width:100%;">
-            <button class="modal__btn" id="saveSettingsBtn" type="button">Save Settings</button>
-            <button class="modal__btn" id="rotatePassphraseBtn" type="button" style="background:var(--color-orange);">Rotate Passphrase</button>
+          <div class="settings-actions">
+            <div class="settings-actions__primary">
+              <button id="saveSettingsBtn" type="button">Save Settings</button>
+              <button id="rotatePassphraseBtn" type="button" class="accent">Rotate Passphrase</button>
+            </div>
+            <button id="resetAccountBtn" type="button" class="danger">Reset encrypted data (irreversible)</button>
           </div>
-          <button class="modal__btn" id="resetAccountBtn" type="button" style="background:var(--color-red);width:100%;">Reset encrypted data (irreversible)</button>
-        </footer>
-      </div>
+        </div>
+      </section>
     </div>
-  </div>
-  <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
+  </main>
+  <footer>
+    <p>© 2025 theclassics.school</p>
+    <p>For inquiries, email <a href="mailto:info@theclassics.school" style="color:#fff;text-decoration:underline;">info@theclassics.school</a></p>
+  </footer>
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script type="module" src="./scripts/app.js"></script>

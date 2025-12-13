@@ -617,6 +617,44 @@
     .settings-status.error {
       color: var(--color-red);
     }
+    .settings-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .settings-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: flex-end;
+    }
+    .settings-actions__primary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: flex-end;
+      width: 100%;
+    }
+    .settings-actions button {
+      background: var(--color-green);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.2s ease;
+    }
+    .settings-actions button:hover {
+      background: #6e7a4b;
+    }
+    .settings-actions button.accent {
+      background: var(--color-orange);
+    }
+    .settings-actions button.danger {
+      background: var(--color-red);
+      width: 100%;
+    }
     .vault-card {
       background: var(--color-beige);
       border: 1px solid #c9b28d;
@@ -727,26 +765,6 @@
     }
     .notes-card p {
       margin: 0.25rem 0;
-    }
-    .modal__container.settings-modal {
-      max-height: calc(100vh - var(--sticky-offset) - 2.5rem);
-      overflow-y: auto;
-      width: min(900px, 95vw);
-      padding: 1.5rem;
-    }
-    @media (max-width: 640px) {
-      .modal__container.settings-modal {
-        max-height: calc(100vh - var(--sticky-offset) - 1.5rem);
-        width: 95vw;
-        padding: 1.25rem;
-      }
-      .modal__content {
-        overflow-y: visible;
-      }
-      .modal__overlay {
-        padding: 1.25rem 0.75rem;
-        padding-top: calc(var(--sticky-offset) + 1.25rem);
-      }
     }
     .passphrase-gate {
       position: fixed;
@@ -885,71 +903,6 @@
       opacity: 0.4;
       pointer-events: none;
       position: relative;
-    }
-    .modal {
-      display: none;
-    }
-    .modal.is-open {
-      display: block;
-    }
-    .modal__overlay {
-      background: rgba(0, 0, 0, 0.5);
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem 1rem;
-      padding-top: calc(var(--sticky-offset) + 1rem);
-      overflow-y: auto;
-      scrollbar-width: thin;
-    }
-    .modal__container {
-      background: #fff;
-      padding: 1rem;
-      border-radius: 4px;
-      width: 90%;
-      max-width: 500px;
-      margin: 0 auto;
-      position: relative;
-    }
-    .settings-modal .modal__header {
-      position: sticky;
-      top: 0;
-      background: #fff;
-      padding-top: 0.25rem;
-      z-index: 1;
-    }
-    .modal__header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-    .modal__title {
-      font-size: 1.25rem;
-      margin: 0;
-    }
-    .modal__close {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.25rem;
-    }
-    .modal__footer {
-      text-align: right;
-      margin-top: 1rem;
-    }
-    .modal__btn {
-      background: var(--color-green);
-      color: #fff;
-      border: none;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      border-radius: 4px;
     }
     table {
       width: 100%;

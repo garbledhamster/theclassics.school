@@ -61,14 +61,16 @@ const navLinks = {
   home: document.getElementById("homeLink"),
   lessons: document.getElementById("lessonsLink"),
   quizzes: document.getElementById("quizzesLink"),
-  notes: document.getElementById("notesLink")
+  notes: document.getElementById("notesLink"),
+  settings: document.getElementById("openSettingsBtn")
 };
 
 const sectionRegistry = {
   home: document.querySelectorAll('[data-section="home"]'),
   lessons: document.querySelectorAll('[data-section="lessons"]'),
   quizzes: document.querySelectorAll('[data-section="quizzes"]'),
-  notes: document.querySelectorAll('[data-section="notes"]')
+  notes: document.querySelectorAll('[data-section="notes"]'),
+  settings: document.querySelectorAll('[data-section="settings"]')
 };
 
 let lessonProgress = { lessons: {}, notes: {} };
@@ -168,8 +170,6 @@ onAuthStateChanged(auth, async user => {
   }
 });
 
-MicroModal.init();
-
 let allCourses = [];
 let currentCourseData = {};
 let currentCoursePath = "";
@@ -263,6 +263,24 @@ function setQuizStatus(message, type = "info") {
   quizStatus.textContent = message;
   quizStatus.classList.remove("info", "error", "success");
   quizStatus.classList.add(type);
+}
+
+function updateSettingsSectionState() {
+  if (!settingsFields || !settingsStatus) return;
+  if (!auth.currentUser) {
+    resetSettingsForm();
+    return;
+  }
+  if (derivedVaultKey) {
+    populateSettingsFields();
+    setSettingsStatus("Settings unlocked for this session.", "success");
+  } else {
+    settingsFields.style.display = "none";
+    setSettingsStatus(
+      "Unlock with your passphrase to edit settings. You can still reset your account below.",
+      "info"
+    );
+  }
 }
 
 function setActiveSection(target) {
@@ -1043,6 +1061,7 @@ function setVaultUIState(mode) {
     initializeVaultBtn.style.display = "none";
     unlockVaultBtn.style.display = "none";
   }
+  updateSettingsSectionState();
 }
 
 async function loadVaultState(user) {
@@ -1304,7 +1323,6 @@ async function resetEncryptedAccount() {
       lastResetAt: new Date().toISOString(),
       missingCollections
     });
-    MicroModal.close("modal-settings");
     setSettingsStatus("Encrypted data cleared. Defaults restored.", "success");
     showPassphraseGate();
     alert("Encrypted profile reset. Set up a new passphrase to start again.");
@@ -1392,7 +1410,7 @@ function filterCourses(cs, q) {
 async function handleViewLessons(p) {
   try {
     if (!auth.currentUser) {
-      MicroModal.show("modal-locked");
+      alert("Please sign in to access this lesson.");
       return;
     }
     if (!derivedVaultKey) {
@@ -1456,7 +1474,7 @@ function showCourseContent(cd, fp) {
     li.addEventListener("click", e => {
       if (!e.target.closest(".hover-checkbox")) {
         if (!auth.currentUser && fp !== defaultGuidePath && lbl !== "Getting Started") {
-          MicroModal.show("modal-locked");
+          alert("Please sign in to access this lesson.");
           return;
         }
         document.querySelectorAll("#lessonList li").forEach(n => n.classList.remove("active"));
@@ -1762,7 +1780,7 @@ function buildQuizRecordFromLesson(selection) {
 async function startQuizGeneration() {
   if (!quizStatus) return;
   if (!auth.currentUser) {
-    MicroModal.show("modal-locked");
+    alert("Please sign in to generate quizzes.");
     setQuizStatus("Sign in to generate quizzes.", "error");
     return;
   }
@@ -1879,20 +1897,14 @@ gateGenerateBtn?.addEventListener("click", () => {
 
 openSettingsBtn?.addEventListener("click", e => {
   e.preventDefault();
-  resetSettingsForm();
+  setActiveSection("settings");
   if (!derivedVaultKey) {
-    settingsFields.style.display = "none";
-    setSettingsStatus(
-      "Unlock with your passphrase to edit settings. You can still reset your account below.",
-      "info"
-    );
-    MicroModal.show("modal-settings");
+    resetSettingsForm();
+    updateSettingsSectionState();
     showPassphraseGate();
     return;
   }
-  populateSettingsFields();
-  setSettingsStatus("Settings unlocked for this session.", "success");
-  MicroModal.show("modal-settings");
+  updateSettingsSectionState();
 });
 
 saveSettingsBtn?.addEventListener("click", saveSettings);
@@ -1923,6 +1935,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (section === "lessons" && !currentCoursePath) {
         setActiveSection("lessons");
         updateQuizContext("Select a course from Home to view lessons.");
+        return;
+      }
+      if (section === "settings") {
+        setActiveSection("settings");
+        updateSettingsSectionState();
+        if (!derivedVaultKey) {
+          showPassphraseGate();
+        }
         return;
       }
       setActiveSection(section);
