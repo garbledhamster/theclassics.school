@@ -16,9 +16,10 @@ import {
 import { clearTrustedDeviceCache, persistTrustedCache, getTrustedCache } from './utils.js';
 import { decodeSalt, decryptSecret, deriveKeyFromPassphrase, encryptSecret, generatePassphrase } from './vault.js';
 
-const emailField = document.getElementById("emailForSignIn");
-const sendLinkBtn = document.getElementById("sendSignInLink");
-const loginStatus = document.getElementById("loginStatus");
+const settingsSection = document.querySelector('[data-section="settings"]');
+const emailField = settingsSection?.querySelector("#emailForSignIn");
+const sendLinkBtn = settingsSection?.querySelector("#sendSignInLink");
+const loginStatus = settingsSection?.querySelector("#loginStatus");
 const lockedContent = document.getElementById("lockedContent");
 const vaultContainer = document.getElementById("vaultContainer");
 const vaultHeading = document.getElementById("vaultHeading");

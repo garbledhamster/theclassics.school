@@ -89,8 +89,8 @@
       background-color: var(--color-orange);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
+      justify-content: center;
+      gap: 0.75rem;
       padding: 0.5rem 1rem;
       border-radius: 0 0 10px 10px;
       position: sticky;
@@ -105,6 +105,7 @@
       align-items: center;
       gap: 0.35rem;
       flex-wrap: wrap;
+      justify-content: center;
     }
     nav a {
       color: var(--color-white);
@@ -120,26 +121,6 @@
     nav a.active {
       background-color: var(--color-red);
       color: #fff;
-    }
-    .nav-auth {
-      display: grid;
-      grid-template-columns: minmax(200px, 1fr) auto;
-      align-items: center;
-      gap: 0.75rem;
-      justify-content: flex-end;
-      margin-left: auto;
-    }
-    .nav-auth .auth-input {
-      min-width: 220px;
-      max-width: 320px;
-      flex: 1 1 220px;
-    }
-    .nav-auth .auth-actions {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      justify-content: flex-end;
     }
     .hero {
       background-color: var(--color-yellow);
@@ -440,14 +421,6 @@
         grid-template-columns: 1fr 1fr;
       }
     }
-    .auth-section {
-      text-align: left;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
     body.sidebar-locked {
       overflow: hidden;
     }
@@ -466,16 +439,7 @@
       }
       .nav-links {
         flex: 1;
-        justify-content: space-around;
-      }
-      .nav-auth {
-        width: 100%;
-        justify-content: space-between;
-        grid-template-columns: 1fr;
-      }
-      .nav-auth .auth-input {
-        flex: 1 1 180px;
-        min-width: 180px;
+        justify-content: center;
       }
       .lesson-layout,
       .lesson-layout.collapsed {
@@ -526,6 +490,15 @@
         top: 0;
       }
     }
+    @media (max-width: 700px) {
+      .settings-auth__grid {
+        grid-template-columns: 1fr;
+        align-items: flex-start;
+      }
+      .settings-auth__actions {
+        align-items: stretch;
+      }
+    }
     #emailForSignIn {
       padding: 0.5rem;
       border: 2px solid var(--color-green);
@@ -547,6 +520,22 @@
     }
     #sendSignInLink:hover {
       background-color: #6e7a4b;
+    }
+    .settings-auth {
+      border-top: 1px solid #e0d7ca;
+      padding-top: 0.5rem;
+    }
+    .settings-auth__grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto;
+      align-items: end;
+      gap: 1rem;
+    }
+    .settings-auth__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      align-items: flex-start;
     }
     .login-status {
       color: #0a0a0a;

@@ -18,15 +18,6 @@
       <a href="#" id="notesLink">Notes</a>
       <a href="#" id="openSettingsBtn" class="nav-link--settings" style="display:none;">Settings</a>
     </div>
-    <div class="nav-auth auth-section">
-      <div class="auth-input">
-        <input id="emailForSignIn" type="email" placeholder="Enter your email" />
-      </div>
-      <div class="auth-actions">
-        <p id="loginStatus" class="login-status" aria-live="polite"></p>
-        <button id="sendSignInLink">Send Sign-In Link</button>
-      </div>
-    </div>
   </nav>
   <header class="site-header">
     <div class="brand">
@@ -147,6 +138,18 @@
           <h3>Account Settings</h3>
           <p class="settings-warning">Never lose your master passphrase. Without it, your encrypted data—including these settings—cannot be recovered.</p>
           <div id="settingsStatus" class="settings-status info" role="status" aria-live="polite"></div>
+          <div class="settings-auth">
+            <div class="settings-auth__grid">
+              <div class="settings-field auth-input">
+                <label for="emailForSignIn">Account email</label>
+                <input id="emailForSignIn" type="email" placeholder="Enter your email" />
+              </div>
+              <div class="settings-auth__actions">
+                <p id="loginStatus" class="login-status" aria-live="polite"></p>
+                <button id="sendSignInLink">Send Sign-In Link</button>
+              </div>
+            </div>
+          </div>
           <div id="settingsFields" style="display:none;">
             <div class="settings-field">
               <label for="settingsDisplayName">Display name</label>
