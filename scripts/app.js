@@ -36,7 +36,6 @@ const unlockVaultBtn = document.getElementById("unlockVaultBtn");
 const generatePassphraseBtn = document.getElementById("generatePassphraseBtn");
 const copyPassphraseBtn = document.getElementById("copyPassphraseBtn");
 const openSettingsBtn = document.getElementById("openSettingsBtn");
-const signOutBtn = document.getElementById("signOutBtn");
 const settingsFields = document.getElementById("settingsFields");
 const settingsDisplayName = document.getElementById("settingsDisplayName");
 const settingsApiKey = document.getElementById("settingsApiKey");
@@ -132,7 +131,7 @@ if (isSignInWithEmailLink(auth, window.location.href)) {
 onAuthStateChanged(auth, async user => {
   if (user) {
     loginStatus.textContent = `Signed in as: ${user.email}`;
-    sendLinkBtn.textContent = "Send Sign-In Link";
+    sendLinkBtn.textContent = "Sign Out";
     emailField.style.display = "none";
     lockedContent.style.display = "block";
     signedInActions.style.display = "flex";
@@ -1878,10 +1877,6 @@ openSettingsBtn?.addEventListener("click", () => {
   populateSettingsFields();
   setSettingsStatus("Settings unlocked for this session.", "success");
   MicroModal.show("modal-settings");
-});
-
-signOutBtn?.addEventListener("click", async () => {
-  await signOut(auth);
 });
 
 saveSettingsBtn?.addEventListener("click", saveSettings);
