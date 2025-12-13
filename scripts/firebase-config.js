@@ -49,9 +49,9 @@ function deriveRedirectUrl() {
 }
 
 const actionCodeSettings = {
-  // Use the current origin when it's authorized in Firebase, otherwise fall back to the
-  // canonical production domain so sending sign-in links never fails with a 400.
-  url: deriveRedirectUrl(),
+  // Use the current origin so email links work in production and on local previews
+  // without needing to change Firebase settings.
+  url: `${window.location.origin}${window.location.pathname}`.replace(/\/$/, ""),
   handleCodeInApp: true
 };
 
