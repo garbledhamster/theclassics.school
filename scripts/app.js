@@ -20,7 +20,6 @@ const emailField = document.getElementById("emailForSignIn");
 const sendLinkBtn = document.getElementById("sendSignInLink");
 const loginStatus = document.getElementById("loginStatus");
 const lockedContent = document.getElementById("lockedContent");
-const signedInActions = document.getElementById("signedInActions");
 const vaultContainer = document.getElementById("vaultContainer");
 const vaultHeading = document.getElementById("vaultHeading");
 const vaultDescription = document.getElementById("vaultDescription");
@@ -62,14 +61,16 @@ const navLinks = {
   home: document.getElementById("homeLink"),
   lessons: document.getElementById("lessonsLink"),
   quizzes: document.getElementById("quizzesLink"),
-  notes: document.getElementById("notesLink")
+  notes: document.getElementById("notesLink"),
+  settings: document.getElementById("openSettingsBtn")
 };
 
 const sectionRegistry = {
   home: document.querySelectorAll('[data-section="home"]'),
   lessons: document.querySelectorAll('[data-section="lessons"]'),
   quizzes: document.querySelectorAll('[data-section="quizzes"]'),
-  notes: document.querySelectorAll('[data-section="notes"]')
+  notes: document.querySelectorAll('[data-section="notes"]'),
+  settings: document.querySelectorAll('[data-section="settings"]')
 };
 
 let lessonProgress = { lessons: {}, notes: {} };
@@ -134,14 +135,14 @@ onAuthStateChanged(auth, async user => {
     sendLinkBtn.textContent = "Sign Out";
     emailField.style.display = "none";
     lockedContent.style.display = "block";
-    signedInActions.style.display = "flex";
+    openSettingsBtn?.style.setProperty("display", "inline-flex");
   } else {
     loginStatus.textContent = "Not signed in";
     sendLinkBtn.textContent = "Send Sign-In Link";
     emailField.style.display = "inline-block";
     emailField.value = "";
     lockedContent.style.display = "none";
-    signedInActions.style.display = "none";
+    openSettingsBtn?.style.setProperty("display", "none");
     clearVaultState();
     currentCourseData = {};
     currentCoursePath = "";
@@ -277,6 +278,22 @@ function setActiveSection(target) {
     if (link) link.classList.toggle("active", key === target);
   });
   if (target === "notes") renderNotesSummary();
+}
+
+function showSettingsSection() {
+  setActiveSection("settings");
+  resetSettingsForm();
+  if (!derivedVaultKey) {
+    settingsFields.style.display = "none";
+    setSettingsStatus(
+      "Unlock with your passphrase to edit settings. You can still reset your account below.",
+      "info"
+    );
+    showPassphraseGate();
+    return;
+  }
+  populateSettingsFields();
+  setSettingsStatus("Settings unlocked for this session.", "success");
 }
 
 function updateQuizContext(customMessage) {
@@ -1305,7 +1322,6 @@ async function resetEncryptedAccount() {
       lastResetAt: new Date().toISOString(),
       missingCollections
     });
-    MicroModal.close("modal-settings");
     setSettingsStatus("Encrypted data cleared. Defaults restored.", "success");
     showPassphraseGate();
     alert("Encrypted profile reset. Set up a new passphrase to start again.");
@@ -1878,23 +1894,6 @@ gateGenerateBtn?.addEventListener("click", () => {
   alert("Passphrase generated. Copy it and store it somewhere safe.");
 });
 
-openSettingsBtn?.addEventListener("click", () => {
-  resetSettingsForm();
-  if (!derivedVaultKey) {
-    settingsFields.style.display = "none";
-    setSettingsStatus(
-      "Unlock with your passphrase to edit settings. You can still reset your account below.",
-      "info"
-    );
-    MicroModal.show("modal-settings");
-    showPassphraseGate();
-    return;
-  }
-  populateSettingsFields();
-  setSettingsStatus("Settings unlocked for this session.", "success");
-  MicroModal.show("modal-settings");
-});
-
 saveSettingsBtn?.addEventListener("click", saveSettings);
 rotatePassphraseBtn?.addEventListener("click", rotatePassphrase);
 resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
@@ -1920,6 +1919,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!link) return;
     link.addEventListener("click", e => {
       e.preventDefault();
+      if (section === "settings") {
+        showSettingsSection();
+        return;
+      }
       if (section === "lessons" && !currentCoursePath) {
         setActiveSection("lessons");
         updateQuizContext("Select a course from Home to view lessons.");

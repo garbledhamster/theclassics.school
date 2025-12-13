@@ -17,15 +17,15 @@
       <a href="#" id="lessonsLink">Lessons</a>
       <a href="#" id="quizzesLink">Quizzes</a>
       <a href="#" id="notesLink">Notes</a>
+      <a href="#" id="openSettingsBtn" class="nav-link--settings" style="display:none;">Settings</a>
     </div>
     <div class="nav-auth auth-section">
       <div class="auth-input">
         <input id="emailForSignIn" type="email" placeholder="Enter your email" />
       </div>
-      <button id="sendSignInLink">Send Sign-In Link</button>
-      <p id="loginStatus" class="login-status" aria-live="polite"></p>
-      <div id="signedInActions" class="account-actions" style="display:none;">
-        <button id="openSettingsBtn">Settings</button>
+      <div class="auth-actions">
+        <p id="loginStatus" class="login-status" aria-live="polite"></p>
+        <button id="sendSignInLink">Send Sign-In Link</button>
       </div>
     </div>
   </nav>
@@ -93,6 +93,11 @@
           <h2 id="selectedCourseTitle" style="color:var(--color-red);font-family:var(--font-classic);"></h2>
           <p id="selectedCourseDesc"></p>
           <h4 id="lessonProgress"></h4>
+          <button id="mobileSidebarToggle" class="sidebar-fab" type="button" aria-controls="lessonSidebar" aria-expanded="false">
+            <i class="fa-solid fa-bars"></i>
+            <span class="sidebar-fab__label">Lessons</span>
+          </button>
+          <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
           <div class="lesson-layout" id="lessonLayout">
             <aside class="lesson-sidebar" id="lessonSidebar">
               <div class="sidebar-header">
@@ -138,37 +143,12 @@
           <p id="notesEmptyState" class="settings-note"></p>
         </div>
       </section>
-    </div>
-  </main>
-  <footer>
-    <p>© 2025 theclassics.school</p>
-    <p>For inquiries, email <a href="mailto:info@theclassics.school" style="color:#fff;text-decoration:underline;">info@theclassics.school</a></p>
-  </footer>
-  <div class="modal micromodal-slide" id="modal-locked" aria-hidden="true">
-    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-      <div class="modal__container" role="dialog" aria-modal="true">
-        <header class="modal__header">
-          <h2 class="modal__title">Lesson Locked</h2>
-          <button class="modal__close" data-micromodal-close></button>
-        </header>
-        <main class="modal__content">
-          <p>Please sign in to access this lesson.</p>
-        </main>
-        <footer class="modal__footer">
-          <button class="modal__btn" data-micromodal-close>Close</button>
-        </footer>
-      </div>
-    </div>
-  </div>
-  <div class="modal micromodal-slide" id="modal-settings" aria-hidden="true">
-    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-      <div class="modal__container settings-modal" role="dialog" aria-modal="true">
-        <header class="modal__header">
-          <h2 class="modal__title">Account Settings</h2>
-          <button class="modal__close" data-micromodal-close></button>
-        </header>
-        <main class="modal__content">
-          <p class="settings-warning">Never lose your master passphrase. Without it, your encrypted data—including these settings—cannot be recovered.</p>
+      <section id="settingsSection" class="page-section section-hidden" data-section="settings">
+        <div class="vault-card settings-card">
+          <div class="settings-card__header">
+            <h3>Account Settings</h3>
+            <p class="settings-warning">Never lose your master passphrase. Without it, your encrypted data—including these settings—cannot be recovered.</p>
+          </div>
           <div id="settingsStatus" class="settings-status info" role="status" aria-live="polite"></div>
           <div id="settingsFields" style="display:none;">
             <div class="settings-field">
@@ -191,13 +171,33 @@
             <input id="settingsNewPassphrase" type="password" autocomplete="new-password" placeholder="Enter a new master passphrase" />
             <div class="settings-note">Rotating creates a new encryption key. You must remember the new passphrase to keep access.</div>
           </div>
-        </main>
-        <footer class="modal__footer" style="display:flex;flex-direction:column;gap:0.5rem;align-items:flex-end;">
-          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:flex-end;width:100%;">
-            <button class="modal__btn" id="saveSettingsBtn" type="button">Save Settings</button>
-            <button class="modal__btn" id="rotatePassphraseBtn" type="button" style="background:var(--color-orange);">Rotate Passphrase</button>
+          <div class="settings-actions">
+            <div class="settings-actions__row">
+              <button class="modal__btn" id="saveSettingsBtn" type="button">Save Settings</button>
+              <button class="modal__btn" id="rotatePassphraseBtn" type="button" style="background:var(--color-orange);">Rotate Passphrase</button>
+            </div>
+            <button class="modal__btn" id="resetAccountBtn" type="button" style="background:var(--color-red);width:100%;">Reset encrypted data (irreversible)</button>
           </div>
-          <button class="modal__btn" id="resetAccountBtn" type="button" style="background:var(--color-red);width:100%;">Reset encrypted data (irreversible)</button>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <p>© 2025 theclassics.school</p>
+    <p>For inquiries, email <a href="mailto:info@theclassics.school" style="color:#fff;text-decoration:underline;">info@theclassics.school</a></p>
+  </footer>
+  <div class="modal micromodal-slide" id="modal-locked" aria-hidden="true">
+    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+      <div class="modal__container" role="dialog" aria-modal="true">
+        <header class="modal__header">
+          <h2 class="modal__title">Lesson Locked</h2>
+          <button class="modal__close" data-micromodal-close></button>
+        </header>
+        <main class="modal__content">
+          <p>Please sign in to access this lesson.</p>
+        </main>
+        <footer class="modal__footer">
+          <button class="modal__btn" data-micromodal-close>Close</button>
         </footer>
       </div>
     </div>
