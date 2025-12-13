@@ -82,6 +82,7 @@ let decryptedUserPayload = null;
 let quizStore = getDefaultQuizStore();
 let activeQuizId = null;
 const noteModeCache = {};
+const quizAttempts = {};
 
 sendLinkBtn.onclick = async () => {
   if (auth.currentUser) {
@@ -828,6 +829,108 @@ function resetQuizState() {
   renderQuizList();
 }
 
+function getQuestionOptions(question = {}) {
+  if (Array.isArray(question.options) && question.options.length) return question.options;
+  if (Array.isArray(question.choices) && question.choices.length) return question.choices;
+  return null;
+}
+
+function normalizeQuestionType(question = {}) {
+  const raw = (question.type || question.kind || "").toString().toLowerCase();
+  if (raw.includes("choice") || raw === "mcq") return "multiple_choice";
+  if (raw.includes("fill")) return "fill_in";
+  if (getQuestionOptions(question)) return "multiple_choice";
+  const promptText = (question.prompt || question.question || "").toLowerCase();
+  if (promptText.includes("___")) return "fill_in";
+  return "free_response";
+}
+
+function getQuestionKey(question, idx) {
+  return question.id || question.questionId || question.key || `q-${idx + 1}`;
+}
+
+function getQuizAttempt(quizId) {
+  if (!quizId) {
+    return { responses: {}, feedback: null, status: "", error: null, submitting: false };
+  }
+  if (!quizAttempts[quizId]) {
+    quizAttempts[quizId] = {
+      responses: {},
+      feedback: null,
+      status: "",
+      error: null,
+      submitting: false
+    };
+  }
+  return quizAttempts[quizId];
+}
+
+function findQuestionFeedback(feedback, key, idx) {
+  if (!feedback) return null;
+  const perQuestion = Array.isArray(feedback.perQuestion) ? feedback.perQuestion : [];
+  return perQuestion.find(item => {
+    const itemKey = item.question_id || item.id || item.key || item.questionKey;
+    const index = typeof item.index === "number" ? item.index : null;
+    return (itemKey && itemKey === key) || (index !== null && index === idx);
+  }) || null;
+}
+
+function buildQuestionResponseControl(question, idx, attempt) {
+  const type = normalizeQuestionType(question);
+  const key = getQuestionKey(question, idx);
+  const wrapper = document.createElement("div");
+  wrapper.className = "quiz-response-control";
+  if (type === "multiple_choice") {
+    const options = getQuestionOptions(question);
+    if (options && options.length) {
+      const optionList = document.createElement("div");
+      optionList.className = "quiz-options";
+      options.forEach((opt, optIdx) => {
+        const option = document.createElement("div");
+        option.className = "quiz-option";
+        const id = `${key}-${optIdx}`;
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = `${key}-choice`;
+        radio.id = id;
+        radio.value = opt;
+        radio.checked = attempt.responses[key] === opt;
+        radio.addEventListener("change", () => {
+          attempt.responses[key] = opt;
+        });
+        const label = document.createElement("label");
+        label.htmlFor = id;
+        label.textContent = opt;
+        option.appendChild(radio);
+        option.appendChild(label);
+        optionList.appendChild(option);
+      });
+      wrapper.appendChild(optionList);
+      return wrapper;
+    }
+  }
+  if (type === "fill_in") {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Type your answer";
+    input.value = attempt.responses[key] || "";
+    input.addEventListener("input", e => {
+      attempt.responses[key] = e.target.value;
+    });
+    wrapper.appendChild(input);
+    return wrapper;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.rows = 3;
+  textarea.placeholder = "Share your response";
+  textarea.value = attempt.responses[key] || "";
+  textarea.addEventListener("input", e => {
+    attempt.responses[key] = e.target.value;
+  });
+  wrapper.appendChild(textarea);
+  return wrapper;
+}
+
 function renderQuizDetails(quiz) {
   if (!quizDetails) return;
   if (!derivedVaultKey) {
@@ -844,6 +947,7 @@ function renderQuizDetails(quiz) {
   const created = metadata.createdAt || metadata.generatedAt || quiz.createdAt;
   const status = quiz.status || metadata.status || "saved";
   const questions = Array.isArray(quiz.questions) ? quiz.questions : [];
+  const attempt = getQuizAttempt(quiz.id);
   quizDetails.innerHTML = "";
   const actions = document.createElement("div");
   actions.className = "quiz-detail-actions";
@@ -870,6 +974,24 @@ function renderQuizDetails(quiz) {
   meta.appendChild(time);
   if (courseTitle) meta.appendChild(lesson);
   meta.appendChild(count);
+
+  const gradingSummary = document.createElement("div");
+  gradingSummary.className = "quiz-grade-summary";
+  const feedback = attempt.feedback;
+  if (feedback?.overallScore !== undefined && feedback?.overallScore !== null) {
+    const score = document.createElement("div");
+    score.className = "quiz-grade-score";
+    score.textContent = `${Math.round(feedback.overallScore)} / 100`;
+    const summary = document.createElement("p");
+    summary.textContent = feedback.summary || "Grading complete.";
+    gradingSummary.appendChild(score);
+    gradingSummary.appendChild(summary);
+  } else {
+    const helper = document.createElement("p");
+    helper.className = "settings-note";
+    helper.textContent = "Answer each prompt and submit to get AI-generated feedback.";
+    gradingSummary.appendChild(helper);
+  }
   const list = document.createElement("ol");
   list.className = "quiz-question-list";
   if (!questions.length) {
@@ -877,24 +999,63 @@ function renderQuizDetails(quiz) {
     li.textContent = "No questions were captured for this quiz.";
     list.appendChild(li);
   } else {
-    questions.forEach(q => {
+    questions.forEach((q, idx) => {
       const li = document.createElement("li");
+      li.className = "quiz-question-card";
+      const header = document.createElement("div");
+      header.className = "quiz-question-header";
       const prompt = document.createElement("div");
       prompt.textContent = q.prompt || q.question || "Review this lesson.";
-      li.appendChild(prompt);
+      const typeBadge = document.createElement("span");
+      typeBadge.className = "quiz-question-type";
+      typeBadge.textContent = normalizeQuestionType(q).replace(/_/g, " ");
+      header.appendChild(prompt);
+      header.appendChild(typeBadge);
+      li.appendChild(header);
       if (q.detail) {
         const detail = document.createElement("div");
         detail.className = "settings-note";
         detail.textContent = q.detail;
         li.appendChild(detail);
       }
+      const responseControl = buildQuestionResponseControl(q, idx, attempt);
+      li.appendChild(responseControl);
+      const questionFeedback = findQuestionFeedback(feedback, getQuestionKey(q, idx), idx);
+      if (questionFeedback) {
+        const fb = document.createElement("div");
+        fb.className = "quiz-question-feedback";
+        const label = document.createElement("strong");
+        const isCorrect = questionFeedback.correct === true || questionFeedback.isCorrect === true;
+        label.textContent = isCorrect ? "Looks good" : "Needs work";
+        const copy = document.createElement("p");
+        copy.textContent = questionFeedback.feedback || questionFeedback.comment || "";
+        fb.appendChild(label);
+        fb.appendChild(copy);
+        li.appendChild(fb);
+      }
       list.appendChild(li);
     });
   }
-  quizDetails.appendChild(actions);
+  const actions = document.createElement("div");
+  actions.className = "quiz-response-actions";
+  const submitBtn = document.createElement("button");
+  submitBtn.type = "button";
+  submitBtn.textContent = attempt.submitting ? "Submitting..." : "Submit responses";
+  submitBtn.disabled = attempt.submitting || !questions.length;
+  submitBtn.addEventListener("click", () => submitQuizForGrading(quiz));
+  actions.appendChild(submitBtn);
+  const statusNote = document.createElement("p");
+  const statusClass = attempt.error ? "error" : feedback ? "success" : "info";
+  statusNote.className = `settings-status ${statusClass}`;
+  statusNote.textContent = attempt.error
+    ? attempt.error
+    : attempt.status || "Responses are kept locally and not saved to your vault.";
+  actions.appendChild(statusNote);
   quizDetails.appendChild(h);
   quizDetails.appendChild(meta);
+  quizDetails.appendChild(gradingSummary);
   quizDetails.appendChild(list);
+  quizDetails.appendChild(actions);
 }
 
 function renderQuizList() {
@@ -957,36 +1118,116 @@ function renderQuizList() {
   renderQuizDetails(activeQuiz);
 }
 
-async function deleteQuiz(quizId) {
-  if (!quizId) return;
-  if (!derivedVaultKey) {
-    setQuizStatus("Unlock with your passphrase to delete quizzes.", "error");
+async function submitQuizForGrading(quiz) {
+  if (!quiz) return;
+  const apiKey = (decryptedUserPayload || {}).apiKey;
+  const attempt = getQuizAttempt(quiz.id);
+  if (!apiKey) {
+    attempt.error = "Add your OpenAI API key in Settings to submit for grading.";
+    attempt.status = "";
+    renderQuizDetails(quiz);
     return;
   }
-  const entries = Array.isArray(quizStore?.quizzes) ? [...quizStore.quizzes] : [];
-  const target = entries.find(q => q.id === quizId);
-  if (!target) {
-    setQuizStatus("Could not find that quiz to delete.", "error");
-    return;
-  }
-  const previous = [...entries];
-  const remaining = entries.filter(q => q.id !== quizId);
-  quizStore.quizzes = remaining;
-  activeQuizId = remaining[0]?.id || null;
-  setQuizStatus("Deleting quiz...", "info");
-  renderQuizList();
+  attempt.submitting = true;
+  attempt.error = null;
+  attempt.status = "Submitting responses for grading...";
+  renderQuizDetails(quiz);
   try {
-    const saved = await persistQuizStore();
-    if (!saved) throw new Error("Unable to sync quiz deletion.");
-    const lessonName = target?.metadata?.lessonTitle || target.lessonTitle || "quiz";
-    setQuizStatus(`Deleted quiz for ${lessonName}.`, "success");
+    const questions = Array.isArray(quiz.questions) ? quiz.questions : [];
+    const metadata = quiz.metadata || {};
+    const payload = {
+      quizId: quiz.id,
+      metadata: {
+        ...metadata,
+        lessonTitle: metadata.lessonTitle || quiz.lessonTitle,
+        courseTitle: metadata.courseTitle || quiz.courseTitle
+      },
+      questions: questions.map((q, idx) => {
+        const key = getQuestionKey(q, idx);
+        return {
+          id: key,
+          prompt: q.prompt || q.question || `Question ${idx + 1}`,
+          detail: q.detail,
+          type: normalizeQuestionType(q),
+          options: getQuestionOptions(q),
+          response: attempt.responses[key] || ""
+        };
+      })
+    };
+    const gradingPrompt = [
+      "You are a tutor grading a student's quiz responses.",
+      "Return strict JSON with keys: overall_score (0-100), summary (string), per_question (array).",
+      "Each per_question entry should include id, feedback, correct (boolean), and score (0-100).",
+      "Base feedback only on the provided quiz metadata, prompts, and student responses.",
+      "Keep remarks concise and actionable."
+    ].join(" \n");
+    const userContent = [
+      "Quiz submission to grade (JSON):",
+      JSON.stringify(payload, null, 2)
+    ].join("\n");
+    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: gradingPrompt },
+          { role: "user", content: userContent }
+        ],
+        response_format: { type: "json_object" }
+      })
+    });
+    if (!resp.ok) {
+      const detail = await resp.text();
+      throw new Error(`OpenAI grading failed: ${resp.status} ${detail}`);
+    }
+    const data = await resp.json();
+    const content = data?.choices?.[0]?.message?.content;
+    if (!content) throw new Error("OpenAI returned an empty grading response.");
+    let parsed = null;
+    try {
+      parsed = JSON.parse(content);
+    } catch (err) {
+      console.error("Could not parse grading JSON", content);
+      throw new Error("OpenAI grading response was not valid JSON.");
+    }
+    const overallScore =
+      typeof parsed.overall_score === "number"
+        ? parsed.overall_score
+        : typeof parsed.overallScore === "number"
+        ? parsed.overallScore
+        : null;
+    const perQuestion = Array.isArray(parsed.per_question)
+      ? parsed.per_question
+      : Array.isArray(parsed.questions)
+      ? parsed.questions
+      : [];
+    let computedScore = overallScore;
+    if (computedScore === null) {
+      const numericScores = perQuestion
+        .map(item => (typeof item.score === "number" ? item.score : null))
+        .filter(v => v !== null);
+      if (numericScores.length) {
+        const avg = numericScores.reduce((a, b) => a + b, 0) / numericScores.length;
+        computedScore = Math.round(avg);
+      }
+    }
+    attempt.feedback = {
+      overallScore: computedScore,
+      summary: parsed.summary || parsed.feedback || parsed.overview || "",
+      perQuestion
+    };
+    attempt.status = "Received AI feedback.";
   } catch (err) {
-    console.error("Error deleting quiz:", err);
-    quizStore.quizzes = previous;
-    activeQuizId = quizId;
-    renderQuizList();
-    setQuizStatus("Could not delete quiz. Unlock with your passphrase and try again.", "error");
+    console.error("Quiz grading failed", err);
+    attempt.error = err?.message || "Could not submit quiz for grading.";
+    attempt.status = "";
   }
+  attempt.submitting = false;
+  renderQuizDetails(quiz);
 }
 
 function clearVaultState() {
