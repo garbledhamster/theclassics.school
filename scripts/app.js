@@ -84,6 +84,7 @@ let pendingEncryptedQuizPayload = null;
 let decryptedUserPayload = null;
 let quizStore = getDefaultQuizStore();
 let activeQuizId = null;
+const noteModeCache = {};
 
 sendLinkBtn.onclick = async () => {
   if (auth.currentUser) {
@@ -589,6 +590,37 @@ function buildNoteSummary(text = "") {
   return trimmed.slice(0, 237) + "...";
 }
 
+function sanitizeHtml(html) {
+  const parser = new DOMParser();
+  const parsed = parser.parseFromString(html || "", "text/html");
+  parsed.querySelectorAll("script, style").forEach(node => node.remove());
+  parsed.querySelectorAll("*").forEach(node => {
+    Array.from(node.attributes).forEach(attr => {
+      const name = attr.name.toLowerCase();
+      if (name.startsWith("on") || name === "srcdoc" || name === "data" || name === "srcset") {
+        node.removeAttribute(attr.name);
+        return;
+      }
+      if ((name === "href" || name === "src" || name === "xlink:href") && /^(javascript:|data:)/i.test(attr.value)) {
+        node.removeAttribute(attr.name);
+      }
+    });
+  });
+  return parsed.body.innerHTML;
+}
+
+function getNoteModeKey(coursePath, lessonTitle, noteId = "") {
+  return `${coursePath || ""}::${lessonTitle || ""}::${noteId || "draft"}`;
+}
+
+function getNoteMode(coursePath, lessonTitle, noteId = "") {
+  return noteModeCache[getNoteModeKey(coursePath, lessonTitle, noteId)] || "edit";
+}
+
+function setNoteMode(coursePath, lessonTitle, noteId = "", mode = "edit") {
+  noteModeCache[getNoteModeKey(coursePath, lessonTitle, noteId)] = mode;
+}
+
 function getLessonNoteEntries(p, t) {
   if (!lessonProgress.notes) lessonProgress.notes = {};
   if (!lessonProgress.notes[p]) lessonProgress.notes[p] = {};
@@ -681,8 +713,13 @@ function renderNotesSummary() {
     const updated = entry.updatedAt || entry.createdAt || "";
     const updatedDisplay = updated ? new Date(updated).toLocaleString() : "";
     meta.textContent = `Course file: ${entry.coursePath}${updatedDisplay ? " • Updated " + updatedDisplay : ""}`;
-    const body = document.createElement("p");
-    body.textContent = entry.summary || entry.text || "(no summary)";
+    const body = document.createElement("div");
+    body.className = "notes-card-body";
+    const noteContent = entry.text || entry.summary || "";
+    const previewHtml = noteContent.trim()
+      ? sanitizeHtml(marked.parse(noteContent))
+      : '<p class="note-empty">No note content saved yet.</p>';
+    body.innerHTML = previewHtml;
     const actions = document.createElement("div");
     actions.className = "note-actions-inline";
     const viewBtn = document.createElement("button");
@@ -1499,6 +1536,19 @@ function displayLessonContent(lsn) {
   noteField.value = latestNote?.text || "";
   if (latestNote?.id) noteField.dataset.noteId = latestNote.id;
   noteField.placeholder = "Add private notes for this lesson.";
+  const notePreview = document.createElement("div");
+  notePreview.className = "note-preview";
+  const notePreviewContent = document.createElement("div");
+  notePreviewContent.className = "note-preview-body";
+  notePreview.appendChild(notePreviewContent);
+  const noteModeActions = document.createElement("div");
+  noteModeActions.className = "note-actions note-mode";
+  const editModeBtn = document.createElement("button");
+  editModeBtn.textContent = "Edit";
+  const previewModeBtn = document.createElement("button");
+  previewModeBtn.textContent = "Preview";
+  noteModeActions.appendChild(editModeBtn);
+  noteModeActions.appendChild(previewModeBtn);
   const noteActions = document.createElement("div");
   noteActions.className = "note-actions";
   const newNoteBtn = document.createElement("button");
@@ -1507,6 +1557,7 @@ function displayLessonContent(lsn) {
     noteField.value = "";
     noteField.dataset.noteId = "";
     noteField.focus();
+    applyNoteMode(getNoteMode(currentCoursePath, title, ""), "");
   });
   const saveNoteBtn = document.createElement("button");
   saveNoteBtn.textContent = "Save notes";
@@ -1525,6 +1576,7 @@ function displayLessonContent(lsn) {
     try {
       await persistUserProgress();
       noteField.dataset.noteId = entry.id;
+      applyNoteMode(currentNoteMode, entry.id);
       renderNotesSummary();
       saveNoteBtn.textContent = "Saved";
       setTimeout(() => (saveNoteBtn.textContent = "Save notes"), 1500);
@@ -1533,11 +1585,42 @@ function displayLessonContent(lsn) {
       alert("Could not save notes. Unlock with your passphrase and try again.");
     }
   });
+  let currentNoteMode = getNoteMode(currentCoursePath, title, noteField.dataset.noteId || "");
+  function renderNotePreview() {
+    const noteContent = noteField.value.trim();
+    if (!noteContent) {
+      notePreviewContent.innerHTML = '<p class="note-empty">No content to preview yet.</p>';
+      return;
+    }
+    notePreviewContent.innerHTML = sanitizeHtml(marked.parse(noteContent));
+  }
+  function applyNoteMode(mode, noteIdOverride = null) {
+    currentNoteMode = mode;
+    const activeNoteId = noteIdOverride !== null ? noteIdOverride : noteField.dataset.noteId || "";
+    setNoteMode(currentCoursePath, title, activeNoteId, mode);
+    editModeBtn.classList.toggle("active", mode === "edit");
+    previewModeBtn.classList.toggle("active", mode === "preview");
+    noteField.style.display = mode === "edit" ? "block" : "none";
+    notePreview.style.display = mode === "preview" ? "block" : "none";
+    if (mode === "preview") {
+      renderNotePreview();
+    }
+  }
+  noteField.addEventListener("input", () => {
+    if (currentNoteMode === "preview") {
+      renderNotePreview();
+    }
+  });
+  editModeBtn.addEventListener("click", () => applyNoteMode("edit"));
+  previewModeBtn.addEventListener("click", () => applyNoteMode("preview"));
+  applyNoteMode(currentNoteMode);
   noteActions.appendChild(newNoteBtn);
   noteActions.appendChild(saveNoteBtn);
   notesWrapper.appendChild(notesHeading);
   notesWrapper.appendChild(noteHint);
+  notesWrapper.appendChild(noteModeActions);
   notesWrapper.appendChild(noteField);
+  notesWrapper.appendChild(notePreview);
   notesWrapper.appendChild(noteActions);
   if (
     noteFocusTarget &&
@@ -1550,12 +1633,14 @@ function displayLessonContent(lsn) {
     if (focusedEntry) {
       noteField.value = focusedEntry.text || focusedEntry.summary || "";
       noteField.dataset.noteId = focusedEntry.id;
+      applyNoteMode(getNoteMode(currentCoursePath, title, focusedEntry.id), focusedEntry.id);
     }
     notesWrapper.classList.add("note-highlight");
     notesWrapper.scrollIntoView({ behavior: "smooth", block: "center" });
     setTimeout(() => notesWrapper.classList.remove("note-highlight"), 1800);
     noteFocusTarget = null;
   }
+  renderNotePreview();
   el.appendChild(notesWrapper);
 }
 
