@@ -183,13 +183,17 @@ let noteFocusTarget = null;
 
 function updateStickyHeights() {
   const root = document.documentElement;
-  const topbar = document.querySelector(".topbar");
   const header = document.querySelector("header");
-  const topbarHeight = topbar?.offsetHeight || 0;
+  const nav = document.querySelector(".primary-nav");
   const headerHeight = header?.offsetHeight || 0;
-  root.style.setProperty("--topbar-height", `${topbarHeight}px`);
+  const navHeight = nav?.offsetHeight || 0;
+  const navContribution = isMobileViewport() ? 0 : navHeight;
+  const stackHeight = headerHeight + navContribution;
+  root.style.setProperty("--nav-height", `${navHeight}px`);
+  root.style.setProperty("--nav-offset", `${navContribution}px`);
   root.style.setProperty("--header-height", `${headerHeight}px`);
-  root.style.setProperty("--header-stack-height", `${topbarHeight + headerHeight}px`);
+  root.style.setProperty("--header-stack-height", `${stackHeight}px`);
+  root.style.setProperty("--sticky-offset", `${stackHeight}px`);
 }
 
 function isMobileViewport() {
