@@ -153,7 +153,10 @@ async function handleSendSignIn(button) {
     setAuthStatus("Sign-in link sent! Check your email.", "success");
   } catch (e) {
     console.error(e);
-    setAuthStatus("Error sending link.", "error");
+    const reason = e?.code === "auth/invalid-continue-uri"
+      ? "Redirect URL is not allowed."
+      : e?.message || "Error sending link.";
+    setAuthStatus(reason, "error");
   }
 }
 
