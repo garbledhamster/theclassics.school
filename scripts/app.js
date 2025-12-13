@@ -845,6 +845,14 @@ function renderQuizDetails(quiz) {
   const status = quiz.status || metadata.status || "saved";
   const questions = Array.isArray(quiz.questions) ? quiz.questions : [];
   quizDetails.innerHTML = "";
+  const actions = document.createElement("div");
+  actions.className = "quiz-detail-actions";
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "quiz-delete";
+  deleteBtn.type = "button";
+  deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete quiz';
+  deleteBtn.addEventListener("click", () => deleteQuiz(quiz.id));
+  actions.appendChild(deleteBtn);
   const h = document.createElement("h4");
   h.textContent = title;
   const meta = document.createElement("div");
@@ -883,6 +891,7 @@ function renderQuizDetails(quiz) {
       list.appendChild(li);
     });
   }
+  quizDetails.appendChild(actions);
   quizDetails.appendChild(h);
   quizDetails.appendChild(meta);
   quizDetails.appendChild(list);
@@ -928,8 +937,16 @@ function renderQuizList() {
     const created = q?.metadata?.createdAt || q.createdAt;
     const status = q.status || q?.metadata?.status || "saved";
     btn.innerHTML =
+      `<div class="quiz-card__header">` +
       `<h4>${title}</h4>` +
+      `<button class="quiz-delete" aria-label="Delete quiz"><i class="fas fa-trash"></i></button>` +
+      `</div>` +
       `<div class="quiz-meta"><span class="quiz-status-pill">${status}</span><span>${formatQuizTimestamp(created)}</span></div>`;
+    const deleteBtn = btn.querySelector(".quiz-delete");
+    deleteBtn?.addEventListener("click", evt => {
+      evt.stopPropagation();
+      deleteQuiz(q.id);
+    });
     btn.addEventListener("click", () => {
       activeQuizId = q.id;
       renderQuizList();
@@ -938,6 +955,38 @@ function renderQuizList() {
   });
   const activeQuiz = filtered.find(q => q.id === activeQuizId) || null;
   renderQuizDetails(activeQuiz);
+}
+
+async function deleteQuiz(quizId) {
+  if (!quizId) return;
+  if (!derivedVaultKey) {
+    setQuizStatus("Unlock with your passphrase to delete quizzes.", "error");
+    return;
+  }
+  const entries = Array.isArray(quizStore?.quizzes) ? [...quizStore.quizzes] : [];
+  const target = entries.find(q => q.id === quizId);
+  if (!target) {
+    setQuizStatus("Could not find that quiz to delete.", "error");
+    return;
+  }
+  const previous = [...entries];
+  const remaining = entries.filter(q => q.id !== quizId);
+  quizStore.quizzes = remaining;
+  activeQuizId = remaining[0]?.id || null;
+  setQuizStatus("Deleting quiz...", "info");
+  renderQuizList();
+  try {
+    const saved = await persistQuizStore();
+    if (!saved) throw new Error("Unable to sync quiz deletion.");
+    const lessonName = target?.metadata?.lessonTitle || target.lessonTitle || "quiz";
+    setQuizStatus(`Deleted quiz for ${lessonName}.`, "success");
+  } catch (err) {
+    console.error("Error deleting quiz:", err);
+    quizStore.quizzes = previous;
+    activeQuizId = quizId;
+    renderQuizList();
+    setQuizStatus("Could not delete quiz. Unlock with your passphrase and try again.", "error");
+  }
 }
 
 function clearVaultState() {
