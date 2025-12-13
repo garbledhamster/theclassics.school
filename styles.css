@@ -7,7 +7,8 @@
       --color-beige: #d8c19c;
       --font-base: "Crimson Pro", Georgia, "Times New Roman", serif;
       --font-classic: "Crimson Pro", Georgia, "Times New Roman", serif;
-      --sticky-offset: 120px;
+      --topbar-height: 64px;
+      --sticky-offset: calc(120px + var(--topbar-height));
       font-size: 18px;
     }
     * {
@@ -58,12 +59,29 @@
     h4 {
       font-size: 1.25rem;
     }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1200;
+      background: linear-gradient(90deg, var(--color-red), var(--color-orange));
+      color: #fff;
+      padding: 0.35rem 1rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    }
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0.75rem;
+    }
     header {
       background-color: var(--color-beige);
       padding: 0.75rem 1rem 0.5rem;
       position: sticky;
-      top: 0;
-      z-index: 1000;
+      top: var(--topbar-height);
+      z-index: 1100;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     }
     .site-header {
@@ -123,6 +141,19 @@
       min-width: 220px;
       max-width: 280px;
       flex: 1 1 220px;
+    }
+    .topbar-auth {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      width: 100%;
+    }
+    .topbar-auth .auth-input {
+      min-width: 230px;
+      max-width: 320px;
+      flex: 1 1 260px;
     }
     .hero {
       background-color: var(--color-yellow);
@@ -432,7 +463,15 @@
     }
     @media (max-width: 900px) {
       :root {
-        --sticky-offset: 96px;
+        --topbar-height: 72px;
+        --sticky-offset: calc(96px + var(--topbar-height));
+      }
+      .topbar-inner {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .topbar-auth {
+        justify-content: flex-start;
       }
       .lesson-layout,
       .lesson-layout.collapsed {
