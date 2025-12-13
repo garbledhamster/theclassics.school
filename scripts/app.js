@@ -541,6 +541,7 @@ async function loadUserProgress(user) {
         await decryptLessonProgressPayload(data, key);
       } else {
         pendingEncryptedProgressPayload = data;
+        renderNotesSummary();
       }
     } else if (data && (data.lessons || data.notes)) {
       progressVersionInfo = normalizeVersionInfo(data.versionInfo, "lesson-progress-plaintext");
