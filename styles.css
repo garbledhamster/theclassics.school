@@ -5,6 +5,7 @@
       --color-white: #fcefdc;
       --color-green: #829559;
       --color-beige: #d8c19c;
+      --color-gray: #c9b28d;
       --font-base: "Crimson Pro", Georgia, "Times New Roman", serif;
       --font-classic: "Crimson Pro", Georgia, "Times New Roman", serif;
       --nav-height: 64px;
@@ -971,22 +972,74 @@
     .quiz-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem;
-      align-items: flex-end;
+      gap: 0.75rem;
+      align-items: flex-start;
       margin-bottom: 1rem;
+      padding: 0.75rem;
+      background: #fffaf2;
+      border: 1px solid #c9b28d;
+      border-radius: 12px;
+    }
+
+    #generateQuizBtn {
+      background: linear-gradient(135deg, var(--color-red), #b93d12);
+      color: #fff;
+      border: 1px solid #a6380f;
+      padding: 0.65rem 1.2rem;
+      border-radius: 12px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+    }
+
+    #generateQuizBtn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.16);
+      background: linear-gradient(135deg, #f25f26, #c74410);
+    }
+
+    #generateQuizBtn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(224, 78, 25, 0.25), 0 6px 14px rgba(0, 0, 0, 0.12);
     }
 
     .quiz-filter {
       display: flex;
       flex-direction: column;
       gap: 0.35rem;
-      min-width: 220px;
+      min-width: 240px;
+      padding: 0.75rem;
+      background: #fff;
+      border: 1px solid #d7ccb9;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .quiz-filter__field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .quiz-filter label {
+      font-weight: 700;
+      color: #3c3327;
     }
 
     .quiz-filter input {
-      padding: 0.5rem;
+      padding: 0.6rem 0.65rem;
       border-radius: 8px;
       border: 1px solid var(--color-gray);
+      background: #fffbf5;
+      font-family: var(--font-base);
+    }
+
+    .quiz-filter input:focus-visible {
+      outline: none;
+      border-color: var(--color-green);
+      box-shadow: 0 0 0 3px rgba(130, 149, 89, 0.2);
     }
 
     .quiz-layout {
