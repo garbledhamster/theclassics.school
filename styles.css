@@ -279,6 +279,16 @@
     .lesson-layout.collapsed {
       grid-template-columns: 48px 1fr;
     }
+    .lesson-layout.no-course {
+      display: block;
+    }
+    .lesson-layout.no-course .lesson-sidebar {
+      display: none;
+    }
+    .lesson-layout.no-course #lessonContent {
+      padding: 0;
+      border: none;
+    }
     .lesson-sidebar {
       background-color: var(--color-beige);
       border-radius: 5px;
@@ -399,6 +409,13 @@
       min-height: 300px;
       line-height: 1.6;
       max-width: 60ch;
+    }
+    .lesson-empty-state {
+      margin-bottom: 1rem;
+      color: #3a2b1f;
+    }
+    .lesson-placeholder {
+      color: #999;
     }
     .sidebar-overlay {
       display: none;
