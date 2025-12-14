@@ -74,6 +74,16 @@
         <div class="course-search">
           <input type="text" id="courseSearch" placeholder="Search for a course..." />
         </div>
+        <div class="vault-card progress-summary" id="progressSummaryCard">
+          <div class="progress-summary__header">
+            <div>
+              <h3>Learning progress</h3>
+              <p class="helper-text" id="progressSummaryStatus">Unlock with your master passphrase to view saved progress.</p>
+            </div>
+            <div class="progress-summary__badge" id="progressCourseBadge">0/0 complete</div>
+          </div>
+          <div class="progress-summary__grid" id="progressSummaryGrid"></div>
+        </div>
         <div class="course-list" id="courseList"></div>
       </section>
       <section id="lessonsSection" class="page-section section-hidden" data-section="lessons">

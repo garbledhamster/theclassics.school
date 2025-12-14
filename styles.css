@@ -733,6 +733,55 @@
       color: #5a4a34;
       margin-bottom: 0.75rem;
     }
+    .progress-summary {
+      margin-top: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .progress-summary__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .progress-summary__badge {
+      background: #fff7ee;
+      border: 1px solid #c9b28d;
+      color: #5a4a34;
+      font-weight: 700;
+      padding: 0.5rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.95rem;
+    }
+    .progress-summary__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+    .progress-summary__item {
+      background: #fff7ee;
+      border: 1px solid #c9b28d;
+      border-radius: 6px;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .progress-summary__item h4 {
+      margin: 0;
+      color: var(--color-red);
+      font-size: 1.05rem;
+    }
+    .progress-summary__metric {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #3f351f;
+    }
+    .progress-summary__hint {
+      color: #5a4a34;
+      font-size: 0.95rem;
+    }
     .vault-field {
       display: flex;
       flex-direction: column;
