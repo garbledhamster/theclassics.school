@@ -1135,6 +1135,35 @@ function renderQuizDetails(quiz) {
   quizDetails.appendChild(detailActions);
 }
 
+async function deleteQuiz(id) {
+  if (!id) return;
+  const previousQuizzes = Array.isArray(quizStore?.quizzes) ? [...quizStore.quizzes] : [];
+  const remaining = previousQuizzes.filter(q => q.id !== id);
+  if (remaining.length === previousQuizzes.length) return;
+  const deletedActive = activeQuizId === id;
+  quizStore.quizzes = remaining;
+  if (deletedActive) {
+    activeQuizId = remaining[0]?.id || null;
+    renderQuizDetails(null);
+  }
+  try {
+    const saved = await persistQuizStore();
+    if (!saved) {
+      quizStore.quizzes = previousQuizzes;
+      if (deletedActive) activeQuizId = previousQuizzes[0]?.id || null;
+      renderQuizList();
+      return;
+    }
+    setQuizStatus("Quiz deleted.", "success");
+  } catch (err) {
+    console.error("Error deleting quiz", err);
+    quizStore.quizzes = previousQuizzes;
+    if (deletedActive) activeQuizId = previousQuizzes[0]?.id || null;
+    setQuizStatus("Could not delete quiz. Unlock with your passphrase and try again.", "error");
+  }
+  renderQuizList();
+}
+
 function renderQuizList() {
   if (!quizList || !quizDetails) return;
   quizList.innerHTML = "";
