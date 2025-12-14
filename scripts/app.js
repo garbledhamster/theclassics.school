@@ -46,6 +46,10 @@ const quizDetails = document.getElementById("quizDetails");
 const quizLessonFilter = document.getElementById("quizLessonFilter");
 const notesList = document.getElementById("notesList");
 const notesEmptyState = document.getElementById("notesEmptyState");
+const progressSummaryCard = document.getElementById("progressSummaryCard");
+const progressSummaryGrid = document.getElementById("progressSummaryGrid");
+const progressSummaryStatus = document.getElementById("progressSummaryStatus");
+const progressCourseBadge = document.getElementById("progressCourseBadge");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
 const mobileSidebarToggle = document.getElementById("mobileSidebarToggle");
 const sidebarToggleButton = document.getElementById("sidebarToggle");
@@ -549,6 +553,7 @@ async function decryptLessonProgressPayload(payload, key) {
   pendingEncryptedProgressPayload = null;
   await refreshCourseStatuses();
   renderNotesSummary();
+  renderProgressSummary();
   if (currentCoursePath && currentCourseData.course) {
     showCourseContent(currentCourseData, currentCoursePath);
   }
@@ -646,6 +651,8 @@ async function loadUserProgress(user) {
     console.error("Error loading progress:", e);
     lessonProgress = { lessons: {}, notes: {} };
     renderNotesSummary();
+  } finally {
+    renderProgressSummary();
   }
 }
 
@@ -682,6 +689,8 @@ async function loadUserQuizzes(user) {
     console.error("Error loading quizzes:", e);
     resetQuizState();
     setQuizStatus("Could not load quizzes. Try unlocking your vault again.", "error");
+  } finally {
+    renderProgressSummary();
   }
 }
 
@@ -903,6 +912,74 @@ function renderNotesSummary() {
     card.appendChild(actions);
     notesList.appendChild(card);
     });
+  renderProgressSummary();
+}
+
+function getNoteCount() {
+  let total = 0;
+  Object.values(lessonProgress?.notes || {}).forEach(lessonMap => {
+    Object.values(lessonMap || {}).forEach(noteList => {
+      total += normalizeNoteList(noteList).length;
+    });
+  });
+  return total;
+}
+
+function renderProgressSummary() {
+  if (!progressSummaryCard || !progressSummaryGrid || !progressSummaryStatus || !progressCourseBadge) return;
+  const totalCourses = allCourses.length;
+  const statusCounts = { complete: 0, inProgress: 0, notStarted: 0, unavailable: 0 };
+  allCourses.forEach(course => {
+    const state = (course?._status || "").toLowerCase();
+    if (state === "complete") statusCounts.complete += 1;
+    else if (state === "in progress") statusCounts.inProgress += 1;
+    else if (state === "not started") statusCounts.notStarted += 1;
+    else statusCounts.unavailable += 1;
+  });
+
+  const quizzes = derivedVaultKey ? (Array.isArray(quizStore?.quizzes) ? quizStore.quizzes.length : 0) : 0;
+  const notes = derivedVaultKey ? getNoteCount() : 0;
+  const statusCopy = derivedVaultKey
+    ? "Overview of your saved learning progress."
+    : "Unlock with your master passphrase to view saved progress.";
+  progressSummaryStatus.textContent = statusCopy;
+  progressCourseBadge.textContent = `${statusCounts.complete}/${totalCourses || 0} complete`;
+
+  progressSummaryGrid.innerHTML = "";
+  const stats = [
+    {
+      title: "Courses",
+      metric: `${statusCounts.complete}/${totalCourses || 0}`,
+      hint: `${statusCounts.inProgress} in progress • ${statusCounts.notStarted} not started`
+    },
+    {
+      title: "Quizzes",
+      metric: `${quizzes}`,
+      hint: derivedVaultKey ? "Saved quizzes in your vault." : "Unlock to view saved quizzes."
+    },
+    {
+      title: "Notes",
+      metric: `${notes}`,
+      hint: derivedVaultKey ? "Lesson notes stored in your vault." : "Unlock to view note counts."
+    }
+  ];
+
+  stats.forEach(stat => {
+    const card = document.createElement("div");
+    card.className = "progress-summary__item";
+    const title = document.createElement("h4");
+    title.textContent = stat.title;
+    const metric = document.createElement("div");
+    metric.className = "progress-summary__metric";
+    metric.textContent = stat.metric;
+    const hint = document.createElement("p");
+    hint.className = "progress-summary__hint";
+    hint.textContent = stat.hint;
+    card.appendChild(title);
+    card.appendChild(metric);
+    card.appendChild(hint);
+    progressSummaryGrid.appendChild(card);
+  });
 }
 
 function resetQuizState() {
@@ -1230,6 +1307,7 @@ function renderQuizList() {
   });
   const activeQuiz = filtered.find(q => q.id === activeQuizId) || null;
   renderQuizDetails(activeQuiz);
+  renderProgressSummary();
 }
 
 async function submitQuizForGrading(quiz) {
@@ -1772,6 +1850,7 @@ async function updateAllCourseStatuses(cs) {
 async function refreshCourseStatuses() {
   await updateAllCourseStatuses(allCourses);
   renderCourses(allCourses);
+  renderProgressSummary();
 }
 
 function computeCourseStatus(cmp, tot) {
@@ -2357,6 +2436,7 @@ function updateCourseCardStatus(p) {
       st.classList.add(cls);
     }
   }
+  renderProgressSummary();
 }
 
 function toggleSidebar() {
