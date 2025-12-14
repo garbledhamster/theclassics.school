@@ -2144,14 +2144,21 @@ async function generateQuizWithOpenAI(selection) {
   const now = new Date().toISOString();
   const quizId = crypto.randomUUID ? crypto.randomUUID() : `quiz-${Date.now()}`;
   const context = buildLessonContext(selection);
+  const minQuestionCount = 5;
+  const maxQuestionCount = 15;
+  const requestedQuestionCount = Math.min(Math.max(10, minQuestionCount), maxQuestionCount);
   const prompt = [
     "You are a tutor generating reflective quiz questions for a student.",
     "Create concise, open-ended questions that reference the supplied lesson context.",
     "Return a JSON object with keys: id (string), status (string), metadata (object), questions (array of {prompt, detail}).",
     "Metadata should include lessonTitle, courseTitle, createdAt, and questionCount.",
+    `Produce between ${minQuestionCount} and ${maxQuestionCount} questions as requested.`,
     "Respond ONLY with valid JSON."
   ].join(" \n");
-  const userMessage = `Lesson context:\n${context}\nGenerate 5 thoughtful questions tailored to this lesson.`;
+  const userMessage = [
+    `Lesson context:\n${context}`,
+    `Generate ${requestedQuestionCount} thoughtful questions tailored to this lesson, staying between ${minQuestionCount} and ${maxQuestionCount} questions.`
+  ].join("\n");
   const resp = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -2182,7 +2189,14 @@ async function generateQuizWithOpenAI(selection) {
     throw new Error("OpenAI response was not valid JSON.");
   }
   const lesson = selection.lesson || {};
-  const questions = Array.isArray(parsed.questions) ? parsed.questions : [];
+  const cappedQuestions = Array.isArray(parsed.questions) ? parsed.questions.slice(0, maxQuestionCount) : [];
+  if (cappedQuestions.length < minQuestionCount) {
+    throw new Error(`Quiz must include at least ${minQuestionCount} questions.`);
+  }
+  const normalizedQuestions = cappedQuestions.slice(0, requestedQuestionCount);
+  if (normalizedQuestions.length < requestedQuestionCount) {
+    throw new Error(`Quiz must include ${requestedQuestionCount} questions; received ${normalizedQuestions.length}.`);
+  }
   return {
     id: parsed.id || quizId,
     metadata: {
@@ -2192,9 +2206,9 @@ async function generateQuizWithOpenAI(selection) {
       coursePath: selection.coursePath,
       createdAt: parsed?.metadata?.createdAt || now,
       status: parsed?.metadata?.status || parsed.status || "generated",
-      questionCount: parsed?.metadata?.questionCount || questions.length
+      questionCount: requestedQuestionCount
     },
-    questions,
+    questions: normalizedQuestions,
     status: parsed.status || "generated"
   };
 }
