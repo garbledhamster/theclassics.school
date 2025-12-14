@@ -883,9 +883,14 @@ function renderNotesSummary() {
     const actions = document.createElement("div");
     actions.className = "note-actions-inline";
     const viewBtn = document.createElement("button");
-    viewBtn.textContent = "View lesson";
+    viewBtn.textContent = "View in Lesson";
     viewBtn.addEventListener("click", () => {
-      noteFocusTarget = { coursePath: entry.coursePath, lessonTitle: entry.lessonTitle, noteId: entry.id };
+      noteFocusTarget = {
+        coursePath: entry.coursePath,
+        lessonTitle: entry.lessonTitle,
+        noteId: entry.id,
+        mode: "edit"
+      };
       handleViewLessons(entry.coursePath);
     });
     actions.appendChild(viewBtn);
@@ -2097,7 +2102,8 @@ function displayLessonContent(lsn) {
     if (focusedEntry) {
       noteField.value = focusedEntry.text || focusedEntry.summary || "";
       noteField.dataset.noteId = focusedEntry.id;
-      applyNoteMode(getNoteMode(currentCoursePath, title, focusedEntry.id), focusedEntry.id);
+      const desiredMode = noteFocusTarget.mode || getNoteMode(currentCoursePath, title, focusedEntry.id);
+      applyNoteMode(desiredMode, focusedEntry.id);
     }
     notesWrapper.classList.add("note-highlight");
     notesWrapper.scrollIntoView({ behavior: "smooth", block: "center" });
