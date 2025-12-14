@@ -49,6 +49,7 @@ const notesEmptyState = document.getElementById("notesEmptyState");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
 const mobileSidebarToggle = document.getElementById("mobileSidebarToggle");
 const sidebarToggleButton = document.getElementById("sidebarToggle");
+const closeCourseBtn = document.getElementById("closeCourseBtn");
 const mobileBreakpoint = window.matchMedia("(max-width: 1024px)");
 
 const navLinks = {
@@ -196,6 +197,8 @@ onAuthStateChanged(auth, async user => {
     updateQuizContext();
     setQuizStatus("");
     renderNotesSummary();
+    renderLessonContentEmptyState();
+    updateLessonLayoutVisibility();
   }
 
   await loadUserProgress(user);
@@ -1780,7 +1783,16 @@ function computeCourseStatus(cmp, tot) {
 
 function renderCourses(cs) {
   const cl = document.getElementById("courseList");
-  cl.innerHTML = "";
+  renderCourseCards(cl, cs);
+}
+
+function filterCourses(cs, q) {
+  return cs.filter(c => c.title.toLowerCase().includes(q.toLowerCase()));
+}
+
+function renderCourseCards(container, cs) {
+  if (!container) return;
+  container.innerHTML = "";
   cs.forEach(cr => {
     const d = document.createElement("div");
     d.classList.add("course-card");
@@ -1798,12 +1810,49 @@ function renderCourses(cs) {
       "</p><button data-file='" +
       cr.file +
       "'>View Lessons</button>";
-    cl.appendChild(d);
+    container.appendChild(d);
   });
 }
 
-function filterCourses(cs, q) {
-  return cs.filter(c => c.title.toLowerCase().includes(q.toLowerCase()));
+function renderLessonContentEmptyState() {
+  const lContent = document.getElementById("lessonContent");
+  if (!lContent) return;
+  lContent.innerHTML = "";
+  if (currentCourseData?.course) {
+    const p = document.createElement("p");
+    p.classList.add("lesson-placeholder");
+    p.textContent = "Select a lesson on the left to see details here.";
+    lContent.appendChild(p);
+    return;
+  }
+
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("lesson-empty-state");
+  const title = document.createElement("h3");
+  title.textContent = "Choose a course to begin";
+  const helper = document.createElement("p");
+  helper.textContent = "Pick a course below to load its lessons.";
+  wrapper.appendChild(title);
+  wrapper.appendChild(helper);
+  lContent.appendChild(wrapper);
+
+  const courseGrid = document.createElement("div");
+  courseGrid.classList.add("course-list");
+  courseGrid.id = "lessonCourseList";
+  lContent.appendChild(courseGrid);
+  renderCourseCards(courseGrid, allCourses);
+}
+
+function updateLessonLayoutVisibility() {
+  const layout = document.getElementById("lessonLayout");
+  const sidebar = document.getElementById("lessonSidebar");
+  const container = document.getElementById("lessonsContainer");
+  if (!layout || !sidebar) return;
+  const hasCourse = !!currentCourseData.course;
+  if (container) container.style.display = "block";
+  layout.classList.toggle("no-course", !hasCourse);
+  sidebar.style.display = hasCourse ? "" : "none";
+  layout.style.display = "block";
 }
 
 async function handleViewLessons(p) {
@@ -1842,13 +1891,13 @@ function showCourseContent(cd, fp) {
   const cTitle = document.getElementById("selectedCourseTitle");
   const cDesc = document.getElementById("selectedCourseDesc");
   const lList = document.getElementById("lessonList");
-  const lContent = document.getElementById("lessonContent");
   const lProgress = document.getElementById("lessonProgress");
   container.style.display = "block";
+  updateLessonLayoutVisibility();
   cTitle.textContent = cObj.title || "Untitled Course";
   cDesc.textContent = cObj.description || "";
   lList.innerHTML = "";
-  lContent.innerHTML = "<p style='color:#999;'>Select a lesson on the left to see details here.</p>";
+  renderLessonContentEmptyState();
   const lessonItems = [];
   (cObj.lessons || []).forEach(lesson => {
     const lbl = lesson.title || "Lesson " + lesson.lesson_id;
@@ -1938,6 +1987,29 @@ function showCourseContent(cd, fp) {
       target.element.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }
+}
+
+function closeCurrentCourse() {
+  currentCourseData = {};
+  currentCoursePath = "";
+  currentLessonSelection = null;
+  noteFocusTarget = null;
+  const container = document.getElementById("lessonsContainer");
+  const cTitle = document.getElementById("selectedCourseTitle");
+  const cDesc = document.getElementById("selectedCourseDesc");
+  const lList = document.getElementById("lessonList");
+  const lProgress = document.getElementById("lessonProgress");
+  if (container) container.style.display = "block";
+  if (cTitle) cTitle.textContent = "";
+  if (cDesc) cDesc.textContent = "";
+  if (lList) lList.innerHTML = "";
+  if (lProgress) lProgress.textContent = "";
+  setMobileSidebarOpen(false);
+  updateLessonLayoutVisibility();
+  renderLessonContentEmptyState();
+  renderCourses(allCourses);
+  updateQuizContext();
+  setQuizStatus("");
 }
 
 function displayLessonContent(lsn) {
@@ -2312,6 +2384,7 @@ gateGenerateBtn?.addEventListener("click", () => {
   gatePassphraseInput.value = generated;
   alert("Passphrase generated. Copy it and store it somewhere safe.");
 });
+closeCourseBtn?.addEventListener("click", closeCurrentCourse);
 
 openSettingsBtn?.addEventListener("click", e => {
   e.preventDefault();
@@ -2329,13 +2402,15 @@ saveSettingsBtn?.addEventListener("click", saveSettings);
 rotatePassphraseBtn?.addEventListener("click", rotatePassphrase);
 resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
 
-document.addEventListener("DOMContentLoaded", async () => {
-  updateStickyHeights();
-  allCourses = await loadCourses();
-  await refreshCourseStatuses();
-  setActiveSection("home");
-  updateQuizContext();
-  renderNotesSummary();
+  document.addEventListener("DOMContentLoaded", async () => {
+    updateStickyHeights();
+    allCourses = await loadCourses();
+    await refreshCourseStatuses();
+    renderLessonContentEmptyState();
+    updateLessonLayoutVisibility();
+    setActiveSection("home");
+    updateQuizContext();
+    renderNotesSummary();
   document.getElementById("courseSearch")?.addEventListener("input", e => {
     renderCourses(filterCourses(allCourses, e.target.value));
   });
@@ -2353,6 +2428,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (section === "lessons" && !currentCoursePath) {
         setActiveSection("lessons");
         updateQuizContext("Select a course from Home to view lessons.");
+        renderLessonContentEmptyState();
+        updateLessonLayoutVisibility();
         return;
       }
       if (section === "settings") {
