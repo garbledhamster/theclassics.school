@@ -502,6 +502,12 @@
         flex: 1;
         justify-content: center;
       }
+      footer {
+        display: none;
+      }
+      body.mobile-hide-header header {
+        display: none;
+      }
       .lesson-layout,
       .lesson-layout.collapsed {
         grid-template-columns: 1fr;

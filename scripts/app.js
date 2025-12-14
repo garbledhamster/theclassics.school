@@ -230,6 +230,12 @@ let currentSection = "home";
 let currentLessonSelection = null;
 let noteFocusTarget = null;
 
+function updateMobileChromeVisibility() {
+  const shouldHideHeader = isMobileViewport() && currentSection !== "home";
+  document.body?.classList.toggle("mobile-hide-header", shouldHideHeader);
+  scheduleStickyHeightUpdate();
+}
+
 function updateStickyHeights() {
   const root = document.documentElement;
   const header = document.querySelector("header");
@@ -376,6 +382,7 @@ function setActiveSection(target) {
     if (link) link.classList.toggle("active", key === target);
   });
   if (target === "notes") renderNotesSummary();
+  updateMobileChromeVisibility();
 }
 
 function updateQuizContext(customMessage) {
@@ -2448,13 +2455,20 @@ resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
     });
   });
   resetSidebarForViewport();
+  updateMobileChromeVisibility();
   sidebarToggleButton?.addEventListener("click", toggleSidebar);
   mobileSidebarToggle?.addEventListener("click", toggleSidebar);
   sidebarOverlay?.addEventListener("click", () => setMobileSidebarOpen(false));
   if (mobileBreakpoint?.addEventListener) {
-    mobileBreakpoint.addEventListener("change", resetSidebarForViewport);
+    mobileBreakpoint.addEventListener("change", () => {
+      resetSidebarForViewport();
+      updateMobileChromeVisibility();
+    });
   } else if (mobileBreakpoint?.addListener) {
-    mobileBreakpoint.addListener(resetSidebarForViewport);
+    mobileBreakpoint.addListener(() => {
+      resetSidebarForViewport();
+      updateMobileChromeVisibility();
+    });
   }
   window.addEventListener("resize", updateStickyHeights);
   document.addEventListener("keyup", e => {
