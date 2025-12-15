@@ -495,9 +495,10 @@
     /*
       Treat touch-first devices and modest widths as mobile.
       Using pointer/hover queries helps modern high-DPI phones whose CSS pixel
-      width can exceed traditional breakpoints.
+      width can exceed traditional breakpoints and catch devices with coarse
+      pointers even when they report hover support.
     */
-    @media (max-width: 1100px), (hover: none) and (pointer: coarse) {
+    @media (max-width: 1100px), (pointer: coarse), (any-hover: none) {
       .primary-nav {
         position: fixed;
         bottom: 0;
