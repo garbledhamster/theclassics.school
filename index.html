@@ -6,17 +6,33 @@
   <title>theclassics.school – How to Use This Site</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&display=swap" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
   <link rel="stylesheet" href="./styles.css" />
 
 </head>
 <body>
   <nav class="primary-nav" aria-label="Primary">
     <div class="nav-links">
-      <a href="#" id="homeLink" class="active">Home</a>
-      <a href="#" id="lessonsLink">Lessons</a>
-      <a href="#" id="quizzesLink">Quizzes</a>
-      <a href="#" id="notesLink">Notes</a>
-      <a href="#" id="openSettingsBtn" class="nav-link--settings">Settings</a>
+      <a href="#" id="homeLink" class="active" data-label="Home" aria-label="Home">
+        <iconify-icon icon="material-symbols:home-outline" aria-hidden="true"></iconify-icon>
+        <span class="nav-label">Home</span>
+      </a>
+      <a href="#" id="lessonsLink" data-label="Lessons" aria-label="Lessons">
+        <iconify-icon icon="material-symbols:menu-book-outline" aria-hidden="true"></iconify-icon>
+        <span class="nav-label">Lessons</span>
+      </a>
+      <a href="#" id="quizzesLink" data-label="Quizzes" aria-label="Quizzes">
+        <iconify-icon icon="material-symbols:quiz-outline" aria-hidden="true"></iconify-icon>
+        <span class="nav-label">Quizzes</span>
+      </a>
+      <a href="#" id="notesLink" data-label="Notes" aria-label="Notes">
+        <iconify-icon icon="material-symbols:sticky-note-2-outline" aria-hidden="true"></iconify-icon>
+        <span class="nav-label">Notes</span>
+      </a>
+      <a href="#" id="openSettingsBtn" class="nav-link--settings" data-label="Settings" aria-label="Settings">
+        <iconify-icon icon="material-symbols:settings-outline" aria-hidden="true"></iconify-icon>
+        <span class="nav-label">Settings</span>
+      </a>
     </div>
   </nav>
   <header class="site-header">
