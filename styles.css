@@ -492,7 +492,12 @@
     body.sidebar-locked {
       overflow: hidden;
     }
-    @media (max-width: 1024px) {
+    /*
+      Treat touch-first devices and modest widths as mobile.
+      Using pointer/hover queries helps modern high-DPI phones whose CSS pixel
+      width can exceed traditional breakpoints.
+    */
+    @media (max-width: 1100px), (hover: none) and (pointer: coarse) {
       .primary-nav {
         position: fixed;
         bottom: 0;
