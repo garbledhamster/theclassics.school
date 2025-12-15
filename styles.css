@@ -8,7 +8,9 @@
       --color-gray: #c9b28d;
       --font-base: "Crimson Pro", Georgia, "Times New Roman", serif;
       --font-classic: "Crimson Pro", Georgia, "Times New Roman", serif;
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
       --nav-height: 64px;
+      --content-bottom-offset: calc(var(--nav-height) + var(--safe-area-bottom));
       --nav-offset: 0px;
       --header-height: 120px;
       --header-stack-height: calc(var(--header-height) + var(--nav-height));
@@ -92,7 +94,7 @@
       align-items: center;
       justify-content: center;
       gap: 0.75rem;
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 1rem calc(0.5rem + var(--safe-area-bottom));
       border-radius: 0 0 10px 10px;
       position: sticky;
       top: 0;
@@ -498,23 +500,23 @@
       width can exceed traditional breakpoints and catch devices with coarse
       pointers even when they report hover support.
     */
-    @media (max-width: 1100px), (pointer: coarse), (any-hover: none) {
-      .primary-nav {
-        position: fixed;
-        bottom: 0;
-        top: auto;
-        left: 0;
-        right: 0;
-        border-radius: 10px 10px 0 0;
-        width: 100%;
-      }
-      body {
-        padding-bottom: calc(var(--nav-height) + 1rem);
-      }
-      .nav-links {
-        flex: 1;
-        justify-content: center;
-      }
+      @media (max-width: 1100px), (pointer: coarse), (any-hover: none) {
+        .primary-nav {
+          position: fixed;
+          bottom: 0;
+          top: auto;
+          left: 0;
+          right: 0;
+          border-radius: 10px 10px 0 0;
+          width: 100%;
+        }
+        body {
+          padding-bottom: calc(var(--content-bottom-offset) + 1rem);
+        }
+        .nav-links {
+          flex: 1;
+          justify-content: center;
+        }
       .nav-links a {
         flex: 1;
         justify-content: center;

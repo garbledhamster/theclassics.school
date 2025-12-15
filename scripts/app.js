@@ -234,6 +234,18 @@ let currentSection = "home";
 let currentLessonSelection = null;
 let noteFocusTarget = null;
 
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .catch(err => console.error("Service worker registration failed", err));
+  });
+}
+
+registerServiceWorker();
+
 function updateMobileChromeVisibility() {
   const shouldHideHeader = isMobileViewport() && currentSection !== "home";
   document.body?.classList.toggle("mobile-hide-header", shouldHideHeader);
@@ -246,9 +258,12 @@ function updateStickyHeights() {
   const nav = document.querySelector(".primary-nav");
   const headerHeight = header?.offsetHeight || 0;
   const navHeight = nav?.offsetHeight || 0;
+  const safeAreaBottom = Number.parseFloat(getComputedStyle(root).getPropertyValue("--safe-area-bottom")) || 0;
+  const navTotalHeight = navHeight || safeAreaBottom;
   const navContribution = isMobileViewport() ? 0 : navHeight;
   const stackHeight = headerHeight + navContribution;
   root.style.setProperty("--nav-height", `${navHeight}px`);
+  root.style.setProperty("--content-bottom-offset", `${navTotalHeight}px`);
   root.style.setProperty("--nav-offset", `${navContribution}px`);
   root.style.setProperty("--header-height", `${headerHeight}px`);
   root.style.setProperty("--header-stack-height", `${stackHeight}px`);
