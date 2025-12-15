@@ -118,6 +118,13 @@
       padding: 0.3rem 0.65rem;
       border-radius: 6px;
       transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .nav-links iconify-icon {
+      font-size: 1.25rem;
+      line-height: 1;
     }
     nav a.active {
       background-color: var(--color-red);
@@ -501,6 +508,41 @@
       .nav-links {
         flex: 1;
         justify-content: center;
+      }
+      .nav-links a {
+        flex: 1;
+        justify-content: center;
+        flex-direction: column;
+        padding: 0.5rem 0.35rem;
+        position: relative;
+      }
+      .nav-links iconify-icon {
+        font-size: 1.6rem;
+      }
+      .nav-links .nav-label {
+        display: none;
+      }
+      .nav-links a::after {
+        content: attr(data-label);
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 0.35rem 0.55rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out;
+        z-index: 1500;
+      }
+      .nav-links a:focus-visible::after,
+      .nav-links a:active::after {
+        opacity: 1;
+        transform: translate(-50%, -2px);
       }
       footer {
         display: none;
