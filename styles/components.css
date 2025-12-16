@@ -52,6 +52,28 @@ nav a.active {
   background-color: var(--color-red);
   color: #fff;
 }
+.icon-button {
+  background: #fff;
+  border: 1px solid #e0d7ca;
+  border-radius: 10px;
+  color: var(--color-red);
+  padding: 0.4rem 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.icon-button i {
+  pointer-events: none;
+}
+.icon-button:hover,
+.icon-button:focus-visible {
+  background: #f5f0e6;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
 .hero {
   background-color: var(--color-yellow);
   color: #fff;
