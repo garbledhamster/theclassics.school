@@ -13,7 +13,11 @@ import {
   signOut,
   setDoc
 } from './firebase-config.js';
+import { defaultGuidePath, loadCourses, updateAllCourseStatuses, filterCourses, computeCourseStatus } from './lessons.js';
+import { applyMobileSidebarOpen, getMobileBreakpoint, isMobileViewport, renderCourseCards, renderLessonContentEmptyState, resetSidebarForViewport, scheduleStickyHeightUpdate, updateLessonLayoutVisibility, updateMobileChromeVisibility, updateStickyHeights } from './ui.js';
 import { clearTrustedDeviceCache, persistTrustedCache, getTrustedCache } from './utils.js';
+import { getNoteMode, setNoteMode, getStoredEmailForSignIn, setStoredEmailForSignIn } from './storage.js';
+import { registerServiceWorker } from './sw-register.js';
 import { decodeSalt, decryptSecret, deriveKeyFromPassphrase, encryptSecret, generatePassphrase } from './vault.js';
 
 const authPanels = Array.from(document.querySelectorAll("[data-auth-panel]"));
@@ -54,7 +58,6 @@ const sidebarOverlay = document.getElementById("sidebarOverlay");
 const mobileSidebarToggle = document.getElementById("mobileSidebarToggle");
 const sidebarToggleButton = document.getElementById("sidebarToggle");
 const closeCourseBtn = document.getElementById("closeCourseBtn");
-const mobileBreakpoint = window.matchMedia("(max-width: 1024px)");
 
 const navLinks = {
   home: document.getElementById("homeLink"),
@@ -87,7 +90,6 @@ let pendingEncryptedQuizPayload = null;
 let decryptedUserPayload = null;
 let quizStore = getDefaultQuizStore();
 let activeQuizId = null;
-const noteModeCache = {};
 const quizAttempts = {};
 let pendingEmailLinkMode = isSignInWithEmailLink(auth, window.location.href);
 
@@ -126,7 +128,7 @@ async function completeEmailLinkSignIn(email) {
   try {
     setAuthStatus("Completing sign-in...", "info");
     await signInWithEmailLink(auth, trimmedEmail, window.location.href);
-    localStorage.setItem("emailForSignIn", trimmedEmail);
+    setStoredEmailForSignIn(trimmedEmail);
     pendingEmailLinkMode = false;
     stripEmailLinkParams();
     setAuthStatus("Sign-in link verified. Finishing up...", "success");
@@ -154,7 +156,7 @@ async function handleSendSignIn(button) {
       return;
     }
     await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-    localStorage.setItem("emailForSignIn", email);
+    setStoredEmailForSignIn(email);
     setAuthStatus("Sign-in link sent! Check your email.", "success");
   } catch (e) {
     console.error(e);
@@ -172,7 +174,7 @@ authSendButtons.forEach(btn =>
 );
 
 if (pendingEmailLinkMode) {
-  const storedEmail = localStorage.getItem("emailForSignIn");
+  const storedEmail = getStoredEmailForSignIn();
   const linkEmail = storedEmail || getEmailFromQuerystring();
   if (linkEmail) {
     completeEmailLinkSignIn(linkEmail);
@@ -201,8 +203,8 @@ onAuthStateChanged(auth, async user => {
     updateQuizContext();
     setQuizStatus("");
     renderNotesSummary();
-    renderLessonContentEmptyState();
-    updateLessonLayoutVisibility();
+    renderLessonContentEmptyState(currentCourseData, allCourses);
+    updateLessonLayoutVisibility(!!currentCourseData.course);
   }
 
   await loadUserProgress(user);
@@ -227,86 +229,25 @@ onAuthStateChanged(auth, async user => {
 let allCourses = [];
 let currentCourseData = {};
 let currentCoursePath = "";
-const defaultGuidePath = "lessons/0000_HowToUseThisSite.yaml";
 let isSidebarCollapsed = false;
 let isSidebarOpen = false;
 let currentSection = "home";
 let currentLessonSelection = null;
 let noteFocusTarget = null;
+const mobileBreakpoint = getMobileBreakpoint();
 
-function registerServiceWorker() {
-  if (!("serviceWorker" in navigator)) return;
+function setMobileSidebarOpen(open) {
+  isSidebarOpen = open;
+  applyMobileSidebarOpen(open);
+}
 
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/sw.js")
-      .catch(err => console.error("Service worker registration failed", err));
-  });
+function resetSidebarStateForViewport() {
+  isSidebarCollapsed = false;
+  setMobileSidebarOpen(false);
+  resetSidebarForViewport();
 }
 
 registerServiceWorker();
-
-function updateMobileChromeVisibility() {
-  const shouldHideHeader = isMobileViewport() && currentSection !== "home";
-  document.body?.classList.toggle("mobile-hide-header", shouldHideHeader);
-  scheduleStickyHeightUpdate();
-}
-
-function updateStickyHeights() {
-  const root = document.documentElement;
-  const header = document.querySelector("header");
-  const nav = document.querySelector(".primary-nav");
-  const headerHeight = header?.offsetHeight || 0;
-  const navHeight = nav?.offsetHeight || 0;
-  const safeAreaBottom = Number.parseFloat(getComputedStyle(root).getPropertyValue("--safe-area-bottom")) || 0;
-  const navTotalHeight = navHeight || safeAreaBottom;
-  const navContribution = isMobileViewport() ? 0 : navHeight;
-  const stackHeight = headerHeight + navContribution;
-  root.style.setProperty("--nav-height", `${navHeight}px`);
-  root.style.setProperty("--content-bottom-offset", `${navTotalHeight}px`);
-  root.style.setProperty("--nav-offset", `${navContribution}px`);
-  root.style.setProperty("--header-height", `${headerHeight}px`);
-  root.style.setProperty("--header-stack-height", `${stackHeight}px`);
-  root.style.setProperty("--sticky-offset", `${stackHeight}px`);
-}
-
-function scheduleStickyHeightUpdate() {
-  requestAnimationFrame(updateStickyHeights);
-}
-
-function isMobileViewport() {
-  return mobileBreakpoint.matches;
-}
-
-function setMobileSidebarOpen(open) {
-  const sidebar = document.getElementById("lessonSidebar");
-  isSidebarOpen = open;
-  sidebar?.classList.toggle("mobile-open", open);
-  sidebarOverlay?.classList.toggle("active", open);
-  document.body?.classList.toggle("sidebar-locked", open);
-  mobileSidebarToggle?.setAttribute("aria-expanded", open ? "true" : "false");
-  if (!open && sidebar) {
-    sidebar.scrollTop = 0;
-  }
-}
-
-function resetSidebarForViewport() {
-  updateStickyHeights();
-  const sidebar = document.getElementById("lessonSidebar");
-  const layout = document.getElementById("lessonLayout");
-  if (!sidebar || !layout) return;
-  if (isMobileViewport()) {
-    isSidebarCollapsed = false;
-    layout.classList.remove("collapsed");
-    sidebar.classList.remove("collapsed");
-    setMobileSidebarOpen(false);
-    return;
-  }
-  setMobileSidebarOpen(false);
-  isSidebarCollapsed = false;
-  sidebar.classList.remove("mobile-open");
-  layout.classList.remove("collapsed");
-}
 
 function setDerivedVaultKeyContext(key, saltBytes) {
   derivedVaultKey = key;
@@ -401,7 +342,7 @@ function setActiveSection(target) {
     if (link) link.classList.toggle("active", key === target);
   });
   if (target === "notes") renderNotesSummary();
-  updateMobileChromeVisibility();
+  updateMobileChromeVisibility(currentSection);
 }
 
 function updateQuizContext(customMessage) {
@@ -801,18 +742,6 @@ function sanitizeHtml(html) {
     });
   });
   return parsed.body.innerHTML;
-}
-
-function getNoteModeKey(coursePath, lessonTitle, noteId = "") {
-  return `${coursePath || ""}::${lessonTitle || ""}::${noteId || "draft"}`;
-}
-
-function getNoteMode(coursePath, lessonTitle, noteId = "") {
-  return noteModeCache[getNoteModeKey(coursePath, lessonTitle, noteId)] || "edit";
-}
-
-function setNoteMode(coursePath, lessonTitle, noteId = "", mode = "edit") {
-  noteModeCache[getNoteModeKey(coursePath, lessonTitle, noteId)] = mode;
 }
 
 function getLessonNoteEntries(p, t) {
@@ -1835,125 +1764,15 @@ async function resetEncryptedAccount() {
   }
 }
 
-async function loadCourses() {
-  try {
-    const r = await fetch("lessons.json");
-    if (!r.ok) throw new Error("Could not load lessons.json");
-    return await r.json();
-  } catch (e) {
-    console.error("Error fetching lessons.json:", e);
-    return [];
-  }
-}
-
-async function updateAllCourseStatuses(cs) {
-  const tasks = cs.map(async c => {
-    try {
-      const resp = await fetch(c.file);
-      if (!resp.ok) throw new Error("Could not load " + c.file);
-      const yText = await resp.text();
-      const data = jsyaml.load(yText);
-      if (data && data.course && Array.isArray(data.course.lessons)) {
-        const total = data.course.lessons.length;
-        const completed = data.course.lessons.filter(l => {
-          const lbl = l.title || "Lesson " + l.lesson_id;
-          return isLessonChecked(c.file, lbl);
-        }).length;
-        c._status = computeCourseStatus(completed, total);
-      } else c._status = "N/A";
-    } catch (err) {
-      console.error("Error fetching YAML for", c.file, err);
-      c._status = "N/A";
-    }
-  });
-  await Promise.all(tasks);
+function renderCourses(courses) {
+  const container = document.getElementById("courseList");
+  renderCourseCards(container, courses);
 }
 
 async function refreshCourseStatuses() {
-  await updateAllCourseStatuses(allCourses);
+  await updateAllCourseStatuses(allCourses, isLessonChecked);
   renderCourses(allCourses);
   renderProgressSummary();
-}
-
-function computeCourseStatus(cmp, tot) {
-  if (tot === 0) return "N/A";
-  if (cmp === 0) return "Not Started";
-  if (cmp === tot) return "Complete";
-  return "In Progress";
-}
-
-function renderCourses(cs) {
-  const cl = document.getElementById("courseList");
-  renderCourseCards(cl, cs);
-}
-
-function filterCourses(cs, q) {
-  return cs.filter(c => c.title.toLowerCase().includes(q.toLowerCase()));
-}
-
-function renderCourseCards(container, cs) {
-  if (!container) return;
-  container.innerHTML = "";
-  cs.forEach(cr => {
-    const d = document.createElement("div");
-    d.classList.add("course-card");
-    let st = "n-a";
-    if (cr._status) st = cr._status.toLowerCase().replace(/\s+/g, "-");
-    d.innerHTML =
-      "<h3>" +
-      cr.title +
-      "</h3><p>Course ID: " +
-      cr.id +
-      "</p><p class='course-status " +
-      st +
-      "'>" +
-      (cr._status || "N/A") +
-      "</p><button data-file='" +
-      cr.file +
-      "'>View Lessons</button>";
-    container.appendChild(d);
-  });
-}
-
-function renderLessonContentEmptyState() {
-  const lContent = document.getElementById("lessonContent");
-  if (!lContent) return;
-  lContent.innerHTML = "";
-  if (currentCourseData?.course) {
-    const p = document.createElement("p");
-    p.classList.add("lesson-placeholder");
-    p.textContent = "Select a lesson on the left to see details here.";
-    lContent.appendChild(p);
-    return;
-  }
-
-  const wrapper = document.createElement("div");
-  wrapper.classList.add("lesson-empty-state");
-  const title = document.createElement("h3");
-  title.textContent = "Choose a course to begin";
-  const helper = document.createElement("p");
-  helper.textContent = "Pick a course below to load its lessons.";
-  wrapper.appendChild(title);
-  wrapper.appendChild(helper);
-  lContent.appendChild(wrapper);
-
-  const courseGrid = document.createElement("div");
-  courseGrid.classList.add("course-list");
-  courseGrid.id = "lessonCourseList";
-  lContent.appendChild(courseGrid);
-  renderCourseCards(courseGrid, allCourses);
-}
-
-function updateLessonLayoutVisibility() {
-  const layout = document.getElementById("lessonLayout");
-  const sidebar = document.getElementById("lessonSidebar");
-  const container = document.getElementById("lessonsContainer");
-  if (!layout || !sidebar) return;
-  const hasCourse = !!currentCourseData.course;
-  if (container) container.style.display = "block";
-  layout.classList.toggle("no-course", !hasCourse);
-  sidebar.style.display = hasCourse ? "" : "none";
-  layout.style.display = "block";
 }
 
 async function handleViewLessons(p) {
@@ -1994,11 +1813,11 @@ function showCourseContent(cd, fp) {
   const lList = document.getElementById("lessonList");
   const lProgress = document.getElementById("lessonProgress");
   container.style.display = "block";
-  updateLessonLayoutVisibility();
+  updateLessonLayoutVisibility(!!cd.course);
   cTitle.textContent = cObj.title || "Untitled Course";
   cDesc.textContent = cObj.description || "";
   lList.innerHTML = "";
-  renderLessonContentEmptyState();
+  renderLessonContentEmptyState(currentCourseData, allCourses);
   const lessonItems = [];
   (cObj.lessons || []).forEach(lesson => {
     const lbl = lesson.title || "Lesson " + lesson.lesson_id;
@@ -2106,8 +1925,8 @@ function closeCurrentCourse() {
   if (lList) lList.innerHTML = "";
   if (lProgress) lProgress.textContent = "";
   setMobileSidebarOpen(false);
-  updateLessonLayoutVisibility();
-  renderLessonContentEmptyState();
+  updateLessonLayoutVisibility(false);
+  renderLessonContentEmptyState(currentCourseData, allCourses);
   renderCourses(allCourses);
   updateQuizContext();
   setQuizStatus("");
@@ -2504,15 +2323,15 @@ saveSettingsBtn?.addEventListener("click", saveSettings);
 rotatePassphraseBtn?.addEventListener("click", rotatePassphrase);
 resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    updateStickyHeights();
-    allCourses = await loadCourses();
-    await refreshCourseStatuses();
-    renderLessonContentEmptyState();
-    updateLessonLayoutVisibility();
-    setActiveSection("home");
-    updateQuizContext();
-    renderNotesSummary();
+document.addEventListener("DOMContentLoaded", async () => {
+  updateStickyHeights();
+  allCourses = await loadCourses();
+  await refreshCourseStatuses();
+  renderLessonContentEmptyState(currentCourseData, allCourses);
+  updateLessonLayoutVisibility(!!currentCourseData.course);
+  setActiveSection("home");
+  updateQuizContext();
+  renderNotesSummary();
   document.getElementById("courseSearch")?.addEventListener("input", e => {
     renderCourses(filterCourses(allCourses, e.target.value));
   });
@@ -2530,8 +2349,8 @@ resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
       if (section === "lessons" && !currentCoursePath) {
         setActiveSection("lessons");
         updateQuizContext("Select a course from Home to view lessons.");
-        renderLessonContentEmptyState();
-        updateLessonLayoutVisibility();
+        renderLessonContentEmptyState(currentCourseData, allCourses);
+        updateLessonLayoutVisibility(!!currentCourseData.course);
         return;
       }
       if (section === "settings") {
@@ -2549,20 +2368,20 @@ resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
       }
     });
   });
-  resetSidebarForViewport();
-  updateMobileChromeVisibility();
+  resetSidebarStateForViewport();
+  updateMobileChromeVisibility(currentSection);
   sidebarToggleButton?.addEventListener("click", toggleSidebar);
   mobileSidebarToggle?.addEventListener("click", toggleSidebar);
   sidebarOverlay?.addEventListener("click", () => setMobileSidebarOpen(false));
   if (mobileBreakpoint?.addEventListener) {
     mobileBreakpoint.addEventListener("change", () => {
-      resetSidebarForViewport();
-      updateMobileChromeVisibility();
+      resetSidebarStateForViewport();
+      updateMobileChromeVisibility(currentSection);
     });
   } else if (mobileBreakpoint?.addListener) {
     mobileBreakpoint.addListener(() => {
-      resetSidebarForViewport();
-      updateMobileChromeVisibility();
+      resetSidebarStateForViewport();
+      updateMobileChromeVisibility(currentSection);
     });
   }
   window.addEventListener("resize", updateStickyHeights);
