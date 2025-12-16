@@ -97,95 +97,79 @@
   </div>
   <main>
     <div id="lockedContent">
-      <div id="sectionPopout" class="section-popout" aria-hidden="true">
-        <div id="sectionPopoutOverlay" class="section-popout__overlay"></div>
-        <div class="section-popout__panel" role="dialog" aria-modal="true" aria-labelledby="sectionPopoutTitle">
-          <div class="section-popout__header">
+      <section id="homeSection" class="page-section" data-section="home">
+        <div class="course-search">
+          <input type="text" id="courseSearch" placeholder="Search for a course..." />
+        </div>
+        <div class="vault-card progress-summary" id="progressSummaryCard">
+          <div class="progress-summary__header">
             <div>
-              <p class="section-popout__eyebrow">Browse</p>
-              <h3 id="sectionPopoutTitle" class="section-popout__title">Home</h3>
+              <h3>Learning progress</h3>
+              <p class="helper-text" id="progressSummaryStatus">Unlock with your master passphrase to view saved progress.</p>
             </div>
-            <button id="closeSectionPopout" class="icon-button" type="button" aria-label="Close menu">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
+            <div class="progress-summary__badge" id="progressCourseBadge">0/0 complete</div>
           </div>
-          <div class="section-popout__body" id="sectionPopoutBody">
-            <section id="homeSection" class="page-section" data-section="home">
-              <div class="course-search">
-                <input type="text" id="courseSearch" placeholder="Search for a course..." />
+          <div class="progress-summary__grid" id="progressSummaryGrid"></div>
+        </div>
+        <div class="course-list" id="courseList"></div>
+      </section>
+      <section id="lessonsSection" class="page-section section-hidden" data-section="lessons">
+        <div id="lessonsContainer" class="lessons-container">
+          <h2 id="selectedCourseTitle" style="color:var(--color-red);font-family:var(--font-classic);"></h2>
+          <p id="selectedCourseDesc"></p>
+          <h4 id="lessonProgress"></h4>
+          <button id="closeCourseBtn" class="secondary" type="button">Close course</button>
+          <button id="mobileSidebarToggle" class="sidebar-fab" type="button" aria-controls="lessonSidebar" aria-expanded="false">
+            <i class="fa-solid fa-bars"></i>
+            <span class="sidebar-fab__label">Lessons</span>
+          </button>
+          <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+          <div class="lesson-layout" id="lessonLayout">
+            <aside class="lesson-sidebar" id="lessonSidebar">
+              <div class="sidebar-header">
+                <i class="fa-solid fa-feather sidebar-header-icon" id="sidebarToggle" title="Toggle Lessons Menu"></i>
+                <h3 class="title-text">Lessons</h3>
               </div>
-              <div class="vault-card progress-summary" id="progressSummaryCard">
-                <div class="progress-summary__header">
-                  <div>
-                    <h3>Learning progress</h3>
-                    <p class="helper-text" id="progressSummaryStatus">Unlock with your master passphrase to view saved progress.</p>
-                  </div>
-                  <div class="progress-summary__badge" id="progressCourseBadge">0/0 complete</div>
-                </div>
-                <div class="progress-summary__grid" id="progressSummaryGrid"></div>
+              <div class="lesson-list-wrapper">
+                <ul id="lessonList" class="lesson-list"></ul>
               </div>
-              <div class="course-list" id="courseList"></div>
-            </section>
-            <section id="lessonsSection" class="page-section section-hidden" data-section="lessons">
-              <div id="lessonsContainer" class="lessons-container">
-                <h2 id="selectedCourseTitle" style="color:var(--color-red);font-family:var(--font-classic);"></h2>
-                <p id="selectedCourseDesc"></p>
-                <h4 id="lessonProgress"></h4>
-                <button id="closeCourseBtn" class="secondary" type="button">Close course</button>
-                <button id="mobileSidebarToggle" class="sidebar-fab" type="button" aria-controls="lessonSidebar" aria-expanded="false">
-                  <i class="fa-solid fa-bars"></i>
-                  <span class="sidebar-fab__label">Lessons</span>
-                </button>
-                <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
-                <div class="lesson-layout" id="lessonLayout">
-                  <aside class="lesson-sidebar" id="lessonSidebar">
-                    <div class="sidebar-header">
-                      <i class="fa-solid fa-feather sidebar-header-icon" id="sidebarToggle" title="Toggle Lessons Menu"></i>
-                      <h3 class="title-text">Lessons</h3>
-                    </div>
-                    <div class="lesson-list-wrapper">
-                      <ul id="lessonList" class="lesson-list"></ul>
-                    </div>
-                  </aside>
-                  <div id="lessonContent" class="lesson-content">
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section id="quizzesSection" class="page-section section-hidden" data-section="quizzes">
-              <div class="vault-card">
-                <h3>Quizzes</h3>
-                <p class="helper-text">Generate quizzes for the lesson you’re currently studying. Unlock with your passphrase first.</p>
-                <p id="quizLessonContext" class="settings-note"></p>
-                <div class="quiz-actions">
-                  <button id="generateQuizBtn">Generate Quiz</button>
-                  <div class="quiz-filter">
-                    <div class="quiz-filter__field">
-                      <label for="quizLessonFilter">Filter by lesson</label>
-                      <input id="quizLessonFilter" type="text" placeholder="Start typing a lesson title" />
-                    </div>
-                  </div>
-                </div>
-                <div class="quiz-layout">
-                  <div class="quiz-list" id="quizList"></div>
-                  <div class="quiz-details" id="quizDetails">
-                    <p class="settings-note">Select a saved quiz to see its details.</p>
-                  </div>
-                </div>
-                <p id="quizStatus" class="settings-status info" role="status"></p>
-              </div>
-            </section>
-            <section id="notesSection" class="page-section section-hidden" data-section="notes">
-              <div class="vault-card">
-                <h3>Notes</h3>
-                <p class="helper-text">Your lesson notes are encrypted with your master passphrase. Unlock to read or update them.</p>
-                <div id="notesList" class="notes-list"></div>
-                <p id="notesEmptyState" class="settings-note"></p>
-              </div>
-            </section>
+            </aside>
+            <div id="lessonContent" class="lesson-content">
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+      <section id="quizzesSection" class="page-section section-hidden" data-section="quizzes">
+        <div class="vault-card">
+          <h3>Quizzes</h3>
+          <p class="helper-text">Generate quizzes for the lesson you’re currently studying. Unlock with your passphrase first.</p>
+          <p id="quizLessonContext" class="settings-note"></p>
+          <div class="quiz-actions">
+            <button id="generateQuizBtn">Generate Quiz</button>
+            <div class="quiz-filter">
+              <div class="quiz-filter__field">
+                <label for="quizLessonFilter">Filter by lesson</label>
+                <input id="quizLessonFilter" type="text" placeholder="Start typing a lesson title" />
+              </div>
+            </div>
+          </div>
+          <div class="quiz-layout">
+            <div class="quiz-list" id="quizList"></div>
+            <div class="quiz-details" id="quizDetails">
+              <p class="settings-note">Select a saved quiz to see its details.</p>
+            </div>
+          </div>
+          <p id="quizStatus" class="settings-status info" role="status"></p>
+        </div>
+      </section>
+      <section id="notesSection" class="page-section section-hidden" data-section="notes">
+        <div class="vault-card">
+          <h3>Notes</h3>
+          <p class="helper-text">Your lesson notes are encrypted with your master passphrase. Unlock to read or update them.</p>
+          <div id="notesList" class="notes-list"></div>
+          <p id="notesEmptyState" class="settings-note"></p>
+        </div>
+      </section>
       <section id="settingsSection" class="page-section section-hidden" data-section="settings">
         <div class="vault-card settings-panel">
           <h3>Account Settings</h3>

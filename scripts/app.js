@@ -58,10 +58,6 @@ const sidebarOverlay = document.getElementById("sidebarOverlay");
 const mobileSidebarToggle = document.getElementById("mobileSidebarToggle");
 const sidebarToggleButton = document.getElementById("sidebarToggle");
 const closeCourseBtn = document.getElementById("closeCourseBtn");
-const sectionPopout = document.getElementById("sectionPopout");
-const sectionPopoutOverlay = document.getElementById("sectionPopoutOverlay");
-const sectionPopoutTitle = document.getElementById("sectionPopoutTitle");
-const closeSectionPopoutBtn = document.getElementById("closeSectionPopout");
 
 const navLinks = {
   home: document.getElementById("homeLink"),
@@ -239,28 +235,6 @@ let currentSection = "home";
 let currentLessonSelection = null;
 let noteFocusTarget = null;
 const mobileBreakpoint = getMobileBreakpoint();
-const popoutSections = new Set(["home", "lessons", "quizzes", "notes"]);
-
-function getSectionLabel(sectionKey) {
-  const link = navLinks[sectionKey];
-  return link?.dataset?.label || link?.textContent?.trim() || "Menu";
-}
-
-function openSectionPopout(target) {
-  if (!sectionPopout) return;
-  sectionPopout.classList.add("open");
-  sectionPopout.setAttribute("aria-hidden", "false");
-  if (sectionPopoutTitle) sectionPopoutTitle.textContent = getSectionLabel(target);
-}
-
-function closeSectionPopout(resetToHome = false) {
-  if (!sectionPopout) return;
-  sectionPopout.classList.remove("open");
-  sectionPopout.setAttribute("aria-hidden", "true");
-  if (resetToHome) {
-    setActiveSection("home", { suppressPopout: true });
-  }
-}
 
 function setMobileSidebarOpen(open) {
   isSidebarOpen = open;
@@ -357,15 +331,8 @@ function updateSettingsSectionState() {
   }
 }
 
-function setActiveSection(target, options = {}) {
-  const { suppressPopout = false } = options;
+function setActiveSection(target) {
   currentSection = target;
-  const shouldUsePopout = popoutSections.has(target);
-  if (shouldUsePopout && !suppressPopout) {
-    openSectionPopout(target);
-  } else if (!shouldUsePopout) {
-    closeSectionPopout(false);
-  }
   Object.entries(sectionRegistry).forEach(([key, nodes]) => {
     nodes.forEach(node => {
       node.classList.toggle("section-hidden", key !== target);
@@ -2406,8 +2373,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   sidebarToggleButton?.addEventListener("click", toggleSidebar);
   mobileSidebarToggle?.addEventListener("click", toggleSidebar);
   sidebarOverlay?.addEventListener("click", () => setMobileSidebarOpen(false));
-  sectionPopoutOverlay?.addEventListener("click", () => closeSectionPopout(true));
-  closeSectionPopoutBtn?.addEventListener("click", () => closeSectionPopout(true));
   if (mobileBreakpoint?.addEventListener) {
     mobileBreakpoint.addEventListener("change", () => {
       resetSidebarStateForViewport();
@@ -2421,14 +2386,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   window.addEventListener("resize", updateStickyHeights);
   document.addEventListener("keyup", e => {
-    if (e.key === "Escape") {
-      if (sectionPopout?.classList.contains("open")) {
-        closeSectionPopout(true);
-        return;
-      }
-      if (isMobileViewport() && isSidebarOpen) {
-        setMobileSidebarOpen(false);
-      }
+    if (e.key === "Escape" && isMobileViewport() && isSidebarOpen) {
+      setMobileSidebarOpen(false);
     }
   });
   generateQuizBtn?.addEventListener("click", startQuizGeneration);
