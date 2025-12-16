@@ -1,0 +1,6 @@
+.section-hidden {
+  display: none !important;
+}
+body.sidebar-locked {
+  overflow: hidden;
+}
