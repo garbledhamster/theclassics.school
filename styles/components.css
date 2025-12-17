@@ -294,9 +294,8 @@ button:focus {
     border-radius: 10px 10px 0 0;
     width: 100%;
   }
-  body,
-  main {
-    padding-bottom: calc(var(--content-bottom-offset) + 8px);
+  body {
+    padding-bottom: calc(var(--content-bottom-offset) + 1rem);
   }
   .nav-links {
     flex: 1;
