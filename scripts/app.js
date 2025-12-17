@@ -823,6 +823,21 @@ function getLessonNoteEntries(p, t) {
   return entries;
 }
 
+function removeLessonNote(coursePath, lessonTitle, noteId) {
+  if (!coursePath || !lessonTitle || !noteId) return false;
+  const entries = getLessonNoteEntries(coursePath, lessonTitle);
+  const filtered = entries.filter(n => n.id !== noteId);
+  if (filtered.length === entries.length) return false;
+  lessonProgress.notes[coursePath][lessonTitle] = filtered;
+  if (!filtered.length) {
+    delete lessonProgress.notes[coursePath][lessonTitle];
+  }
+  if (lessonProgress.notes[coursePath] && !Object.keys(lessonProgress.notes[coursePath]).length) {
+    delete lessonProgress.notes[coursePath];
+  }
+  return true;
+}
+
 function upsertLessonNote(p, t, val, noteId = "") {
   if (!lessonProgress.notes) lessonProgress.notes = {};
   if (!lessonProgress.notes[p]) lessonProgress.notes[p] = {};
@@ -900,6 +915,7 @@ function renderNotesSummary() {
     .forEach(entry => {
     const card = document.createElement("div");
     card.className = "notes-card";
+    card.dataset.noteId = entry.id || "";
     const h = document.createElement("h4");
     h.textContent = entry.lessonTitle;
     const meta = document.createElement("p");
@@ -913,7 +929,17 @@ function renderNotesSummary() {
     const previewHtml = noteContent.trim()
       ? sanitizeHtml(marked.parse(noteContent))
       : '<p class="note-empty">No note content saved yet.</p>';
-    body.innerHTML = previewHtml;
+    const noteDisplay = document.createElement("div");
+    noteDisplay.className = "note-display";
+    noteDisplay.innerHTML = previewHtml;
+    const noteEditor = document.createElement("textarea");
+    noteEditor.className = "note-editor";
+    noteEditor.rows = 5;
+    noteEditor.value = noteContent;
+    noteEditor.setAttribute("aria-label", "Edit note text");
+    noteEditor.style.display = "none";
+    body.appendChild(noteDisplay);
+    body.appendChild(noteEditor);
     const actions = document.createElement("div");
     actions.className = "note-actions-inline";
     const viewBtn = document.createElement("button");
@@ -927,7 +953,85 @@ function renderNotesSummary() {
       };
       handleViewLessons(entry.coursePath);
     });
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Edit";
+    editBtn.classList.add("note-edit-btn");
+    const saveBtn = document.createElement("button");
+    saveBtn.textContent = "Save";
+    saveBtn.classList.add("note-save-btn");
+    saveBtn.style.display = "none";
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.classList.add("danger");
+    function setEditingState(isEditing) {
+      card.classList.toggle("editing", isEditing);
+      noteEditor.style.display = isEditing ? "block" : "none";
+      noteDisplay.style.display = isEditing ? "none" : "block";
+      editBtn.style.display = isEditing ? "none" : "inline-flex";
+      saveBtn.style.display = isEditing ? "inline-flex" : "none";
+      if (isEditing) {
+        noteEditor.focus();
+        noteEditor.setSelectionRange(noteEditor.value.length, noteEditor.value.length);
+      }
+    }
+    editBtn.addEventListener("click", () => setEditingState(true));
+    saveBtn.addEventListener("click", async () => {
+      if (!auth.currentUser) {
+        alert("Sign in before saving notes.");
+        return;
+      }
+      if (!derivedVaultKey) {
+        showPassphraseGate();
+        alert("Unlock with your passphrase before saving notes.");
+        return;
+      }
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Saving...";
+      try {
+        upsertLessonNote(entry.coursePath, entry.lessonTitle, noteEditor.value, entry.id);
+        await persistUserProgress();
+        renderNotesSummary();
+      } catch (err) {
+        console.error("Note save failed", err);
+        alert("Could not save notes. Unlock with your passphrase and try again.");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save";
+      }
+    });
+    deleteBtn.addEventListener("click", async () => {
+      if (!auth.currentUser) {
+        alert("Sign in before deleting notes.");
+        return;
+      }
+      if (!derivedVaultKey) {
+        showPassphraseGate();
+        alert("Unlock with your passphrase before deleting notes.");
+        return;
+      }
+      const previousEntries = getLessonNoteEntries(entry.coursePath, entry.lessonTitle).map(n => ({ ...n }));
+      const removed = removeLessonNote(entry.coursePath, entry.lessonTitle, entry.id);
+      if (!removed) return;
+      deleteBtn.disabled = true;
+      deleteBtn.textContent = "Deleting...";
+      try {
+        await persistUserProgress();
+      } catch (err) {
+        console.error("Note delete failed", err);
+        if (!lessonProgress.notes) lessonProgress.notes = {};
+        if (!lessonProgress.notes[entry.coursePath]) lessonProgress.notes[entry.coursePath] = {};
+        lessonProgress.notes[entry.coursePath][entry.lessonTitle] = previousEntries;
+        alert("Could not delete note. Unlock with your passphrase and try again.");
+      } finally {
+        deleteBtn.disabled = false;
+        deleteBtn.textContent = "Delete";
+        renderNotesSummary();
+      }
+    });
     actions.appendChild(viewBtn);
+    actions.appendChild(editBtn);
+    actions.appendChild(saveBtn);
+    actions.appendChild(deleteBtn);
     card.appendChild(h);
     card.appendChild(meta);
     card.appendChild(body);
