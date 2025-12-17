@@ -210,6 +210,7 @@ onAuthStateChanged(auth, async user => {
   await loadUserQuizzes(user);
   await tryAutoUnlockFromTrustedCache();
   await refreshCourseStatuses();
+  attemptPendingLessonNavigation();
 
   if (user && !derivedVaultKey) {
     showPassphraseGate();
@@ -233,6 +234,7 @@ let isSidebarOpen = false;
 let currentSection = "home";
 let currentLessonSelection = null;
 let noteFocusTarget = null;
+let pendingLessonLink = parseLessonLinkFromUrl(window.location.href);
 
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
@@ -272,6 +274,51 @@ function updateStickyHeights() {
 
 function scheduleStickyHeightUpdate() {
   requestAnimationFrame(updateStickyHeights);
+}
+
+function buildLessonUrl(coursePath = "", lessonTitle = "") {
+  try {
+    const url = new URL(window.location.href);
+    if (coursePath) url.searchParams.set("course", coursePath);
+    if (lessonTitle) url.searchParams.set("lesson", lessonTitle);
+    if (!lessonTitle) url.searchParams.delete("lesson");
+    if (!coursePath) url.searchParams.delete("course");
+    url.hash = "";
+    return url.toString().replace(/#$/, "");
+  } catch (e) {
+    return window.location.pathname || "";
+  }
+}
+
+function buildNoteAnchorId(noteId = "") {
+  const cleaned = (noteId || "").replace(/^#/, "");
+  if (!cleaned) return "note-draft";
+  return cleaned;
+}
+
+function buildNoteAnchorHash(noteId = "") {
+  const anchorId = buildNoteAnchorId(noteId);
+  return `#${anchorId}`;
+}
+
+function parseLessonLinkFromUrl(urlString) {
+  try {
+    const url = new URL(urlString);
+    const coursePath = url.searchParams.get("course") || "";
+    const lessonTitle = url.searchParams.get("lesson") || "";
+    const noteIdRaw = (url.hash || "").replace(/^#/, "");
+    const noteId = noteIdRaw ? buildNoteAnchorId(noteIdRaw) : "";
+    if (!coursePath || !lessonTitle) return null;
+    return { coursePath, lessonTitle, noteId };
+  } catch (e) {
+    return null;
+  }
+}
+
+function updateLessonUrl(coursePath, lessonTitle, hash = "") {
+  const baseUrl = buildLessonUrl(coursePath, lessonTitle);
+  const nextUrl = `${baseUrl}${hash || ""}`;
+  window.history.replaceState({}, "", nextUrl);
 }
 
 function isMobileViewport() {
@@ -469,33 +516,50 @@ function attachVersionMetadata(raw, reason) {
   }
 }
 
-function normalizeNoteEntry(raw, fallbackText = "") {
+function normalizeNoteEntry(raw, fallbackText = "", coursePath = "", lessonTitle = "") {
   const now = new Date().toISOString();
+  const baseText = typeof raw === "string" ? raw : fallbackText;
   if (!raw || typeof raw !== "object") {
-    const text = typeof raw === "string" ? raw : fallbackText;
+    const id = `note-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const anchorId = buildNoteAnchorId(id);
     return {
-      id: `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-      text,
-      summary: buildNoteSummary(text),
+      id,
+      text: baseText,
+      summary: buildNoteSummary(baseText),
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
+      lessonUrl: buildLessonUrl(coursePath, lessonTitle),
+      anchorId,
+      anchorHash: buildNoteAnchorHash(anchorId),
+      coursePath,
+      lessonTitle
     };
   }
   const text = raw.text || raw.summary || fallbackText || "";
   const createdAt = raw.createdAt || now;
+  const id = raw.id || `note-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const anchorId = buildNoteAnchorId(raw.anchorId || raw.anchor || id);
+  const lessonUrl = raw.lessonUrl || buildLessonUrl(coursePath, lessonTitle);
   return {
-    id: raw.id || `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    id,
     text,
     summary: raw.summary || buildNoteSummary(text),
     createdAt,
-    updatedAt: raw.updatedAt || createdAt
+    updatedAt: raw.updatedAt || createdAt,
+    lessonUrl,
+    anchorId,
+    anchorHash: raw.anchorHash || buildNoteAnchorHash(anchorId),
+    coursePath: raw.coursePath || coursePath,
+    lessonTitle: raw.lessonTitle || lessonTitle
   };
 }
 
-function normalizeNoteList(value) {
-  if (Array.isArray(value)) return value.map(v => normalizeNoteEntry(v)).filter(n => n.text || n.summary);
-  if (typeof value === "string") return [normalizeNoteEntry({ text: value })];
-  if (value && typeof value === "object") return [normalizeNoteEntry(value)];
+function normalizeNoteList(value, coursePath = "", lessonTitle = "") {
+  if (Array.isArray(value)) {
+    return value.map(v => normalizeNoteEntry(v, "", coursePath, lessonTitle)).filter(n => n.text || n.summary);
+  }
+  if (typeof value === "string") return [normalizeNoteEntry({ text: value }, "", coursePath, lessonTitle)];
+  if (value && typeof value === "object") return [normalizeNoteEntry(value, "", coursePath, lessonTitle)];
   return [];
 }
 
@@ -504,7 +568,7 @@ function normalizeLessonNotes(rawNotes) {
   Object.entries(rawNotes || {}).forEach(([coursePath, lessonMap]) => {
     const lessons = {};
     Object.entries(lessonMap || {}).forEach(([lessonTitle, noteValue]) => {
-      const entries = normalizeNoteList(noteValue);
+      const entries = normalizeNoteList(noteValue, coursePath, lessonTitle);
       if (entries.length) lessons[lessonTitle] = entries;
     });
     if (Object.keys(lessons).length) normalized[coursePath] = lessons;
@@ -803,6 +867,43 @@ function sanitizeHtml(html) {
   return parsed.body.innerHTML;
 }
 
+function navigateToLessonNote(entry) {
+  const coursePath = entry.coursePath || currentCoursePath || "";
+  const lessonTitle = entry.lessonTitle || entry.title || "";
+  const anchorHash = entry.anchorHash || buildNoteAnchorHash(entry.anchorId || entry.id);
+  const targetLessonUrl = entry.lessonUrl || buildLessonUrl(coursePath, lessonTitle);
+  const targetUrl = `${targetLessonUrl}${anchorHash || ""}`;
+  const noteId = buildNoteAnchorId(entry.id || entry.anchorId || "");
+  if (coursePath && lessonTitle) {
+    noteFocusTarget = {
+      coursePath,
+      lessonTitle,
+      noteId,
+      mode: "edit"
+    };
+    window.history.pushState({}, "", targetUrl);
+    handleViewLessons(coursePath);
+    return;
+  }
+  if (targetUrl) {
+    window.location.href = targetUrl;
+  }
+}
+
+function attemptPendingLessonNavigation() {
+  if (!pendingLessonLink) return;
+  if (!auth.currentUser || !derivedVaultKey) return;
+  const { coursePath, lessonTitle, noteId } = pendingLessonLink;
+  noteFocusTarget = {
+    coursePath,
+    lessonTitle,
+    noteId: noteId ? buildNoteAnchorId(noteId) : "",
+    mode: "edit"
+  };
+  handleViewLessons(coursePath);
+  pendingLessonLink = null;
+}
+
 function getNoteModeKey(coursePath, lessonTitle, noteId = "") {
   return `${coursePath || ""}::${lessonTitle || ""}::${noteId || "draft"}`;
 }
@@ -818,7 +919,7 @@ function setNoteMode(coursePath, lessonTitle, noteId = "", mode = "edit") {
 function getLessonNoteEntries(p, t) {
   if (!lessonProgress.notes) lessonProgress.notes = {};
   if (!lessonProgress.notes[p]) lessonProgress.notes[p] = {};
-  const entries = normalizeNoteList(lessonProgress.notes[p][t]);
+  const entries = normalizeNoteList(lessonProgress.notes[p][t], p, t);
   lessonProgress.notes[p][t] = entries;
   return entries;
 }
@@ -828,26 +929,45 @@ function upsertLessonNote(p, t, val, noteId = "") {
   if (!lessonProgress.notes[p]) lessonProgress.notes[p] = {};
   const entries = getLessonNoteEntries(p, t);
   const now = new Date().toISOString();
+  const lessonUrl = buildLessonUrl(p, t);
   if (noteId) {
     const idx = entries.findIndex(n => n.id === noteId);
     if (idx >= 0) {
+      const anchorId = buildNoteAnchorId(entries[idx].anchorId || entries[idx].id || noteId);
       entries[idx] = {
         ...entries[idx],
         text: val,
         summary: buildNoteSummary(val),
-        updatedAt: now
+        updatedAt: now,
+        lessonUrl,
+        coursePath: p,
+        lessonTitle: t,
+        anchorId,
+        anchorHash: buildNoteAnchorHash(anchorId)
       };
       lessonProgress.notes[p][t] = entries;
       return entries[idx];
     }
   }
-  const entry = normalizeNoteEntry({
-    id: noteId || `note-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-    text: val,
-    summary: buildNoteSummary(val),
-    createdAt: now,
-    updatedAt: now
-  });
+  const entryId = noteId || `note-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const anchorId = buildNoteAnchorId(entryId);
+  const entry = normalizeNoteEntry(
+    {
+      id: entryId,
+      text: val,
+      summary: buildNoteSummary(val),
+      createdAt: now,
+      updatedAt: now,
+      lessonUrl,
+      anchorId,
+      anchorHash: buildNoteAnchorHash(anchorId),
+      coursePath: p,
+      lessonTitle: t
+    },
+    "",
+    p,
+    t
+  );
   entries.push(entry);
   lessonProgress.notes[p][t] = entries;
   return entry;
@@ -874,7 +994,7 @@ function renderNotesSummary() {
   if (canRead) {
     Object.entries(lessonProgress?.notes || {}).forEach(([path, lessonMap]) => {
       Object.entries(lessonMap || {}).forEach(([lessonTitle, notes]) => {
-        normalizeNoteList(notes).forEach(note => {
+        normalizeNoteList(notes, path, lessonTitle).forEach(note => {
           if (note && (note.text || note.summary)) {
             entries.push({
               coursePath: path,
@@ -918,14 +1038,16 @@ function renderNotesSummary() {
     actions.className = "note-actions-inline";
     const viewBtn = document.createElement("button");
     viewBtn.textContent = "View in Lesson";
+    const targetLessonUrl = entry.lessonUrl || buildLessonUrl(entry.coursePath, entry.lessonTitle);
+    const targetHash = entry.anchorHash || buildNoteAnchorHash(entry.anchorId || entry.id);
+    viewBtn.setAttribute("aria-label", `View ${entry.lessonTitle} with this note highlighted`);
+    viewBtn.dataset.href = `${targetLessonUrl}${targetHash}`;
     viewBtn.addEventListener("click", () => {
-      noteFocusTarget = {
-        coursePath: entry.coursePath,
-        lessonTitle: entry.lessonTitle,
-        noteId: entry.id,
-        mode: "edit"
-      };
-      handleViewLessons(entry.coursePath);
+      navigateToLessonNote({
+        ...entry,
+        lessonUrl: targetLessonUrl,
+        anchorHash: targetHash
+      });
     });
     actions.appendChild(viewBtn);
     card.appendChild(h);
@@ -1604,6 +1726,7 @@ async function initializeVault() {
     await tryDecryptAllPending();
     setVaultUIState("unlocked");
     hidePassphraseGate();
+    attemptPendingLessonNavigation();
     alert("Vault initialized. Remember to store your passphrase safely—there is no recovery option.");
   } catch (err) {
     console.error("Error initializing vault", err);
@@ -1641,6 +1764,7 @@ async function unlockVault() {
     await handleTrustedDeviceSelection(key, saltBytes);
     setVaultUIState("unlocked");
     hidePassphraseGate();
+    attemptPendingLessonNavigation();
   } catch (err) {
     console.error("Unlock failed", err);
     alert("Could not unlock vault. Double-check your passphrase.");
@@ -2095,6 +2219,7 @@ function closeCurrentCourse() {
   currentCoursePath = "";
   currentLessonSelection = null;
   noteFocusTarget = null;
+  updateLessonUrl("", "");
   const container = document.getElementById("lessonsContainer");
   const cTitle = document.getElementById("selectedCourseTitle");
   const cDesc = document.getElementById("selectedCourseDesc");
@@ -2120,6 +2245,8 @@ function displayLessonContent(lsn) {
   currentLessonSelection = { title, coursePath: currentCoursePath, lesson: lsn };
   updateQuizContext();
   setQuizStatus("");
+  const desiredHash = noteFocusTarget?.noteId ? buildNoteAnchorHash(noteFocusTarget.noteId) : "";
+  updateLessonUrl(currentCoursePath, title, desiredHash);
   const h = document.createElement("h1");
   h.textContent = title;
   el.appendChild(h);
@@ -2178,6 +2305,9 @@ function displayLessonContent(lsn) {
   noteField.value = latestNote?.text || "";
   if (latestNote?.id) noteField.dataset.noteId = latestNote.id;
   noteField.placeholder = "Add private notes for this lesson.";
+  let noteAnchorId = buildNoteAnchorId(noteFocusTarget?.noteId || noteField.dataset.noteId || latestNote?.id || "");
+  const noteAnchorWrapper = document.createElement("div");
+  noteAnchorWrapper.className = "note-anchor-wrapper";
   const notePreview = document.createElement("div");
   notePreview.className = "note-preview";
   const notePreviewContent = document.createElement("div");
@@ -2198,7 +2328,10 @@ function displayLessonContent(lsn) {
   newNoteBtn.addEventListener("click", () => {
     noteField.value = "";
     noteField.dataset.noteId = "";
+    noteAnchorId = buildNoteAnchorId("");
     noteField.focus();
+    noteAnchorWrapper.id = noteAnchorId;
+    updateLessonUrl(currentCoursePath, title);
     applyNoteMode(getNoteMode(currentCoursePath, title, ""), "");
   });
   const saveNoteBtn = document.createElement("button");
@@ -2218,6 +2351,9 @@ function displayLessonContent(lsn) {
     try {
       await persistUserProgress();
       noteField.dataset.noteId = entry.id;
+      noteAnchorId = buildNoteAnchorId(entry.anchorId || entry.id);
+      noteAnchorWrapper.id = noteAnchorId;
+      updateLessonUrl(currentCoursePath, title, buildNoteAnchorHash(noteAnchorId));
       applyNoteMode(currentNoteMode, entry.id);
       renderNotesSummary();
       saveNoteBtn.textContent = "Saved";
@@ -2275,6 +2411,9 @@ function displayLessonContent(lsn) {
     if (focusedEntry) {
       noteField.value = focusedEntry.text || focusedEntry.summary || "";
       noteField.dataset.noteId = focusedEntry.id;
+      noteAnchorId = buildNoteAnchorId(focusedEntry.anchorId || focusedEntry.id);
+      noteAnchorWrapper.id = noteAnchorId;
+      updateLessonUrl(currentCoursePath, title, buildNoteAnchorHash(noteAnchorId));
       const desiredMode = noteFocusTarget.mode || getNoteMode(currentCoursePath, title, focusedEntry.id);
       applyNoteMode(desiredMode, focusedEntry.id);
     }
@@ -2283,8 +2422,16 @@ function displayLessonContent(lsn) {
     setTimeout(() => notesWrapper.classList.remove("note-highlight"), 1800);
     noteFocusTarget = null;
   }
+  if (!noteAnchorId) {
+    noteAnchorId = buildNoteAnchorId(noteField.dataset.noteId || latestNote?.id || "");
+  }
   renderNotePreview();
-  el.appendChild(notesWrapper);
+  noteAnchorWrapper.id = noteAnchorId || buildNoteAnchorId(noteField.dataset.noteId || "note-draft");
+  noteAnchorWrapper.appendChild(notesWrapper);
+  el.appendChild(noteAnchorWrapper);
+  if (window.location.hash === buildNoteAnchorHash(noteAnchorWrapper.id)) {
+    noteAnchorWrapper.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
   if (isMobileViewport()) {
     setMobileSidebarOpen(false);
     el.scrollIntoView({ behavior: "smooth", block: "start" });
