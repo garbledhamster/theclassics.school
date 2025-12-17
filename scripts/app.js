@@ -462,7 +462,7 @@ function updateQuizContext(customMessage) {
   } else if (currentCourseData?.course) {
     quizLessonContext.textContent = "Select a lesson in the Lessons page to target your quiz.";
   } else {
-    quizLessonContext.textContent = "Choose a course from Courses to begin.";
+    quizLessonContext.textContent = "Choose a course from Home to begin.";
   }
 }
 
@@ -2783,7 +2783,7 @@ resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
       e.preventDefault();
       if (section === "lessons" && !currentCoursePath) {
         setActiveSection("lessons");
-        updateQuizContext("Select a course to view lessons.");
+        updateQuizContext("Select a course from Home to view lessons.");
         renderLessonContentEmptyState();
         updateLessonLayoutVisibility();
         return;
