@@ -98,9 +98,6 @@
   <main>
     <div id="lockedContent">
       <section id="homeSection" class="page-section" data-section="home">
-        <div class="course-search">
-          <input type="text" id="courseSearch" placeholder="Search for a course..." />
-        </div>
         <div class="vault-card progress-summary" id="progressSummaryCard">
           <div class="progress-summary__header">
             <div>
@@ -111,9 +108,14 @@
           </div>
           <div class="progress-summary__grid" id="progressSummaryGrid"></div>
         </div>
-        <div class="course-list" id="courseList"></div>
       </section>
       <section id="lessonsSection" class="page-section section-hidden" data-section="lessons">
+        <div class="course-browser">
+          <div class="course-search">
+            <input type="text" id="courseSearchLessons" placeholder="Search for a course..." />
+          </div>
+          <div class="course-list" id="courseList"></div>
+        </div>
         <div id="lessonsContainer" class="lessons-container">
           <h2 id="selectedCourseTitle" style="color:var(--color-red);font-family:var(--font-classic);"></h2>
           <p id="selectedCourseDesc"></p>

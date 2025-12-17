@@ -462,7 +462,7 @@ function updateQuizContext(customMessage) {
   } else if (currentCourseData?.course) {
     quizLessonContext.textContent = "Select a lesson in the Lessons page to target your quiz.";
   } else {
-    quizLessonContext.textContent = "Choose a course from Home to begin.";
+    quizLessonContext.textContent = "Choose a course from Courses to begin.";
   }
 }
 
@@ -2758,16 +2758,16 @@ saveSettingsBtn?.addEventListener("click", saveSettings);
 rotatePassphraseBtn?.addEventListener("click", rotatePassphrase);
 resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    updateStickyHeights();
-    allCourses = await loadCourses();
-    await refreshCourseStatuses();
-    renderLessonContentEmptyState();
-    updateLessonLayoutVisibility();
-    setActiveSection("home");
-    updateQuizContext();
-    renderNotesSummary();
-  document.getElementById("courseSearch")?.addEventListener("input", e => {
+document.addEventListener("DOMContentLoaded", async () => {
+  updateStickyHeights();
+  allCourses = await loadCourses();
+  await refreshCourseStatuses();
+  renderLessonContentEmptyState();
+  updateLessonLayoutVisibility();
+  setActiveSection("home");
+  updateQuizContext();
+  renderNotesSummary();
+  document.getElementById("courseSearchLessons")?.addEventListener("input", e => {
     renderCourses(filterCourses(allCourses, e.target.value));
   });
   quizLessonFilter?.addEventListener("input", renderQuizList);
@@ -2783,7 +2783,7 @@ resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
       e.preventDefault();
       if (section === "lessons" && !currentCoursePath) {
         setActiveSection("lessons");
-        updateQuizContext("Select a course from Home to view lessons.");
+        updateQuizContext("Select a course to view lessons.");
         renderLessonContentEmptyState();
         updateLessonLayoutVisibility();
         return;
