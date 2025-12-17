@@ -672,8 +672,18 @@ button:focus {
 }
 .notes-card .note-actions-inline {
   display: flex;
+  gap: 0.35rem;
   justify-content: flex-end;
   margin-top: 0.35rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+.notes-card:hover .note-actions-inline,
+.notes-card:focus-within .note-actions-inline,
+.notes-card.editing .note-actions-inline {
+  opacity: 1;
+  visibility: visible;
 }
 .notes-card .note-actions-inline button {
   background: var(--color-green);
@@ -683,6 +693,12 @@ button:focus {
   border-radius: 4px;
   cursor: pointer;
   font-weight: 700;
+}
+.notes-card .note-actions-inline button.danger {
+  background: var(--color-red);
+}
+.notes-card .note-display {
+  margin-top: 0.35rem;
 }
 .notes-card .notes-card-body {
   margin-top: 0.35rem;
@@ -694,6 +710,16 @@ button:focus {
 }
 .notes-card .notes-card-body p {
   margin: 0.2rem 0;
+}
+.notes-card .note-editor {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.5rem;
+  border: 1px solid #c9b28d;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
 }
 .notes-card h4 {
   margin-bottom: 0.35rem;
