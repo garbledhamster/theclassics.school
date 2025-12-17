@@ -1950,7 +1950,10 @@ function updateLessonLayoutVisibility() {
   const container = document.getElementById("lessonsContainer");
   if (!layout || !sidebar) return;
   const hasCourse = !!currentCourseData.course;
-  if (container) container.style.display = "block";
+  if (container) {
+    container.style.display = "block";
+    container.classList.toggle("no-course", !hasCourse);
+  }
   layout.classList.toggle("no-course", !hasCourse);
   sidebar.style.display = hasCourse ? "" : "none";
   layout.style.display = "block";
