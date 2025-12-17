@@ -138,6 +138,22 @@ footer {
   margin-top: 2rem;
   line-height: 1.5;
 }
+@media (min-width: 1101px) {
+  .lesson-layout {
+    grid-template-columns: 280px 1fr;
+    grid-template-areas: "sidebar content";
+    align-items: start;
+  }
+  .lesson-layout.collapsed {
+    grid-template-columns: 48px 1fr;
+  }
+  .lesson-sidebar {
+    grid-area: sidebar;
+  }
+  .lesson-content {
+    grid-area: content;
+  }
+}
 @media (max-width: 768px) {
   .course-list {
     grid-template-columns: 1fr 1fr;
