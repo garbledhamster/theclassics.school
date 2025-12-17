@@ -73,6 +73,7 @@ const sectionRegistry = {
 };
 
 let lessonProgress = { lessons: {}, notes: {} };
+let navResizeObserver = null;
 const DATA_MIGRATION_VERSION = 1;
 let profileVersionInfo = buildVersionInfo("bootstrap-profile");
 let progressVersionInfo = buildVersionInfo("bootstrap-progress");
@@ -261,10 +262,11 @@ function updateStickyHeights() {
   const headerHeight = header?.offsetHeight || 0;
   const navHeight = nav?.offsetHeight || 0;
   const safeAreaBottom = Number.parseFloat(getComputedStyle(root).getPropertyValue("--safe-area-bottom")) || 0;
-  const navTotalHeight = navHeight || safeAreaBottom;
+  const navTotalHeight = navHeight + safeAreaBottom;
   const navContribution = isMobileViewport() ? 0 : navHeight;
   const stackHeight = headerHeight + navContribution;
   root.style.setProperty("--nav-height", `${navHeight}px`);
+  root.style.setProperty("--nav-total-height", `${navTotalHeight}px`);
   root.style.setProperty("--content-bottom-offset", `${navTotalHeight}px`);
   root.style.setProperty("--nav-offset", `${navContribution}px`);
   root.style.setProperty("--header-height", `${headerHeight}px`);
@@ -274,6 +276,19 @@ function updateStickyHeights() {
 
 function scheduleStickyHeightUpdate() {
   requestAnimationFrame(updateStickyHeights);
+}
+
+function setupNavResizeObserver() {
+  if (typeof ResizeObserver === "undefined") return;
+  const nav = document.querySelector(".primary-nav");
+  if (!nav) return;
+  if (navResizeObserver) {
+    navResizeObserver.disconnect();
+  }
+  navResizeObserver = new ResizeObserver(() => {
+    scheduleStickyHeightUpdate();
+  });
+  navResizeObserver.observe(nav);
 }
 
 function buildLessonUrl(coursePath = "", lessonTitle = "") {
@@ -2758,16 +2773,17 @@ saveSettingsBtn?.addEventListener("click", saveSettings);
 rotatePassphraseBtn?.addEventListener("click", rotatePassphrase);
 resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
 
-document.addEventListener("DOMContentLoaded", async () => {
-  updateStickyHeights();
-  allCourses = await loadCourses();
-  await refreshCourseStatuses();
-  renderLessonContentEmptyState();
-  updateLessonLayoutVisibility();
-  setActiveSection("home");
-  updateQuizContext();
-  renderNotesSummary();
-  document.getElementById("courseSearchLessons")?.addEventListener("input", e => {
+  document.addEventListener("DOMContentLoaded", async () => {
+    updateStickyHeights();
+    setupNavResizeObserver();
+    allCourses = await loadCourses();
+    await refreshCourseStatuses();
+    renderLessonContentEmptyState();
+    updateLessonLayoutVisibility();
+    setActiveSection("home");
+    updateQuizContext();
+    renderNotesSummary();
+  document.getElementById("courseSearch")?.addEventListener("input", e => {
     renderCourses(filterCourses(allCourses, e.target.value));
   });
   quizLessonFilter?.addEventListener("input", renderQuizList);
@@ -2820,6 +2836,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
   window.addEventListener("resize", updateStickyHeights);
+  window.addEventListener("load", updateStickyHeights);
   document.addEventListener("keyup", e => {
     if (e.key === "Escape" && isMobileViewport() && isSidebarOpen) {
       setMobileSidebarOpen(false);
