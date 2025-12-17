@@ -10,7 +10,8 @@
   --font-classic: "Crimson Pro", Georgia, "Times New Roman", serif;
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --nav-height: 64px;
-  --content-bottom-offset: calc(var(--nav-height) + var(--safe-area-bottom));
+  --nav-total-height: calc(var(--nav-height) + var(--safe-area-bottom));
+  --content-bottom-offset: var(--nav-total-height);
   --nav-offset: 0px;
   --header-height: 120px;
   --header-stack-height: calc(var(--header-height) + var(--nav-height));
