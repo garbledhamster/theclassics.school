@@ -33,8 +33,7 @@ main {
   display: none;
   margin-top: 2rem;
   border-top: 1px solid #ccc;
-  padding: 1.25rem;
-  padding-bottom: calc(1.25rem + var(--content-bottom-offset));
+  padding-top: 1rem;
   transition: all 0.5s ease-in-out;
 }
 .lessons-container.no-course {
@@ -51,7 +50,6 @@ main {
   margin-top: 1rem;
   transition: grid-template-columns 0.5s ease-in-out;
   position: relative;
-  padding-bottom: calc(var(--content-bottom-offset) + 0.75rem);
 }
 .lesson-layout.collapsed {
   grid-template-columns: 48px 1fr;
@@ -68,7 +66,6 @@ main {
 }
 .lesson-sidebar {
   background-color: var(--color-beige);
-  border: 1px solid #e5dfd3;
   border-radius: 5px;
   transition: width 0.5s ease-in-out, padding 0.5s ease-in-out, transform 0.4s ease;
   position: relative;
@@ -102,12 +99,11 @@ main {
 .lesson-content {
   border: 1px solid #ccc;
   border-radius: 5px;
-  padding: 1.25rem;
+  padding: 1rem;
   min-height: 300px;
   line-height: 1.6;
   max-width: none;
-  width: 100%;
-  margin: 0 auto;
+  width: min(1100px, 100%);
 }
 .sidebar-overlay {
   display: none;
@@ -147,14 +143,10 @@ footer {
   margin-top: 2rem;
   line-height: 1.5;
 }
-@media (min-width: 1100px) {
-  .lesson-content {
-    max-width: 1100px;
-  }
-}
 @media (max-width: 1100px) {
   .lesson-content {
-    max-width: 100%;
+    max-width: 60ch;
+    padding: 1rem;
   }
 }
 @media (max-width: 768px) {

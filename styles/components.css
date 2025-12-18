@@ -341,42 +341,40 @@ button:focus {
   .lesson-layout,
   .lesson-layout.collapsed {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
-    padding-bottom: calc(var(--content-bottom-offset) + 0.75rem);
   }
   .lesson-sidebar,
   .lesson-sidebar.collapsed {
-    position: relative;
-    top: auto;
-    left: auto;
-    width: 100%;
-    max-width: none;
-    padding: 0;
-    margin-left: 0;
-    transform: none;
-    box-shadow: none;
-    height: auto;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition: max-height 0.35s ease, padding 0.35s ease, opacity 0.2s ease;
+    position: fixed;
+    top: var(--header-stack-height);
+    left: 0;
+    width: 82%;
+    max-width: 360px;
+    padding: 1rem;
+    transform: translateX(-100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    height: calc(100vh - var(--header-stack-height));
+    z-index: 1300;
   }
   .lesson-sidebar.mobile-open {
-    max-height: calc(100vh - var(--header-stack-height) - var(--content-bottom-offset));
-    height: calc(100vh - var(--header-stack-height) - var(--content-bottom-offset));
-    padding: var(--header-stack-height) 1rem calc(var(--content-bottom-offset) + 0.75rem);
-    opacity: 1;
-    overflow-y: auto;
+    transform: translateX(0);
+    z-index: 1300;
   }
   .lesson-content {
     max-width: none;
-    padding-bottom: calc(var(--content-bottom-offset) + 1rem);
   }
   .sidebar-overlay {
     display: none;
+    position: fixed;
+    top: var(--header-stack-height);
+    left: 0;
+    right: 0;
+    bottom: auto;
+    height: calc(100vh - var(--header-stack-height));
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1200;
   }
   .sidebar-overlay.active {
-    display: none;
+    display: block;
   }
   .sidebar-fab {
     display: inline-flex;
@@ -387,7 +385,6 @@ button:focus {
   .sidebar-header {
     position: sticky;
     top: 0;
-    background-color: var(--color-beige);
   }
 }
 #emailForSignIn {
