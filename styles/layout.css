@@ -43,6 +43,28 @@ main {
 .lessons-container.no-course .course-action {
   display: none;
 }
+.lessons-container.drawer-mode .lesson-layout {
+  grid-template-columns: 1fr;
+}
+.lessons-container.drawer-mode .lesson-sidebar {
+  position: fixed;
+  top: var(--header-stack-height);
+  left: 0;
+  width: min(380px, 82%);
+  max-width: 420px;
+  padding: 1rem;
+  transform: translateX(-100%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  height: calc(100vh - var(--header-stack-height));
+  margin-left: 0;
+  z-index: 1300;
+}
+.lessons-container.drawer-mode .lesson-sidebar.mobile-open {
+  transform: translateX(0);
+}
+.lessons-container.drawer-mode .lesson-list-wrapper {
+  max-height: none;
+}
 .lesson-layout {
   display: grid;
   grid-template-columns: 250px 1fr;
@@ -112,6 +134,20 @@ main {
   background: rgba(0, 0, 0, 0.35);
   z-index: 1100;
 }
+.lessons-container.drawer-mode .sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: var(--header-stack-height);
+  left: 0;
+  right: 0;
+  bottom: auto;
+  height: calc(100vh - var(--header-stack-height));
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1200;
+}
+.lessons-container.drawer-mode .sidebar-overlay.active {
+  display: block;
+}
 .sidebar-fab {
   display: none;
   align-items: center;
@@ -128,6 +164,9 @@ main {
   bottom: calc(var(--nav-height) + 1rem);
   right: 1.25rem;
   z-index: 1300;
+}
+.lessons-container.drawer-mode .sidebar-fab {
+  display: inline-flex;
 }
 .sidebar-fab i {
   font-size: 1rem;
