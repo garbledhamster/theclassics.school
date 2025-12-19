@@ -230,7 +230,6 @@ let allCourses = [];
 let currentCourseData = {};
 let currentCoursePath = "";
 const defaultGuidePath = "lessons/0000_HowToUseThisSite.yaml";
-let isSidebarCollapsed = false;
 let isSidebarOpen = false;
 let currentSection = "home";
 let currentLessonSelection = null;
@@ -359,20 +358,7 @@ function setMobileSidebarOpen(open) {
 
 function resetSidebarForViewport() {
   updateStickyHeights();
-  const sidebar = document.getElementById("lessonSidebar");
-  const layout = document.getElementById("lessonLayout");
-  if (!sidebar || !layout) return;
-  if (isMobileViewport()) {
-    isSidebarCollapsed = false;
-    layout.classList.remove("collapsed");
-    sidebar.classList.remove("collapsed");
-    setMobileSidebarOpen(false);
-    return;
-  }
   setMobileSidebarOpen(false);
-  isSidebarCollapsed = false;
-  sidebar.classList.remove("mobile-open");
-  layout.classList.remove("collapsed");
 }
 
 function setDerivedVaultKeyContext(key, saltBytes) {
@@ -2736,21 +2722,7 @@ function updateCourseCardStatus(p) {
 }
 
 function toggleSidebar() {
-  const sb = document.getElementById("lessonSidebar");
-  const lo = document.getElementById("lessonLayout");
-  if (!sb || !lo) return;
-  if (isMobileViewport()) {
-    setMobileSidebarOpen(!isSidebarOpen);
-    return;
-  }
-  isSidebarCollapsed = !isSidebarCollapsed;
-  if (isSidebarCollapsed) {
-    sb.classList.add("collapsed");
-    lo.classList.add("collapsed");
-  } else {
-    sb.classList.remove("collapsed");
-    lo.classList.remove("collapsed");
-  }
+  setMobileSidebarOpen(!isSidebarOpen);
 }
 
 gateUnlockBtn?.addEventListener("click", unlockVault);
