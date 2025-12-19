@@ -352,7 +352,8 @@ button:focus {
     padding: 1rem;
     transform: translateX(-100%);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-    height: calc(100vh - var(--header-stack-height));
+    height: calc(100vh - var(--header-stack-height) - var(--nav-total-height));
+    padding-bottom: calc(var(--nav-total-height) + 0.75rem);
     z-index: 1300;
   }
   .lesson-sidebar.mobile-open {
@@ -368,9 +369,10 @@ button:focus {
     top: var(--header-stack-height);
     left: 0;
     right: 0;
-    bottom: auto;
-    height: calc(100vh - var(--header-stack-height));
-    background: rgba(0, 0, 0, 0.35);
+    bottom: 0;
+    height: auto;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
     z-index: 1200;
   }
   .sidebar-overlay.active {
@@ -380,7 +382,8 @@ button:focus {
     display: inline-flex;
   }
   .lesson-list-wrapper {
-    max-height: none;
+    max-height: calc(100vh - var(--header-stack-height) - var(--nav-total-height));
+    padding-bottom: var(--nav-total-height);
   }
   .sidebar-header {
     position: sticky;
