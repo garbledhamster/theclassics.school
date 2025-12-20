@@ -148,10 +148,37 @@
       <section id="quizzesSection" class="page-section section-hidden" data-section="quizzes">
         <div class="vault-card">
           <h3>Quizzes</h3>
-          <p class="helper-text">Generate quizzes for the lesson you’re currently studying. Unlock with your passphrase first.</p>
+          <p class="helper-text">Follow the steps to generate or duplicate a quiz for the lesson you’re studying. Unlock with your passphrase first.</p>
           <p id="quizLessonContext" class="settings-note"></p>
           <div class="quiz-actions">
-            <button id="generateQuizBtn">Generate Quiz</button>
+            <div class="quiz-flow">
+              <div class="quiz-flow__steps" id="quizFlowStepper" aria-live="polite">
+                <div class="quiz-flow__step" data-step="1">1. Select lesson</div>
+                <div class="quiz-flow__step" data-step="2">2. Choose template</div>
+                <div class="quiz-flow__step" data-step="3">3. Confirm &amp; save</div>
+              </div>
+              <div class="quiz-flow__controls">
+                <div class="quiz-flow__field">
+                  <label for="quizTemplateSelect">Quiz template</label>
+                  <select id="quizTemplateSelect">
+                    <option value="standard">Standard reflection</option>
+                    <option value="review">Lesson review</option>
+                    <option value="challenge">Challenge mode</option>
+                    <option value="duplicate">Duplicate existing</option>
+                  </select>
+                </div>
+                <div class="quiz-flow__field">
+                  <label for="quizQuestionCount">Question count</label>
+                  <input id="quizQuestionCount" type="number" min="5" max="15" value="10" />
+                </div>
+              </div>
+              <div class="quiz-flow__actions">
+                <button id="quizFlowBackBtn" type="button" class="secondary">Back</button>
+                <button id="quizFlowNextBtn" type="button" class="secondary">Next</button>
+                <button id="duplicateQuizBtn" type="button" class="secondary">Duplicate</button>
+                <button id="generateQuizBtn">Confirm &amp; Save</button>
+              </div>
+            </div>
           </div>
           <div class="quiz-layout">
             <button
