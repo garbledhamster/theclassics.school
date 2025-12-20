@@ -44,6 +44,9 @@ const quizStatus = document.getElementById("quizStatus");
 const quizList = document.getElementById("quizList");
 const quizDetails = document.getElementById("quizDetails");
 const quizLessonFilter = document.getElementById("quizLessonFilter");
+const quizSidebar = document.getElementById("quizSidebar");
+const quizSidebarOverlay = document.getElementById("quizSidebarOverlay");
+const mobileQuizToggle = document.getElementById("mobileQuizToggle");
 const notesList = document.getElementById("notesList");
 const notesEmptyState = document.getElementById("notesEmptyState");
 const progressSummaryCard = document.getElementById("progressSummaryCard");
@@ -231,6 +234,8 @@ let currentCourseData = {};
 let currentCoursePath = "";
 const defaultGuidePath = "lessons/0000_HowToUseThisSite.yaml";
 let isSidebarOpen = false;
+let isQuizDrawerOpen = false;
+let quizDrawerFocusReturn = null;
 let currentSection = "home";
 let currentLessonSelection = null;
 let noteFocusTarget = null;
@@ -349,16 +354,39 @@ function setMobileSidebarOpen(open) {
   isSidebarOpen = open;
   sidebar?.classList.toggle("mobile-open", open);
   sidebarOverlay?.classList.toggle("active", open);
-  document.body?.classList.toggle("sidebar-locked", open);
+  document.body?.classList.toggle("sidebar-locked", open || isQuizDrawerOpen);
   mobileSidebarToggle?.setAttribute("aria-expanded", open ? "true" : "false");
   if (!open && sidebar) {
     sidebar.scrollTop = 0;
   }
 }
 
+function setQuizDrawerOpen(open) {
+  if (!quizSidebar) return;
+  const shouldOpen = !!open;
+  isQuizDrawerOpen = shouldOpen;
+  quizSidebar.classList.toggle("mobile-open", shouldOpen);
+  quizSidebarOverlay?.classList.toggle("active", shouldOpen);
+  document.body?.classList.toggle("sidebar-locked", shouldOpen || isSidebarOpen);
+  mobileQuizToggle?.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+  if (shouldOpen) {
+    quizDrawerFocusReturn = document.activeElement;
+    const focusTarget = quizSidebar.querySelector("#quizLessonFilter")
+      || quizSidebar.querySelector("button, input, select, textarea, [tabindex]:not([tabindex='-1'])");
+    focusTarget?.focus();
+    return;
+  }
+  quizSidebar.scrollTop = 0;
+  if (quizDrawerFocusReturn && typeof quizDrawerFocusReturn.focus === "function") {
+    quizDrawerFocusReturn.focus();
+  }
+  quizDrawerFocusReturn = null;
+}
+
 function resetSidebarForViewport() {
   updateStickyHeights();
   setMobileSidebarOpen(false);
+  setQuizDrawerOpen(false);
 }
 
 function setDerivedVaultKeyContext(key, saltBytes) {
@@ -1509,6 +1537,7 @@ function renderQuizList() {
   const canRead = !!derivedVaultKey;
   const filterValue = (quizLessonFilter?.value || "").toLowerCase().trim();
   if (!canRead) {
+    setQuizDrawerOpen(false);
     quizList.innerHTML = "<p class='settings-note'>Unlock with your master passphrase to view saved quizzes.</p>";
     renderQuizDetails(null);
     return;
@@ -1556,6 +1585,9 @@ function renderQuizList() {
     btn.addEventListener("click", () => {
       activeQuizId = q.id;
       renderQuizList();
+      if (isMobileViewport()) {
+        setQuizDrawerOpen(false);
+      }
     });
     quizList.appendChild(btn);
   });
@@ -2725,6 +2757,10 @@ function toggleSidebar() {
   setMobileSidebarOpen(!isSidebarOpen);
 }
 
+function toggleQuizDrawer() {
+  setQuizDrawerOpen(!isQuizDrawerOpen);
+}
+
 gateUnlockBtn?.addEventListener("click", unlockVault);
 gateInitializeBtn?.addEventListener("click", initializeVault);
 gateGenerateBtn?.addEventListener("click", () => {
@@ -2750,26 +2786,30 @@ saveSettingsBtn?.addEventListener("click", saveSettings);
 rotatePassphraseBtn?.addEventListener("click", rotatePassphrase);
 resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    updateStickyHeights();
-    setupNavResizeObserver();
-    allCourses = await loadCourses();
-    await refreshCourseStatuses();
-    renderLessonContentEmptyState();
-    updateLessonLayoutVisibility();
-    setActiveSection("home");
-    updateQuizContext();
-    renderNotesSummary();
+document.addEventListener("DOMContentLoaded", async () => {
+  updateStickyHeights();
+  setupNavResizeObserver();
+  allCourses = await loadCourses();
+  await refreshCourseStatuses();
+  renderLessonContentEmptyState();
+  updateLessonLayoutVisibility();
+  setActiveSection("home");
+  updateQuizContext();
+  renderNotesSummary();
+
   document.getElementById("courseSearch")?.addEventListener("input", e => {
     renderCourses(filterCourses(allCourses, e.target.value));
   });
+
   quizLessonFilter?.addEventListener("input", renderQuizList);
+
   document.addEventListener("click", e => {
     const b = e.target;
     if (b.tagName === "BUTTON" && b.hasAttribute("data-file")) {
       handleViewLessons(b.getAttribute("data-file"));
     }
   });
+
   Object.entries(navLinks).forEach(([section, link]) => {
     if (!link) return;
     link.addEventListener("click", e => {
@@ -2796,11 +2836,16 @@ resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
       }
     });
   });
+
   resetSidebarForViewport();
   updateMobileChromeVisibility();
+
   sidebarToggleButton?.addEventListener("click", toggleSidebar);
   mobileSidebarToggle?.addEventListener("click", toggleSidebar);
   sidebarOverlay?.addEventListener("click", () => setMobileSidebarOpen(false));
+  mobileQuizToggle?.addEventListener("click", toggleQuizDrawer);
+  quizSidebarOverlay?.addEventListener("click", () => setQuizDrawerOpen(false));
+
   if (mobileBreakpoint?.addEventListener) {
     mobileBreakpoint.addEventListener("change", () => {
       resetSidebarForViewport();
@@ -2812,12 +2857,15 @@ resetAccountBtn?.addEventListener("click", resetEncryptedAccount);
       updateMobileChromeVisibility();
     });
   }
+
   window.addEventListener("resize", updateStickyHeights);
   window.addEventListener("load", updateStickyHeights);
+
   document.addEventListener("keyup", e => {
-    if (e.key === "Escape" && isMobileViewport() && isSidebarOpen) {
-      setMobileSidebarOpen(false);
-    }
+    if (e.key !== "Escape" || !isMobileViewport()) return;
+    if (isSidebarOpen) setMobileSidebarOpen(false);
+    if (isQuizDrawerOpen) setQuizDrawerOpen(false);
   });
+
   generateQuizBtn?.addEventListener("click", startQuizGeneration);
 });

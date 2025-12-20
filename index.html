@@ -152,15 +152,32 @@
           <p id="quizLessonContext" class="settings-note"></p>
           <div class="quiz-actions">
             <button id="generateQuizBtn">Generate Quiz</button>
-            <div class="quiz-filter">
-              <div class="quiz-filter__field">
-                <label for="quizLessonFilter">Filter by lesson</label>
-                <input id="quizLessonFilter" type="text" placeholder="Start typing a lesson title" />
-              </div>
-            </div>
           </div>
           <div class="quiz-layout">
-            <div class="quiz-list" id="quizList"></div>
+            <button
+              id="mobileQuizToggle"
+              class="sidebar-fab"
+              type="button"
+              aria-controls="quizSidebar"
+              aria-expanded="false"
+            >
+              <i class="fa-solid fa-bars"></i>
+              <span class="sidebar-fab__label">Quizzes</span>
+            </button>
+            <div id="quizSidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+            <aside class="quiz-sidebar" id="quizSidebar">
+              <div class="sidebar-header">
+                <i class="fa-solid fa-feather sidebar-header-icon" aria-hidden="true"></i>
+                <h3 class="title-text">Saved quizzes</h3>
+              </div>
+              <div class="quiz-filter">
+                <div class="quiz-filter__field">
+                  <label for="quizLessonFilter">Filter by lesson</label>
+                  <input id="quizLessonFilter" type="text" placeholder="Start typing a lesson title" />
+                </div>
+              </div>
+              <div class="quiz-list" id="quizList"></div>
+            </aside>
             <div class="quiz-details" id="quizDetails">
               <p class="settings-note">Select a saved quiz to see its details.</p>
             </div>
