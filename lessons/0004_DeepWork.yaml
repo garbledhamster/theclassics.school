@@ -1,1066 +1,858 @@
 course:
-id: "0001"
-title: "Deep Work (Cal Newport): A 16-Week Real-World Mastery Course"
-description: >
-A complete 16-week, chapter-following course based on Cal Newport’s Deep Work, designed to help a learner understand the core arguments, build the habits, and implement a practical deep work system in everyday life. By the end, the learner will have a personalized deep work philosophy, distraction controls, scheduling routines, communication boundaries, and a repeatable plan that produces measurable results.
-lessons:
+  id: "0004"
+  title: "Deep Work: Rules for Focused Success in a Distracted World"
+  description: >
+    A structured 16-week, reading-driven course that teaches you to understand, apply, and sustain Cal Newport’s deep work framework in real life. Always read the assigned section before doing the lesson!
+  lessons:
+    - lesson_id: 0a
+      title: "Course Outline"
+      course: |
+        Below is a **comprehensive 16-week reading-based course plan** focused on *Deep Work*. Each week indicates exactly what to read, and pairs the book’s ideas with real-world practice.
+
+        - **Assigned Reading** from *Deep Work* (Introduction, Chapters 1–3, Rules #1–#4, Conclusion).
+        - **Five Exercises** per week (from easier to more demanding practice).
+        - **Three Weekly Assignments** (30–60 minutes each) that produce concrete artifacts (plans, logs, policies, reviews).
+
+        The course is entirely **reading-driven**; there are **no videos**. Students read the assigned sections and complete the listed practice, building step by step toward consistent, high-quality deep work.
+
+        ---
+
+        ### **COURSE GOALS**
+
+        1. Learn the book’s core framework: **deep work vs. shallow work**, and why depth is valuable, rare, and meaningful.
+        2. Install **repeatable deep work systems** (scheduling, rituals, metrics, and review loops).
+        3. Train attention: reduce distraction, build **focus endurance**, and reclaim high-quality leisure.
+        4. Build a sustainable “deep life”: integrate deep work into a realistic week, even with interruptions and obligations.
+
+        ---
+
+        ### **HOW THE 16 WEEKS MAP TO THE BOOK**
+
+        The book has two halves:
+        - **Part 1 (The Idea)**: Introduction + Chapters 1–3 (Weeks 1–7).
+        - **Part 2 (The Rules)**: Rules #1–#4 (Weeks 8–15).
+        - **Conclusion + Capstone**: consolidation and a 30-day experiment plan (Week 16).
+
+        Many sections are revisited twice:
+        - Week A focuses on **understanding** the chapter/rule.
+        - Week B is a **lab week** focused on implementation and measurement.
+
+        ---
+
+        ### **WEEK-BY-WEEK SCHEDULE**
+
+        #### **Week 1**
+        **Section to Read**
+        - **Introduction**
+
+        **Key Topics**
+        - Deep work definition vs. shallow work.
+        - The “deep work hypothesis” and the modern attention environment.
+        - Establishing a baseline and choosing a target craft/skill.
+
+        **Weekly Artifacts**
+        - Baseline deep/shallow audit + a single “Deep Work Target” statement.
+
+        ---
+
+        #### **Week 2**
+        **Section to Read**
+        - **Chapter 1: Deep Work Is Valuable**
+
+        **Key Topics**
+        - Two core abilities for thriving in the new economy.
+        - Skill acquisition and intensity of focus.
+        - Measuring quality output and learning progress.
+
+        **Weekly Artifacts**
+        - A skills ladder and a first deep work weekly quota.
+
+        ---
+
+        #### **Week 3 (Lab Week)**
+        **Section to Re-Read (Selective)**
+        - **Chapter 1** (key arguments + examples)
+
+        **Key Topics**
+        - Turning “valuable” into a concrete plan.
+        - Deliberate practice structure for knowledge work.
+        - Output metrics you can actually track.
+
+        **Weekly Artifacts**
+        - A 2-week deliberate practice plan + a simple metric dashboard.
+
+        ---
+
+        #### **Week 4**
+        **Section to Read**
+        - **Chapter 2: Deep Work Is Rare**
+
+        **Key Topics**
+        - Why modern workplaces encourage shallowness.
+        - “Busyness as a proxy for productivity.”
+        - Attention fragmentation and communication overload.
+
+        **Weekly Artifacts**
+        - A “shallow work inventory” and interruption map.
+
+        ---
+
+        #### **Week 5 (Lab Week)**
+        **Section to Re-Read (Selective)**
+        - **Chapter 2** (workplace dynamics + shallow incentives)
+
+        **Key Topics**
+        - Designing your environment for depth.
+        - Creating boundaries and reducing ambient collaboration noise.
+        - Replacing “visible busyness” with visible outcomes.
+
+        **Weekly Artifacts**
+        - A boundary script pack + a shallow-work containment plan.
+
+        ---
+
+        #### **Week 6**
+        **Section to Read**
+        - **Chapter 3: Deep Work Is Meaningful**
+
+        **Key Topics**
+        - Depth, craftsmanship, and the psychology of satisfaction.
+        - Concentration as a path to meaning.
+        - High-quality leisure and attention restoration.
+
+        **Weekly Artifacts**
+        - A “deep life” value statement + leisure upgrade list.
+
+        ---
+
+        #### **Week 7 (Lab Week)**
+        **Section to Re-Read (Selective)**
+        - **Chapter 3** (craftsmanship + meaning claims)
+
+        **Key Topics**
+        - Translating meaning into daily routines.
+        - Identifying “attention drains” outside of work.
+        - Building a sustainable work/leisure rhythm.
+
+        **Weekly Artifacts**
+        - A weekly schedule prototype (work + leisure) and a recovery checklist.
+
+        ---
+
+        #### **Week 8**
+        **Section to Read**
+        - **Rule #1: Work Deeply**
+
+        **Key Topics**
+        - Four deep work scheduling philosophies.
+        - Rituals, routines, and environment design.
+        - Starting rituals and ending rituals (shutdown).
+
+        **Weekly Artifacts**
+        - A personal deep work philosophy choice + ritual blueprint.
+
+        ---
+
+        #### **Week 9 (Lab Week)**
+        **Section to Re-Read (Selective)**
+        - **Rule #1** (rituals, routines, execution)
+
+        **Key Topics**
+        - Time-blocking deep work sessions.
+        - Handling collaboration without attention fragmentation.
+        - Executing like a business: lead measures and accountability.
+
+        **Weekly Artifacts**
+        - A time-block plan + lead-measures scoreboard + weekly review template.
+
+        ---
+
+        #### **Week 10**
+        **Section to Read**
+        - **Rule #2: Embrace Boredom**
+
+        **Key Topics**
+        - Training attention (not surrendering to stimuli).
+        - Focus endurance and the cost of constant novelty.
+        - Introducing structured boredom and concentration practice.
+
+        **Weekly Artifacts**
+        - A focus training protocol and boredom exposures schedule.
+
+        ---
+
+        #### **Week 11 (Lab Week)**
+        **Section to Re-Read (Selective)**
+        - **Rule #2** (practices + examples)
+
+        **Key Topics**
+        - Productive meditation and “attention reps.”
+        - Handling cravings for distraction during deep work.
+        - Measuring focus improvements week over week.
+
+        **Weekly Artifacts**
+        - A distraction-response playbook + productive meditation log.
+
+        ---
+
+        #### **Week 12**
+        **Section to Read**
+        - **Rule #3: Quit Social Media**
+
+        **Key Topics**
+        - Attention economy incentives.
+        - “Any-benefit” vs. “craftsman” tool selection.
+        - Choosing tools based on values and measurable returns.
+
+        **Weekly Artifacts**
+        - A tool audit and a replacement plan for the top distractions.
+
+        ---
+
+        #### **Week 13 (Lab Week)**
+        **Section to Re-Read (Selective)**
+        - **Rule #3** (selection criteria + practical steps)
+
+        **Key Topics**
+        - Running tool experiments (remove, measure, reintroduce).
+        - Building high-quality leisure alternatives.
+        - Communication norms that protect depth.
+
+        **Weekly Artifacts**
+        - A 30-day tool experiment plan + a leisure commitments list.
+
+        ---
+
+        #### **Week 14**
+        **Section to Read**
+        - **Rule #4: Drain the Shallows**
+
+        **Key Topics**
+        - Identifying shallow work and capping it.
+        - Time blocking and planning discipline.
+        - Making shallowness visible and costly.
+
+        **Weekly Artifacts**
+        - A shallow work budget + an ideal week calendar draft.
+
+        ---
+
+        #### **Week 15 (Lab Week)**
+        **Section to Re-Read (Selective)**
+        - **Rule #4** (constraints, planning, and boundaries)
+
+        **Key Topics**
+        - Saying no, shrinking commitments, and protecting capacity.
+        - Fixed-schedule productivity and shutdown completion.
+        - Refining the system based on data.
+
+        **Weekly Artifacts**
+        - A “default no” policy + fixed-schedule plan + refinement memo.
+
+        ---
+
+        #### **Week 16**
+        **Section to Read**
+        - **Conclusion**
+
+        **Key Topics**
+        - Consolidating the four rules into one operating system.
+        - Designing a sustainable deep work life over months, not days.
+        - Capstone: a 30-day deep work experiment with metrics.
+
+        **Weekly Artifacts**
+        - A personal Deep Work Operating Manual + 30-day experiment plan + final reflection.
+
+    - lesson_id: 0b
+      title: "Chapter Summaries"
+      course: |
+        ### **Introduction**
+        Newport defines **deep work** as distraction-free concentration on cognitively demanding tasks, and contrasts it with **shallow work**—logistical, low-value tasks performed while distracted. He argues the modern environment trains distraction, but those who deliberately cultivate depth gain a major advantage.
+
+        ### **Part 1: The Idea**
+        **Deep Work Is Valuable** – In a fast-changing economy, the ability to quickly learn hard things and produce at an elite level becomes decisive. Both depend on deep work.
+
+        **Deep Work Is Rare** – Modern workplaces reward connectivity and visible busyness, which systematically undermines sustained concentration.
+
+        **Deep Work Is Meaningful** – Depth supports craftsmanship, satisfaction, and a more meaningful experience of work and leisure.
+
+        ### **Part 2: The Rules**
+        **Rule #1: Work Deeply** – Use structure, rituals, and scheduling philosophies to make deep work repeatable.
+
+        **Rule #2: Embrace Boredom** – Train attention by resisting novelty and practicing sustained focus.
+
+        **Rule #3: Quit Social Media** – Choose tools intentionally using a craftsman mindset.
+
+        **Rule #4: Drain the Shallows** – Constrain low-value work so it cannot crowd out depth.
+
+        ### **Conclusion**
+        Deep work is a skill and a commitment that must be protected and practiced over time.
+
+    - lesson_id: 0c
+      title: "Keys"
+      course: |
+        ### **Topics**
+        1. Deep Work vs. Shallow Work
+        2. The Deep Work Hypothesis
+        3. Skill Acquisition and Elite Output
+        4. Busyness as a Proxy for Productivity
+        5. Attention Fragmentation
+        6. Meaning Through Craft
+        7. Deep Work Philosophies
+        8. Rituals and Routines
+        9. Embracing Boredom
+        10. Tool Selection
+        11. Draining the Shallows
+        12. Time Blocking
+        13. Fixed-Schedule Productivity
+        14. Sustaining a Deep Life
+
+        ### **Terms**
+        - Deep Work
+        - Shallow Work
+        - Deliberate Practice
+        - Attention Fragmentation
+        - Productive Meditation
+        - Network Tools
+        - Craftsman Mindset
+        - Shallow Work Budget
+        - Shutdown Ritual
+        - Deep Work Operating System
+
+        ### **Concepts**
+        - Depth as a Competitive Advantage
+        - Systems Over Willpower
+        - Attention Training
+        - Intentional Technology Use
+        - Constraint-Driven Prioritization
+        - Sustainable Deep Living
+
+      sources:
+        - "Newport, C. (2016). Deep Work: Rules for Focused Success in a Distracted World. Grand Central Publishing."
+
 - lesson_id: 1
-title: "Week 1: Introduction — What Deep Work Is and Why It Matters"
-overview: |
-This week establishes the course foundation: what “deep work” is, how it differs from shallow work, and why the ability to focus is becoming both rarer and more valuable.
-You’ll set a baseline for your current attention, identify your biggest focus leaks, and define one concrete outcome you want deep work to help you achieve during the course.
-  keys:
-    takeaways:
-      - "Deep work is a skill that can be trained with structure, not a personality trait."
-      - "Shallow work expands to fill time unless you set explicit boundaries."
-      - "A clear target and baseline make improvement measurable and motivating."
-    concepts:
-      - "Distraction-free concentration"
-      - "Skill-building through deliberate practice"
-    terms:
-      - "Deep work: cognitively demanding work done with full concentration that creates new value or improves skill."
-      - "Shallow work: logistical or low-cognitive tasks that are easy to replicate and often performed while distracted."
+  title: "Week 1: Introduction — Deep Work, Shallow Work, and the Hypothesis"
+  course: |
+    ## Overview  
+    This lesson corresponds to the Introduction of *Deep Work*. The goal is to define deep work and shallow work, understand why deep work is increasingly valuable in a distracted world, and identify one “Deep Work Target” you will use for the rest of the course.
+
+    **Key Takeaways**
+    - Deep work is distraction-free concentration on cognitively demanding tasks; shallow work is low-value, logistical work often done while distracted.
+    - The deep work hypothesis claims that deep work is becoming rarer at the same time it becomes more valuable.
+    - Sustainable deep work begins with clarity: a target craft, a baseline audit, and a realistic first schedule.
+
+    **Key Concepts**
+    - **Deep Work vs. Shallow Work**: Two categories of professional effort that differ by cognitive demand, value, and susceptibility to distraction.
+    - **The Deep Work Hypothesis**: A framework for understanding why focused work is a competitive advantage in modern knowledge work.
+
+    **Key Terms**
+    - **Deep Work**: Focused, distraction-free effort on cognitively demanding tasks.
+    - **Shallow Work**: Low-value or logistical work that does not create much new value and is easily replicated.
 
   sources:
-    - "Primary Text: Deep Work (Cal Newport), Introduction"
-    - "Supporting Reading: Attention residue and task-switching overview (research summary source of your choice)"
+    - "Newport, C. (2016). Deep Work: Rules for Focused Success in a Distracted World. Introduction."
+    - "Lesson references to course outline ‘Week 1’."
 
   questions_and_answers:
-    - Q: "What makes deep work different from simply 'working hard' for long hours?"
-      A: "Deep work requires sustained, distraction-free concentration on demanding tasks; long hours can still be shallow if they are fragmented by switching, messaging, and reactive work."
-    - Q: "Why start with a baseline instead of jumping straight into tactics?"
-      A: "Because focus problems are often invisible without measurement; a baseline helps you target the right constraints and track progress objectively."
+    - Q: "What is the difference between deep work and shallow work?"
+      A: "Deep work requires sustained focus on demanding tasks that create high value, while shallow work consists of logistical or low-cognitive tasks that are easy to replicate and often performed with distractions."
+    - Q: "What does the deep work hypothesis claim?"
+      A: "It claims that deep work is becoming rarer as distractions increase, while simultaneously becoming more valuable for producing elite results and learning hard things quickly."
 
   exercises:
-    - name: "Define Your Deep Work Target"
-      difficulty: "Easy"
-      prompt: |
-        Choose one meaningful output you want deep work to produce by Week 16 (e.g., a certification study plan completed, a portfolio project shipped, a writing series drafted).
-        Write a one-sentence “Done looks like…” statement and a 3-bullet list of why it matters.
-    - name: "Shallow vs Deep Inventory"
-      difficulty: "Medium"
-      prompt: |
-        List all tasks you did in the last 5–7 days from memory.
-        Classify each as Deep, Shallow, or Mixed, and add a one-line reason for each classification.
-    - name: "Attention Baseline Snapshot"
-      difficulty: "Medium"
-      prompt: |
-        For one day, track each time you switch tasks due to a distraction (notification, urge-check, email, chat, tab drift).
-        At the end, summarize: top 3 triggers, top 3 contexts (time/place), and your estimate of total minutes lost.
-    - name: "Focus Leak Root-Cause Map"
-      difficulty: "Hard"
-      prompt: |
-        Pick your two biggest focus leaks and create a root-cause map:
-        Trigger → Thought/Justification → Behavior → Short-term reward → Long-term cost → Preventive control.
-        Propose one control per leak that is environment-based (not willpower-based).
-    - name: "Minimum Viable Deep Work Block"
-      difficulty: "Hard"
-      prompt: |
-        Schedule one 45–60 minute deep work block within the next 48 hours.
-        Specify: location, starting ritual, single objective, distraction plan, and a shutdown note.
+    - name: "Deep vs. Shallow Examples (Easy)"
+      prompt: >
+        Write two examples of deep work and two examples of shallow work from your own life.
+        For each example, add one sentence explaining why it fits the category.
+    - name: "One-Day Activity Snapshot (Easy–Medium)"
+      prompt: >
+        For one typical day, list your main work activities (as best you can remember).
+        Mark each as Deep, Shallow, or Mixed. Note the top two distractions that pulled you away.
+    - name: "Baseline Deep Work Estimate (Medium)"
+      prompt: >
+        Estimate how many minutes of true deep work you performed in the last 7 days.
+        Explain what criteria you used, and list the biggest obstacle preventing more depth.
+    - name: "Choose a Deep Work Target (Medium–Challenging)"
+      prompt: >
+        Choose one craft, skill, or high-value project that will be your Deep Work Target for this course.
+        Define it in one sentence and list three concrete outputs that would prove progress.
+    - name: "Plan One Protected Session (Challenging)"
+      prompt: >
+        Schedule one 60–90 minute deep work session for your Deep Work Target.
+        Write a short plan: start time, location, rules (phone, tabs, notifications), and a clear finish line.
 
   assignments:
-    - name: "Deep Work Baseline Report"
+    - name: "Deep/Shallow Audit"
       description: >
-        Produce a 1-page report with your deep/shallow inventory, attention baseline findings, and your single deep work target for the course.
-    - name: "Distraction Controls Draft"
+        Create a one-page audit of your current week. Estimate the number of hours you spend on deep work,
+        shallow work, and “mixed” work. Include your top three distraction sources and one measurable goal
+        for increasing deep work next week.
+    - name: "Deep Work Target Statement"
       description: >
-        Create a short checklist titled “My Top 5 Distraction Controls” with concrete rules (e.g., phone location, notification settings, website blockers, messaging windows).
-    - name: "First Deep Block Reflection"
+        Write a short “target statement” for the course (half a page). Include: your chosen Deep Work Target,
+        why it matters, what “good output” looks like, and a realistic weekly deep work quota to aim for.
+    - name: "Distraction Trigger List"
       description: >
-        Write a brief reflection (200–400 words) describing what you attempted in your first deep work block, what got in the way, and one adjustment for next time.
+        Build a list of your top 10 distraction triggers (apps, people, times of day, emotions, contexts).
+        For each trigger, write one small intervention you will try next week (blocker, rule, environment change,
+        or replacement behavior).
 
 - lesson_id: 2
   title: "Week 2: Chapter 1 — Deep Work Is Valuable"
-  overview: |
-    This week covers the core economic argument: in a fast-changing, technology-shaped world, the ability to learn complicated things quickly and produce at an elite level is a competitive advantage.
-    You’ll translate that argument into your own context by identifying high-leverage skills and creating a “deep work value chain” linking deep focus to tangible outcomes.
+  course: |
+    ## Overview  
+    This lesson covers Chapter 1, which argues that deep work is economically valuable because it enables two crucial abilities: learning hard things quickly and producing at an elite level. The goal is to connect the chapter’s claims to your own work by choosing valuable skills, building a practice plan, and defining how you will measure progress.
 
-  keys:
-    takeaways:
-      - "Deep work increases your rate of learning and the quality of your output."
-      - "Value comes from rare skills paired with the ability to produce valuable things."
-      - "The best deep work strategy is tied to your actual goals, not generic productivity."
-    concepts:
-      - "High-leverage skills"
-      - "Deliberate practice as focus training"
-    terms:
-      - "Deliberate practice: structured training with clear goals and feedback to improve performance."
-      - "High-leverage output: work that disproportionately advances goals relative to time spent."
+    **Key Takeaways**
+    - The ability to learn hard things quickly is a decisive advantage, and it depends on focused practice.
+    - High-quality output is strongly shaped by the ability to concentrate intensely and consistently.
+    - Deep work becomes practical when you translate “value” into skills, metrics, and a weekly quota.
+
+    **Key Concepts**
+    - **Skill Acquisition Through Focus**: Concentrated practice accelerates learning and reduces wasted effort.
+    - **Elite Output**: Producing higher-quality results by protecting sustained attention and reducing context switching.
+
+    **Key Terms**
+    - **Deliberate Practice**: Structured practice designed to improve performance through effort, feedback, and repetition.
+    - **Output Metric**: A measurable indicator of progress (deliverables, pages, solved problems, features shipped).
 
   sources:
-    - "Primary Text: Deep Work (Cal Newport), Chapter 1"
-    - "Supporting Reading: Deliberate practice basics (Anders Ericsson overview source of your choice)"
+    - "Newport, C. (2016). Deep Work: Rules for Focused Success in a Distracted World. Chapter 1."
+    - "Lesson references to course outline ‘Week 2’."
 
   questions_and_answers:
-    - Q: "How does deep work make you better at learning hard things?"
-      A: "Focused concentration reduces task switching, enabling sustained cognitive strain and feedback—conditions needed for skill acquisition."
-    - Q: "What’s the practical link between deep work and career value?"
-      A: "Deep work helps you build rare skills and produce higher-quality results, which makes your work harder to replace and more rewarded."
+    - Q: "What two core abilities does Newport argue are essential for thriving in the new economy?"
+      A: "The ability to quickly master hard things and the ability to produce at an elite level, both of which depend on sustained focus."
+    - Q: "Why does deep work improve learning and output?"
+      A: "Because intense, distraction-free concentration increases cognitive strain in a productive way, which strengthens skill acquisition and enables higher-quality work in less time."
 
   exercises:
-    - name: "Identify Your Two Leverage Skills"
-      difficulty: "Easy"
-      prompt: |
-        Choose two skills that would most improve your work/life over the next year.
-        For each, write: why it matters, what “better” looks like, and one measurable indicator.
-    - name: "Deep Work Value Chain"
-      difficulty: "Medium"
-      prompt: |
-        For one skill, write a chain:
-        Deep work behavior → improved capability → improved output → external value (to employer/clients/self) → reward (money/time/pride/impact).
-    - name: "Design a Practice Drill"
-      difficulty: "Medium"
-      prompt: |
-        Create a 20–30 minute deliberate practice drill for one leverage skill.
-        Include: specific sub-skill, difficulty level, success metric, and immediate feedback method.
-    - name: "Quality Standard Definition"
-      difficulty: "Hard"
-      prompt: |
-        Define a “quality bar” for your deep work output this month.
-        Write 5 criteria that would make you say, “This is excellent,” and list common shortcuts that would violate the bar.
-    - name: "One-Week Output Forecast"
-      difficulty: "Hard"
-      prompt: |
-        Plan three deep sessions for the next 7 days.
-        For each session: objective, expected deliverable, and the smallest shippable artifact you can produce in that time.
+    - name: "List Valuable Skills (Easy)"
+      prompt: >
+        List 5 skills that are valuable in your current role or desired role.
+        Circle the two that would most improve your results over the next 6 months.
+    - name: "Build a Skill Ladder (Medium)"
+      prompt: >
+        For one circled skill, write a “skill ladder” with 4 rungs: beginner, competent, strong, and elite.
+        For each rung, add one observable behavior or output that proves you are there.
+    - name: "Design a Deliberate Practice Session (Medium)"
+      prompt: >
+        Design one deliberate practice session for your Deep Work Target.
+        Include: a specific sub-skill, a hard constraint (time or scope), and a feedback method (tests, review, rubric, or mentor check).
+    - name: "Run Two Practice Sessions (Challenging)"
+      prompt: >
+        Complete two deep work sessions (60–90 minutes each) using your deliberate practice design.
+        After each session, write 3 bullet points: what you practiced, what was hardest, and what improved.
+    - name: "Define Your Weekly Deep Work Quota (Challenging)"
+      prompt: >
+        Set a weekly deep work quota for the next two weeks (hours or sessions).
+        Justify it using your schedule constraints, and specify when (days/times) you will attempt it.
 
   assignments:
-    - name: "Leverage Skills One-Pager"
+    - name: "Two-Week Deliberate Practice Plan"
       description: >
-        Produce a one-page document selecting your two leverage skills with metrics, rationale, and a weekly practice plan for each.
-    - name: "Practice Drill Log"
+        Create a two-week plan that pairs your Deep Work Target with deliberate practice sessions.
+        Specify the number of sessions, session length, sub-skills to practice, and how you will evaluate improvement.
+        Produce a single-page plan you can follow without extra thinking.
+    - name: "Progress Metrics Dashboard"
       description: >
-        Run your practice drill twice this week and record inputs, results, and a short note on what to adjust.
-    - name: "Deep Output Artifact"
+        Build a simple dashboard (one page) with 3–5 metrics: at least one deep work behavior metric (hours/sessions),
+        one output metric (deliverables), and one quality metric (rubric score, error rate, review feedback, or similar).
+        Include a baseline value and a target for two weeks from now.
+    - name: "Value-to-Work Translation Memo"
       description: >
-        Create and save one concrete artifact from a deep work session (outline, design doc, cleaned-up script, study notes with problems solved) and label it with date/time.
+        Write a short memo (about one page) explaining how Chapter 1’s argument applies to your life.
+        Identify which high-value activities in your work require depth, which shallow activities are crowding them out,
+        and the specific changes you will test next week.
 
 - lesson_id: 3
-  title: "Week 3: Chapter 2 — Deep Work Is Rare"
-  overview: |
-    This week examines why deep work is increasingly uncommon: open offices, constant connectivity, and a culture that rewards visible responsiveness over real output.
-    You’ll diagnose the specific forces that push you into shallow work and build a realistic plan to protect focus within your constraints.
+  title: "Week 3: Chapter 1 Lab — Turning Value into Measurable Depth"
+  course: |
+    ## Overview  
+    This lab week deepens Chapter 1 by focusing on execution: deliberate practice, measurable outputs, and consistency. The goal is to run a short experiment where you protect deep work time, track it honestly, and evaluate whether depth improves learning or results for your chosen target.
 
-  keys:
-    takeaways:
-      - "Many workplaces unintentionally optimize for reactivity, not results."
-      - "If you don’t defend your attention, someone else will spend it for you."
-      - "The solution is systems and agreements, not heroic willpower."
-    concepts:
-      - "Busyness as proxy for productivity"
-      - "Attention fragmentation"
-    terms:
-      - "Attention fragmentation: splitting focus across many small tasks that prevents sustained progress."
-      - "Reactive workflow: a mode of working driven by incoming messages and requests rather than planned priorities."
+    **Key Takeaways**
+    - Deep work becomes real when it is scheduled, tracked, and reviewed like a professional practice.
+    - Deliberate practice works best when you isolate sub-skills and get feedback quickly.
+    - Small experiments reveal what actually helps you produce better work, not what you hope will help.
+
+    **Key Concepts**
+    - **Lead Measures and Tracking**: Behavior measures (time in depth) that predict results and can be controlled daily.
+    - **Feedback Loops**: Short cycles of practice, evaluation, and adjustment that accelerate improvement.
+
+    **Key Terms**
+    - **Lead Measure**: A controllable behavior that predicts outcomes (e.g., deep work hours).
+    - **Feedback Loop**: A repeatable cycle of practice, evaluation, and refinement.
 
   sources:
-    - "Primary Text: Deep Work (Cal Newport), Chapter 2"
-    - "Supporting Reading: Context switching costs (research summary source of your choice)"
+    - "Newport, C. (2016). Deep Work: Rules for Focused Success in a Distracted World. Chapter 1 (practice implications)."
+    - "Lesson references to course outline ‘Week 3’."
 
   questions_and_answers:
-    - Q: "Why does ‘being busy’ often feel productive even when it isn’t?"
-      A: "Because responsiveness produces immediate feedback and visible activity, while deep progress is slower, quieter, and harder to measure moment-to-moment."
-    - Q: "What’s a realistic approach when your job requires responsiveness?"
-      A: "Batch and bound reactivity—create windows for shallow work and protect pre-committed deep blocks with clear expectations."
+    - Q: "What makes deliberate practice different from ‘just doing the work’?"
+      A: "Deliberate practice isolates a specific weakness or sub-skill, adds strain with constraints, and uses feedback to improve, instead of repeating familiar tasks without evaluation."
+    - Q: "Why track deep work as a lead measure?"
+      A: "Because deep work time is a controllable input that strongly influences learning and output quality, and tracking it exposes whether your intentions match your behavior."
 
   exercises:
-    - name: "Shallow Pressure Audit"
-      difficulty: "Easy"
-      prompt: |
-        Identify the top 5 sources of shallow pressure in your life/work (email, chat, meetings, urgent requests, social feeds).
-        Rank them by frequency and by damage to focus.
-    - name: "Responsiveness Expectations Map"
-      difficulty: "Medium"
-      prompt: |
-        For each major stakeholder (boss, team, clients, family), write what you think they expect for response time.
-        Mark which expectations are explicit vs assumed.
-    - name: "Batching Plan Draft"
-      difficulty: "Medium"
-      prompt: |
-        Design a daily schedule template that includes:
-        (1) two shallow work windows, (2) one deep block, (3) one admin wrap-up.
-        Keep it realistic for your actual day.
-    - name: "Meeting/Interrupt Triage Rules"
-      difficulty: "Hard"
-      prompt: |
-        Write simple triage rules that decide when you will interrupt a deep block.
-        Include examples of true emergencies vs “urgent-sounding” requests.
-    - name: "Boundary Script Practice"
-      difficulty: "Hard"
-      prompt: |
-        Draft two short scripts you can say or send:
-        (1) to delay a request, (2) to propose an alternative (async note, later time, smaller ask).
-        Make them polite, specific, and outcome-oriented.
+    - name: "Define a Session Finish Line (Easy)"
+      prompt: >
+        For your Deep Work Target, write three possible “finish lines” for a 60–90 minute session.
+        Each finish line must be observable (a draft, solved set, outline, cleaned dataset, tested feature).
+    - name: "Create a Distraction Protocol (Medium)"
+      prompt: >
+        Write a short protocol for what you will do when distracted mid-session.
+        Include: a 10-second rule, where you capture the distraction (notepad/task list), and how you return to the task.
+    - name: "Complete Three Tracked Sessions (Medium–Challenging)"
+      prompt: >
+        Complete three deep work sessions this week. For each session, record: start/end time,
+        objective, finish line achieved, and a 1–10 focus score. Keep it to 5 lines per session.
+    - name: "Quality Check Using a Rubric (Challenging)"
+      prompt: >
+        Create a simple 4-criteria rubric for your output (clarity, correctness, completeness, and speed or elegance).
+        Score one output from a deep session and write one improvement action for the next session.
+    - name: "Mid-Week Adjustment (Most Challenging)"
+      prompt: >
+        After your second session, make one concrete adjustment (environment, time of day, tool, or rule),
+        then run the third session. Compare focus score and output quality before and after the change.
 
   assignments:
-    - name: "Shallow-to-Deep Schedule Template"
+    - name: "Five-Day Deep Work Experiment Log"
       description: >
-        Create a weekly schedule template with protected deep blocks and bounded shallow windows, and save it as a reusable calendar or checklist.
-    - name: "Expectation Clarification Message"
+        Run a five-day experiment with a minimum of three deep sessions. Create a one-page log showing session dates,
+        duration, objective, output, focus score, and one sentence of learning. Summarize what helped most and what failed.
+    - name: "Metric Review and Reset"
       description: >
-        Write a draft message (not necessarily sent) that clarifies response-time expectations and proposes batching (e.g., “I check email at X and Y; for urgent issues call.”).
-    - name: "Interrupt Rule Card"
+        Update your metrics dashboard with actual numbers from this week. Write a short review (half a page) answering:
+        What improved? What stayed the same? What surprised you? Set one revised target for the next week.
+    - name: "Deliberate Practice Retrospective"
       description: >
-        Produce a small “rule card” (digital note) listing your interrupt triage rules and where you’ll keep it visible during deep work.
+        Write a one-page retrospective explaining whether deliberate practice increased your learning or output.
+        Include one example of a sub-skill that improved, one constraint that helped, and one change you will carry forward.
 
 - lesson_id: 4
-  title: "Week 4: Chapter 3 — Deep Work Is Meaningful"
-  overview: |
-    This week focuses on the psychological and philosophical case: deep work can create satisfaction, craftsmanship pride, and a sense of meaning that shallow work rarely provides.
-    You’ll connect deep work to your values and design a motivation strategy that makes focus feel worth protecting.
+  title: "Week 4: Chapter 2 — Deep Work Is Rare"
+  course: |
+    ## Overview  
+    This lesson covers Chapter 2, which explains why deep work is uncommon in modern workplaces: constant connectivity, collaboration defaults, and “busyness” replacing meaningful results. The goal is to identify how your environment produces shallowness and map the specific pressures that fragment attention.
 
-  keys:
-    takeaways:
-      - "Meaning increases when you invest full attention into challenging work."
-      - "Craftsmanship is a mindset: focus on quality, process, and improvement."
-      - "A compelling ‘why’ makes deep work sustainable during hard weeks."
-    concepts:
-      - "Craftsmanship mindset"
-      - "Flow-supporting conditions"
-    terms:
-      - "Craftsmanship: valuing skill, quality, and care in how work is done."
-      - "Flow: a state of absorption where challenge and skill are well-matched and attention is fully engaged."
+    **Key Takeaways**
+    - Many workplaces incentivize visible activity and rapid responsiveness over high-value outcomes.
+    - Frequent interruptions and context switching reduce cognitive performance and make deep work difficult.
+    - You can’t rely on willpower alone; you must diagnose the system that creates shallowness.
+
+    **Key Concepts**
+    - **Busyness as a Proxy for Productivity**: Using visible activity (emails, meetings, quick replies) as a stand-in for real results.
+    - **Attention Fragmentation**: The ongoing splitting of focus through interruptions, messaging, and task switching.
+
+    **Key Terms**
+    - **Attention Residue**: The lingering cognitive drag that remains when switching tasks.
+    - **Context Switching**: Moving between tasks rapidly, reducing depth and quality.
 
   sources:
-    - "Primary Text: Deep Work (Cal Newport), Chapter 3"
-    - "Supporting Reading: Flow overview (Csikszentmihalyi summary source of your choice)"
+    - "Newport, C. (2016). Deep Work: Rules for Focused Success in a Distracted World. Chapter 2."
+    - "Lesson references to course outline ‘Week 4’."
 
   questions_and_answers:
-    - Q: "Why can shallow work feel draining even when it’s easy?"
-      A: "Because it often lacks clear progress, meaningful challenge, and closure—leading to low satisfaction despite constant activity."
-    - Q: "How does the craftsmanship mindset change motivation?"
-      A: "It shifts attention from external validation to controllable process and quality, making effort feel purposeful."
+    - Q: "What does it mean to treat busyness as a proxy for productivity?"
+      A: "It means valuing visible activity—like fast responses, full calendars, and constant messaging—as evidence of productivity, even when those activities do not create meaningful results."
+    - Q: "How do interruptions undermine deep work?"
+      A: "They fragment attention, increase context switching, and create attention residue that lowers the quality and speed of cognitively demanding work."
 
   exercises:
-    - name: "Meaning Map"
-      difficulty: "Easy"
-      prompt: |
-        Write 5 values you want your work to express (e.g., mastery, service, creativity, reliability).
-        For each, name one behavior that deep work enables.
-    - name: "Craftsmanship Criteria"
-      difficulty: "Medium"
-      prompt: |
-        Choose one domain you work in (IT ops, writing, coding, planning).
-        Define what “craft” means there with 6 criteria and 3 examples of “sloppy but fast” work to avoid.
-    - name: "Flow Conditions Setup"
-      difficulty: "Medium"
-      prompt: |
-        Design a deep work environment that supports flow:
-        choose music/silence rule, workspace layout, materials prep, and an entry ritual.
-    - name: "Frustration Plan"
-      difficulty: "Hard"
-      prompt: |
-        List the top 3 ways deep work becomes unpleasant for you (confusion, boredom, anxiety, perfectionism).
-        For each, write a response plan that keeps you working (next action, time-box, or simplification).
-    - name: "Weekly Motivation Contract"
-      difficulty: "Hard"
-      prompt: |
-        Write a short contract to yourself for the next week:
-        minimum deep work hours, rules you will follow, and what you will do if you miss a day.
+    - name: "Shallow Work Inventory (Easy)"
+      prompt: >
+        List 10 shallow tasks you do regularly (email triage, scheduling, routine admin, status checks).
+        Estimate weekly time spent on each and total it.
+    - name: "Interruption Map (Medium)"
+      prompt: >
+        For one day, note each interruption (notification, message, meeting, colleague, self-interruption).
+        Record the trigger and whether it was necessary. Summarize the top three interruption types.
+    - name: "Communication Audit (Medium)"
+      prompt: >
+        Review the last 20 messages/emails you sent. Mark which were truly urgent, which could have waited,
+        and which were avoidable. Write one paragraph on what this reveals about your norms.
+    - name: "Meeting Triage (Challenging)"
+      prompt: >
+        List all recurring meetings you attend. For each, write: purpose, output, and whether you are essential.
+        Identify at least one meeting you could shorten, batch, or decline.
+    - name: "Design One Anti-Shallow Rule (Most Challenging)"
+      prompt: >
+        Write one rule that reduces shallow work without breaking your responsibilities (e.g., message batching,
+        office hours, no-notification blocks, or a response-time policy). Specify when you will apply it next week.
 
   assignments:
-    - name: "Craftsmanship Manifesto"
+    - name: "Shallow Work Budget"
       description: >
-        Produce a 1–2 page manifesto defining what high-quality work means to you and how deep work supports it, including at least three concrete behaviors.
-    - name: "Deep Work Ritual Checklist"
+        Create a shallow work budget for next week (a cap in hours). List the shallow categories you will allow,
+        the ones you will reduce, and the tactics you will use. Include at least one boundary statement you will use
+        when others demand immediate responsiveness.
+    - name: "Interruption and Boundary Report"
       description: >
-        Create a checklist for starting and ending a deep session (setup, objective, distraction plan, shutdown note) and store it where you’ll use it.
-    - name: "Meaningful Work Reflection"
+        Produce a one-page report summarizing your top interruption sources and the system that creates them.
+        Propose 3 specific boundary changes (calendar blocks, communication norms, environment changes) and note
+        the trade-offs you are willing to accept.
+    - name: "Deep Work Protection Calendar"
       description: >
-        Write a short reflection comparing one deep session and one shallow-heavy session this week, focusing on energy, satisfaction, and output.
+        Draft next week’s calendar with at least three protected deep work blocks. For each block, specify:
+        start/end time, location, the task, and one protective rule. Save this as a calendar view or a one-page plan.
 
 - lesson_id: 5
-  title: "Week 5: Rule #1 — Work Deeply (Part A): Choose Your Depth Philosophy"
-  overview: |
-    This week begins the practical rules. You’ll learn the main “depth philosophies” for scheduling deep work (different ways to structure time) and choose one that fits your real constraints.
-    You’ll build your first repeatable weekly cadence for deep sessions that you can maintain beyond motivation spikes.
+  title: "Week 5: Chapter 2 Lab — Boundaries, Scripts, and Outcome Visibility"
+  course: |
+    ## Overview  
+    This lab week implements Chapter 2 by building practical defenses against shallowness: boundary scripts, communication batching, and outcome-focused reporting. The goal is to reduce ambient collaboration noise without harming relationships or responsibilities.
 
-  keys:
-    takeaways:
-      - "A depth philosophy is a scheduling strategy that makes deep work repeatable."
-      - "The best philosophy fits your role constraints and energy patterns."
-      - "Consistency beats intensity when building a long-term habit."
-    concepts:
-      - "Time-structuring strategies"
-      - "Habit formation through scheduling"
-    terms:
-      - "Depth philosophy: a chosen approach to regularly scheduling deep work (e.g., monastic, bimodal, rhythmic, journalistic)."
-      - "Rhythmic scheduling: using a consistent daily/weekly routine to make deep work automatic."
+    **Key Takeaways**
+    - Boundary scripts make it easier to protect depth without constant negotiation.
+    - Batching communication and setting expectations reduces interruption frequency.
+    - Making outcomes visible can replace performative busyness with real proof of value.
+
+    **Key Concepts**
+    - **Boundary Design**: Creating rules and scripts that protect focused time while preserving collaboration.
+    - **Outcome Visibility**: Demonstrating value through deliverables and progress signals, not constant availability.
+
+    **Key Terms**
+    - **Boundary Script**: A prepared message for setting limits on meetings, responses, or interruptions.
+    - **Batching**: Grouping shallow tasks into scheduled windows instead of letting them scatter throughout the day.
 
   sources:
-    - "Primary Text: Deep Work (Cal Newport), Rule #1: Work Deeply (Depth philosophies section)"
-    - "Supporting Reading: Habit cues and routines (habit formation summary source of your choice)"
+    - "Newport, C. (2016). Deep Work: Rules for Focused Success in a Distracted World. Chapter 2 (application)."
+    - "Lesson references to course outline ‘Week 5’."
 
   questions_and_answers:
-    - Q: "How do you choose the right depth philosophy?"
-      A: "Match it to your constraints (meetings, on-call, caregiving), then pick the simplest structure you can actually repeat every week."
-    - Q: "Why is scheduling central to deep work?"
-      A: "Because deep work is easily displaced by urgent shallow tasks; scheduling turns intention into a protected commitment."
+    - Q: "Why are scripts useful for protecting deep work?"
+      A: "They reduce friction and emotional labor by giving you a prepared, respectful way to set boundaries consistently."
+    - Q: "How can outcome visibility reduce the pressure to be constantly responsive?"
+      A: "When you regularly show progress and deliverables, people rely less on immediate replies as proof that you are working."
 
   exercises:
-    - name: "Constraint Snapshot"
-      difficulty: "Easy"
-      prompt: |
-        List your fixed commitments for a typical week (meetings, shifts, family, commutes).
-        Highlight any predictable “quiet” windows that could host deep work.
-    - name: "Philosophy Fit Test"
-      difficulty: "Medium"
-      prompt: |
-        For each depth philosophy, write one way it could work for you and one reason it might fail.
-        Choose a primary and a backup philosophy.
-    - name: "Two-Week Deep Cadence"
-      difficulty: "Medium"
-      prompt: |
-        Design a two-week schedule with at least 3 deep sessions per week.
-        Include day/time, duration, and a theme (learning, building, writing, solving).
-    - name: "Protect the Block Plan"
-      difficulty: "Hard"
-      prompt: |
-        Identify the top 3 threats to your planned deep blocks.
-        For each, write an “if-then” plan that preserves depth (reschedule rule, boundary script, alternate location).
-    - name: "Scheduling Drill"
-      difficulty: "Hard"
-      prompt: |
-        Practice creating tomorrow’s plan in under 7 minutes:
-        pick deep objective, pick deep block, assign shallow windows, and write a shutdown end-time.
+    - name: "Write Three Boundary Scripts (Easy)"
+      prompt: >
+        Write three short scripts you can use: one for declining a meeting, one for setting a response-time expectation,
+        and one for protecting a deep work block. Keep each to 2–4 sentences.
+    - name: "Batch Two Communication Windows (Medium)"
+      prompt: >
+        Choose two daily windows for email/messages. Write the times and the rule (“no checking outside windows”).
+        Try it for two days and record what broke and what improved.
+    - name: "Office Hours Prototype (Medium–Challenging)"
+      prompt: >
+        Define a short “office hours” period (30–60 minutes) when others can reach you for quick questions.
+        Specify how requests outside that time will be handled.
+    - name: "Meeting Reduction Trial (Challenging)"
+      prompt: >
+        Choose one recurring meeting and propose a reduction: shorter duration, fewer attendees, async update,
+        or less frequent cadence. Draft the message you would send and the outcome you want.
+    - name: "Outcome Signal Design (Most Challenging)"
+      prompt: >
+        Design one weekly “outcome signal” you will share (a brief progress note, deliverables list, or status snapshot).
+        Specify what it contains, when it goes out, and how it reduces the need for interruption.
 
   assignments:
-    - name: "Personal Depth Philosophy Document"
+    - name: "Boundary Script Pack"
       description: >
-        Produce a one-page document selecting your depth philosophy with a weekly schedule, backup plan, and rationale tied to your constraints.
-    - name: "Two-Week Calendar Implementation"
+        Produce a one-page pack of boundary scripts for your real work life: meeting decline, meeting shorten,
+        response-time policy, deep block protection, and task intake. Include a short note for when to use each script.
+    - name: "Shallow-Work Containment Plan"
       description: >
-        Put your deep blocks into your calendar (or a written planner) for the next two weeks, including titles that specify the objective.
-    - name: "Cadence Review Note"
+        Create a containment plan for shallow work: daily batching windows, a meeting triage rule, and a response policy.
+        Include a before/after comparison of your week (how many interruptions you expect to remove).
+    - name: "Outcomes-First Weekly Update"
       description: >
-        After one week, write a short review noting what held, what broke, and the single most important schedule adjustment.
+        Write an outcomes-first weekly update (one page) that lists your top 3 deliverables, progress on your Deep Work Target,
+        and next steps. Include a short line that clarifies how and when you can be contacted for urgent issues.
 
 - lesson_id: 6
-  title: "Week 6: Rule #1 — Work Deeply (Part B): Ritualize and Remove Friction"
-  overview: |
-    This week focuses on turning deep work into a ritual: set rules for where, when, and how you work to reduce startup costs and decision fatigue.
-    You’ll build a standardized deep work “launch sequence” and optimize your environment to make distraction difficult.
+  title: "Week 6: Chapter 3 — Deep Work Is Meaningful"
+  course: |
+    ## Overview  
+    This lesson covers Chapter 3, which argues that deep work is not only economically useful but personally meaningful. The goal is to connect depth to craftsmanship, satisfaction, and the quality of attention, then design recovery and leisure that support a deeper life.
 
-  keys:
-    takeaways:
-      - "Rituals reduce the energy needed to begin deep work."
-      - "Environment design outperforms willpower in the long run."
-      - "Clear rules for tools and inputs prevent mid-session drift."
-    concepts:
-      - "Friction reduction"
-      - "Pre-commitment through environment"
-    terms:
-      - "Ritual: a repeatable set of steps that reliably initiates deep work."
-      - "Pre-commitment: designing constraints in advance so you’re less likely to choose distractions later."
+    **Key Takeaways**
+    - Craftsmanship and focused attention can increase satisfaction and meaning in work.
+    - What you pay attention to shapes your experience; distraction can degrade life quality.
+    - Deep work is sustained by recovery: high-quality leisure and intentional downtime.
+
+    **Key Concepts**
+    - **Craftsmanship and Meaning**: Meaning grows when you invest skill, care, and attention into your work.
+    - **Attention as Experience**: The quality of your attention influences your sense of fulfillment and well-being.
+
+    **Key Terms**
+    - **Craftsmanship Mindset**: Seeking meaning through quality, skill, and care in work.
+    - **High-Quality Leisure**: Rest and activities that restore attention rather than fragment it.
 
   sources:
-    - "Primary Text: Deep Work (Cal Newport), Rule #1: Work Deeply (Ritualize section)"
-    - "Supporting Reading: Implementation intentions (if-then planning summary source of your choice)"
+    - "Newport, C. (2016). Deep Work: Rules for Focused Success in a Distracted World. Chapter 3."
+    - "Lesson references to course outline ‘Week 6’."
 
   questions_and_answers:
-    - Q: "What’s the goal of a deep work ritual?"
-      A: "To reduce ambiguity and setup time so your brain quickly enters concentration instead of negotiating how to start."
-    - Q: "What’s the simplest environment change with big impact?"
-      A: "Removing the most common distraction triggers (notifications, open tabs, phone proximity) before the session starts."
+    - Q: "How does deep work relate to meaning according to Newport?"
+      A: "Deep work supports meaning by enabling craftsmanship and sustained attention, which can make work more satisfying and life more grounded."
+    - Q: "Why is high-quality leisure important for deep work?"
+      A: "Because deep work is cognitively demanding; restorative leisure protects attention capacity and prevents burnout or reliance on low-quality distractions."
 
   exercises:
-    - name: "Deep Work Launch Sequence"
-      difficulty: "Easy"
-      prompt: |
-        Write a 7-step launch sequence (under 3 minutes total) that starts every deep session.
-        Include physical setup, objective statement, and distraction lockdown.
-    - name: "Tool Rules"
-      difficulty: "Medium"
-      prompt: |
-        Create rules for what tools are allowed during deep work (browser sites, docs, terminals, reference materials).
-        Create a “parking lot” method for ideas that try to pull you away.
-    - name: "Friction Hunt"
-      difficulty: "Medium"
-      prompt: |
-        Identify 10 friction points that slow deep work (missing notes, clutter, login prompts, unclear next step).
-        Fix at least 3 immediately with small changes.
-    - name: "Grand Gesture Micro-Version"
-      difficulty: "Hard"
-      prompt: |
-        Design a “micro grand gesture” that signals seriousness without being expensive:
-        a special location, a booked room, a public commitment, or a timed sprint with a visible timer.
-    - name: "Ritual Stress Test"
-      difficulty: "Hard"
-      prompt: |
-        Run two deep sessions using your ritual.
-        After each, rate: startup ease, focus stability, and drift points, then revise the ritual.
+    - name: "Meaning Reflection (Easy)"
+      prompt: >
+        Write a short reflection on a time you felt satisfied after focused effort.
+        What were you doing, and what made it feel meaningful?
+    - name: "Craft Map (Medium)"
+      prompt: >
+        Describe your work (or target skill) as a craft. List three craft standards you admire (clarity, reliability,
+        elegance, usefulness, thoroughness, speed). Choose one to emphasize this week.
+    - name: "Leisure Audit (Medium)"
+      prompt: >
+        List how you spend most evenings. Mark which activities restore you and which leave you scattered.
+        Identify one low-quality leisure habit you want to replace.
+    - name: "Design a High-Quality Leisure Replacement (Challenging)"
+      prompt: >
+        Choose one replacement activity (walks, reading, hobby practice, exercise, volunteering, conversation).
+        Specify when you will do it twice this week and what makes it “high-quality” for you.
+    - name: "End-of-Day Attention Reset (Most Challenging)"
+      prompt: >
+        Create a 10-minute end-of-day reset routine: review open loops, plan tomorrow’s first deep session,
+        and select one restorative leisure activity. Run it for two days and note the effect.
 
   assignments:
-    - name: "Deep Work Ritual Card"
+    - name: "Deep Life Value Statement"
       description: >
-        Produce a one-page ritual card containing your launch sequence, allowed tools list, and a parking-lot method, formatted for quick reference.
-    - name: "Workspace Optimization Log"
+        Write a one-page statement describing what a “deep life” looks like for you. Include: what you want to pay attention to,
+        what you want to stop feeding, and how deep work connects to your values and long-term identity.
+    - name: "High-Quality Leisure Plan"
       description: >
-        Document 5 specific environment changes you made (settings, layout, blockers, materials staging) and the problem each one solves.
-    - name: "Two Ritual Sessions Results"
+        Create a one-week leisure plan with at least three high-quality activities. Specify dates/times and a simple rule
+        that protects those activities (e.g., no phone during the first 30 minutes).
+    - name: "Meaning and Attention Log"
       description: >
-        Write a short results note with what you produced in two ritual-led sessions and the single biggest improvement to your setup.
+        Keep a short log for three days (5 minutes/day). Record: one moment of focused attention, one moment of scattered attention,
+        and one action you can take tomorrow to shift toward deeper, more satisfying attention.
 
 - lesson_id: 7
-  title: "Week 7: Rule #1 — Work Deeply (Part C): Execute Like a Business and Be Lazy"
-  overview: |
-    This week adds execution discipline: track what you do, set lead measures, and review results like a business would.
-    You’ll also implement intentional downtime and a shutdown routine to protect long-term focus and prevent attention from leaking into the evening.
+  title: "Week 7: Chapter 3 Lab — Building a Sustainable Work-and-Recovery Rhythm"
+  course: |
+    ## Overview  
+    This lab week applies Chapter 3 by integrating deep work with recovery. The goal is to design a weekly rhythm that supports sustained focus: protected deep sessions, clean shutdowns, and leisure that restores attention rather than draining it.
 
-  keys:
-    takeaways:
-      - "Tracking and review turn deep work into a managed process."
-      - "Downtime supports better deep work by enabling recovery and insight."
-      - "A shutdown ritual reduces rumination and protects rest."
-    concepts:
-      - "Lead measures and weekly review"
-      - "Recovery and cognitive rest"
-    terms:
-      - "Lead measure: a behavior you can control (hours of deep work) that predicts results."
-      - "Shutdown ritual: a consistent end-of-day process that closes loops and signals work is done."
+    **Key Takeaways**
+    - Sustainability depends on rhythm: depth, rest, and boundaries that you can repeat weekly.
+    - You can reduce attention drains by choosing defaults for evenings and transitions.
+    - Reflection and small adjustments are the bridge from inspiration to a stable practice.
+
+    **Key Concepts**
+    - **Attention Drains**: Patterns that consume focus without providing restoration or meaning.
+    - **Work–Recovery Rhythm**: A repeatable cycle that pairs deep effort with real downtime.
+
+    **Key Terms**
+    - **Recovery Checklist**: A short set of actions that reliably restores cognitive energy.
+    - **Evening Default Plan**: A pre-chosen structure for leisure that prevents drift into distraction.
 
   sources:
-    - "Primary Text: Deep Work (Cal Newport), Rule #1: Work Deeply (Execute Like a Business; Be Lazy sections)"
-    - "Supporting Reading: Recovery and performance basics (sports/learning recovery summary source of your choice)"
+    - "Newport, C. (2016). Deep Work: Rules for Focused Success in a Distracted World. Chapter 3 (application)."
+    - "Lesson references to course outline ‘Week 7’."
 
   questions_and_answers:
-    - Q: "What should you measure to make deep work consistent?"
-      A: "Measure deep work time and deep work outputs; use weekly review to connect time invested to concrete artifacts."
-    - Q: "Why does downtime improve deep work instead of reducing productivity?"
-      A: "Rest restores attention, reduces fatigue-driven distraction, and allows subconscious problem-solving to continue."
+    - Q: "What is an attention drain, and why does it matter for deep work?"
+      A: "An attention drain is a habit or context that fragments focus without meaningful benefit; it reduces the attention capacity needed for deep work."
+    - Q: "Why does a work–recovery rhythm outperform ‘working hard when motivated’?"
+      A: "Because rhythm creates reliable patterns that reduce decision fatigue and protect attention over time, making deep work consistent rather than mood-dependent."
 
   exercises:
-    - name: "Define Your Lead Measures"
-      difficulty: "Easy"
-      prompt: |
-        Choose two lead measures (e.g., deep hours/week, sessions/week, pages/week, problems solved/week).
-        Define how you’ll track them in under 60 seconds per day.
-    - name: "Weekly Review Template"
-      difficulty: "Medium"
-      prompt: |
-        Create a weekly review template with:
-        wins, misses, shallow creep sources, schedule adjustments, and next week’s deep objectives.
-    - name: "Shutdown Script"
-      difficulty: "Medium"
-      prompt: |
-        Write a shutdown script: capture open loops, plan tomorrow’s first deep task, and a closing phrase.
-        Keep it short and repeatable.
-    - name: "Downtime Design"
-      difficulty: "Hard"
-      prompt: |
-        Plan three “high-quality leisure” activities for the week that don’t involve default scrolling.
-        Include time, place, and what you’ll do instead when bored.
-    - name: "Run the System for 5 Days"
-      difficulty: "Hard"
-      prompt: |
-        For five consecutive days, track deep work and perform your shutdown script.
-        At the end, summarize patterns and one operational improvement.
+    - name: "Identify Top Attention Drains (Easy)"
+      prompt: >
+        List your top five attention drains outside deep sessions (doomscrolling, multitasking, late-night screens, constant checking).
+        Rank them by how much they harm your focus.
+    - name: "Create an Evening Default Plan (Medium)"
+      prompt: >
+        Create a simple default plan for weeknights: one high-quality leisure block, one practical block (prep, chores),
+        and one wind-down block. Keep it realistic and repeatable.
+    - name: "Two Clean Transitions (Medium–Challenging)"
+      prompt: >
+        Choose two transitions (work-to-home, meeting-to-deep work, lunch-to-deep work) and design a 3-minute reset ritual.
+        Run it twice and note whether re-entry is easier.
+    - name: "Recovery Checklist Trial (Challenging)"
+      prompt: >
+        Create a recovery checklist (5 items max) and run it on two days.
+        Include at least one physical action (walk, stretch, light exercise) and one offline action.
+    - name: "Weekly Rhythm Draft (Most Challenging)"
+      prompt: >
+        Draft a weekly rhythm that includes at least three deep work blocks, two high-quality leisure blocks,
+        and one review block. Identify one conflict you expect and how you will handle it.
 
   assignments:
-    - name: "Deep Work Scoreboard"
+    - name: "Weekly Schedule Prototype"
       description: >
-        Build a simple scoreboard (note, spreadsheet, or journal page) that tracks daily deep sessions, time, and outputs for one week.
-    - name: "Weekly Review Write-Up"
+        Produce a one-page weekly schedule prototype that includes your deep work blocks, batching windows for shallow work,
+        and planned recovery/leisure. Include one paragraph explaining why the rhythm is sustainable for you.
+    - name: "Recovery and Leisure Checklist"
       description: >
-        Complete one weekly review using your template and produce a plan for next week’s deep objectives and protected blocks.
-    - name: "Shutdown Routine Implementation"
+        Create a checklist you can reuse weekly: shutdown steps, recovery steps, and high-quality leisure options.
+        Include a “when tired” fallback plan that still avoids low-quality distraction spirals.
+    - name: "Chapter 3 Integration Reflection"
       description: >
-        Implement your shutdown routine for at least three days and write a short reflection on sleep quality, stress, and carryover focus.
+        Write a one-page reflection that connects meaning, craftsmanship, and attention to your real week.
+        Describe one change you made, one benefit you noticed, and one change you will keep next month.
 
 - lesson_id: 8
-  title: "Week 8: Rule #2 — Embrace Boredom (Part A): Train Focus, Don’t Feed Distraction"
-  overview: |
-    This week builds concentration as a trainable skill by reducing the habit of reaching for stimulation whenever boredom appears.
-    You’ll implement structured breaks and practice staying with discomfort, so deep work becomes easier to sustain.
+  title: "Week 8: Rule #1 — Work Deeply"
+  course: |
+    ## Overview  
+    This lesson introduces Rule #1: “Work Deeply.” The goal is to choose a deep work scheduling philosophy that fits your life, build a repeatable ritual for entering depth, and plan a week where deep work is protected by design rather than hope.
 
-  keys:
-    takeaways:
-      - "If you constantly escape boredom, you weaken your ability to concentrate."
-      - "Scheduling breaks from focus is better than taking breaks from distraction."
-      - "Training attention requires repeated exposure to “nothing happening” without escaping."
-    concepts:
-      - "Attention training"
-      - "Impulse control through structure"
-    terms:
-      - "Boredom tolerance: the ability to remain present without seeking quick stimulation."
-      - "Distraction reflex: an automatic urge to check something when effort or uncertainty appears."
+    **Key Takeaways**
+    - Deep work requires structure: a scheduling philosophy, rituals, and boundaries that reduce friction.
+    - A deep work ritual makes it easier to start and stay focused, even when you don’t feel motivated.
+    - Small, consistent systems outperform occasional heroic bursts of effort.
 
-  sources:
-    - "Primary Text: Deep Work (Cal Newport), Rule #2: Embrace Boredom"
-    - "Supporting Reading: Habit loop basics (cue-craving-response summary source of your choice)"
+    **Key Concepts**
+    - **Deep Work Scheduling Philosophies**: Different models for fitting deep work into a life (from highly protected to flexible).
+    - **Rituals and Routines**: Pre-decided rules for when, where, and how you work deeply.
 
-  questions_and_answers:
-    - Q: "Why does embracing boredom help deep work?"
-      A: "Because deep work requires sustained attention; boredom training weakens the reflex to flee effort through quick hits of stimulation."
-    - Q: "What’s a practical first step to reduce the distraction reflex?"
-      A: "Create planned times for checking messages and entertainment, and avoid spontaneous checking outside those windows."
-
-  exercises:
-    - name: "Distraction Window Schedule"
-      difficulty: "Easy"
-      prompt: |
-        Choose 2–3 daily windows when you are allowed to check email/news/social.
-        Write the windows and a simple rule for “no checking outside windows.”
-    - name: "Boredom Reps"
-      difficulty: "Medium"
-      prompt: |
-        Do 3 short boredom reps this week: 5–10 minutes each with no phone, no media, no multitasking.
-        After each, note the urge pattern and what helped you stay.
-    - name: "Focus Interval Practice"
-      difficulty: "Medium"
-      prompt: |
-        Practice two focus intervals (25–45 minutes) where you work on one task and do not switch.
-        If an urge appears, write it on paper and return to work.
-    - name: "Urge Surfing Plan"
-      difficulty: "Hard"
-      prompt: |
-        Create a step-by-step plan for what you do when the urge to check appears:
-        notice → label → breathe → write parking-lot note → return to next action.
-    - name: "One-Day Low-Stimulus Experiment"
-      difficulty: "Hard"
-      prompt: |
-        Pick one day to significantly reduce optional stimulation (social, news, random browsing).
-        Record how it affects your ability to start and maintain deep work.
-
-  assignments:
-    - name: "Boredom Training Log"
-      description: >
-        Produce a log of your boredom reps and focus intervals (date, duration, urges encountered, what worked) plus one lesson learned.
-    - name: "Distraction Windows Policy"
-      description: >
-        Write a clear one-page personal policy defining when you check messages/feeds, what counts as urgent, and what you do if you slip.
-    - name: "Low-Stimulus Day Reflection"
-      description: >
-        Write a short reflection describing what changed in your attention and mood during your low-stimulus experiment and which rule you’ll keep.
-
-- lesson_id: 9
-  title: "Week 9: Rule #2 — Embrace Boredom (Part B): Productive Meditation and Intensity"
-  overview: |
-    This week adds specific training techniques Newport recommends to strengthen concentration under real-world conditions.
-    You’ll practice productive meditation (thinking deeply while doing a physical activity) and increase intensity with tight time constraints and clear objectives.
-
-  keys:
-    takeaways:
-      - "Productive meditation trains sustained thought without external input."
-      - "Intensity improves when you limit time and force focus on a defined objective."
-      - "Cognitive training should be repeated and measured like physical training."
-    concepts:
-      - "Productive meditation"
-      - "Time-boxed intensity"
-    terms:
-      - "Productive meditation: focusing on a single professional problem while doing a physically simple activity."
-      - "Time-box: a fixed time limit that increases urgency and reduces wandering."
+    **Key Terms**
+    - **Rhythmic Philosophy**: Scheduling deep work as a daily or regular habit (a repeating rhythm).
+    - **Shutdown Ritual**: A deliberate end-of-day process that closes loops and protects downtime.
 
   sources:
-    - "Primary Text: Deep Work (Cal Newport), Rule #2: Embrace Boredom (Productive meditation and training sections)"
-    - "Supporting Reading: Time constraints and Parkinson’s Law overview (summary source of your choice)"
+    - "Newport, C. (2016). Deep Work: Rules for Focused Success in a Distracted World. Rule #1: Work Deeply."
+    - "Lesson references to course outline ‘Week 8’."
 
   questions_and_answers:
-    - Q: "How is productive meditation different from daydreaming?"
-      A: "It’s deliberate: you choose one problem, return to it when your mind wanders, and avoid switching topics."
-    - Q: "Why do tight deadlines sometimes increase quality?"
-      A: "They reduce room for dithering, encourage prioritization, and force your mind to stay with the core problem."
+    - Q: "Why does Newport emphasize rituals for deep work?"
+      A: "Because rituals reduce the need for willpower by lowering friction, clarifying rules, and creating reliable cues that trigger focused work."
+    - Q: "What is the purpose of choosing a deep work philosophy?"
+      A: "To select a scheduling approach that matches your constraints, so deep work becomes realistic and repeatable instead of an occasional ideal."
 
   exercises:
-    - name: "Pick a Meditation Problem"
-      difficulty: "Easy"
-      prompt: |
-        Choose one problem suitable for sustained thought (design decision, plan, debugging approach, study strategy).
-        Write it as a question and list known constraints.
-    - name: "Two Productive Meditation Walks"
-      difficulty: "Medium"
-      prompt: |
-        Do two 15–30 minute sessions during a walk, commute, or chores.
-        Keep returning to the same problem when you drift; capture insights immediately afterward.
-    - name: "Roosevelt Dash Session"
-      difficulty: "Medium"
-      prompt: |
-        Choose a deep task and set an aggressive time limit (60–80% of what you’d normally allow).
-        Work with full focus; record what you produced and what you cut.
-    - name: "Concentration Failure Analysis"
-      difficulty: "Hard"
-      prompt: |
-        Review your last three deep sessions.
-        Identify exactly when focus broke, what triggered it, and what control could prevent it next time.
-    - name: "Design a 2-Week Attention Training Plan"
-      difficulty: "Hard"
-      prompt: |
-        Create a plan combining: 3 deep sessions/week, 2 productive meditations/week, and daily distraction windows.
-        Include metrics and a simple review method.
+    - name: "Choose Your Philosophy (Easy)"
+      prompt: >
+        Choose the deep work scheduling philosophy that best fits your current life.
+        Write 3 sentences explaining why it fits your constraints and responsibilities.
+    - name: "Design a Deep Work Ritual (Medium)"
+      prompt: >
+        Design a ritual for a 60–90 minute deep session: location, start cue, tools allowed, rules,
+        and a finish line. Keep it to one clear checklist.
+    - name: "Pre-Plan Two Sessions (Medium–Challenging)"
+      prompt: >
+        Schedule two deep work sessions this week. For each, write the objective and finish line in advance.
+        Make sure the sessions are protected on your calendar.
+    - name: "Execute with a Start-and-End Checklist (Challenging)"
+      prompt: >
+        Run both sessions using a start checklist (remove distractions, define finish line) and an end checklist
+        (record output, note next step). Compare focus and output to earlier weeks.
+    - name: "Ritual Iteration (Most Challenging)"
+      prompt: >
+        Identify the biggest friction point in your ritual (starting, staying focused, stopping, or re-entry).
+        Modify one rule and run a third session to test whether the change improves your focus or output.
 
   assignments:
-    - name: "Productive Meditation Notes"
+    - name: "Personal Deep Work Philosophy Write-Up"
       description: >
-        Produce a structured note from your two productive meditations: the problem statement, insights, next actions, and one decision you will make.
-    - name: "Roosevelt Dash Output"
+        Write a one-page document naming your chosen deep work philosophy and how it will work in your life.
+        Include: weekly quota, protected times, what you will say no to, and how you will handle inevitable disruptions.
+    - name: "Deep Work Ritual Blueprint"
       description: >
-        Save the artifact produced in your dash session and write a short comparison to your usual pace (quality, completeness, focus stability).
-    - name: "Attention Training Plan"
+        Create a one-page ritual blueprint you can reuse: session length, location rules, allowed tools,
+        distraction rules, a start cue, a finish-line template, and a short post-session log format.
+    - name: "Next-Week Time-Block Plan"
       description: >
-        Deliver a two-week plan document with schedule, metrics, and a brief rationale for why it fits your constraints.
-
-- lesson_id: 10
-  title: "Week 10: Rule #3 — Quit Social Media (Part A): The Law of the Vital Few for Tools"
-  overview: |
-    This week applies a disciplined approach to network tools: evaluate them based on whether they significantly support what you value, not whether they offer any benefit at all.
-    You’ll define your high-level goals and systematically assess which tools truly help, then design replacements for the value you fear losing.
-
-  keys:
-    takeaways:
-      - "Most tools offer some benefit; the key is whether they provide major benefits relative to costs."
-      - "Define what you’re optimizing for before evaluating tools."
-      - "Replace tool benefits with intentional alternatives to reduce fear-based retention."
-    concepts:
-      - "Cost-benefit tool evaluation"
-      - "Vital few vs trivial many"
-    terms:
-      - "Law of the vital few: a small number of inputs drive most outcomes; prioritize tools with outsized benefits."
-      - "Any-benefit trap: keeping a tool because it has some upside, ignoring its attention costs."
-
-  sources:
-    - "Primary Text: Deep Work (Cal Newport), Rule #3: Quit Social Media"
-    - "Supporting Reading: Pareto principle overview (summary source of your choice)"
-
-  questions_and_answers:
-    - Q: "What’s wrong with keeping tools that have ‘some’ benefit?"
-      A: "Because the hidden cost is attention fragmentation; small benefits rarely justify a constant drain on focus and time."
-    - Q: "How do you evaluate a tool rigorously?"
-      A: "Start with your goals, list activities that support them, then keep only tools that strongly support those activities with minimal cost."
-
-  exercises:
-    - name: "Define Two High-Level Goals"
-      difficulty: "Easy"
-      prompt: |
-        Define two high-level goals for the next 6–12 months (career, learning, health, relationships).
-        For each, list 3 activities that most support it.
-    - name: "Tool Inventory"
-      difficulty: "Medium"
-      prompt: |
-        List your recurring network tools (social apps, news, forums, messaging, entertainment feeds).
-        Include frequency, typical duration, and main “promise” (connection, info, relief).
-    - name: "Vital Few Scoring"
-      difficulty: "Medium"
-      prompt: |
-        Score each tool 0–10 on: (1) major benefit to key activities, (2) cost in time, (3) cost in attention.
-        Identify 3 tools with the worst benefit-to-cost ratio.
-    - name: "Replacement Design"
-      difficulty: "Hard"
-      prompt: |
-        For the top 2 tools you want to reduce, design replacements:
-        what need it meets, and a lower-cost way to meet it (scheduled calls, curated newsletters, planned reading).
-    - name: "Reduction Plan"
-      difficulty: "Hard"
-      prompt: |
-        Create a 14-day plan to reduce or remove the worst tool(s):
-        rules, blockers, allowed windows, and what you’ll do when cravings hit.
-
-  assignments:
-    - name: "Tool Evaluation Matrix"
-      description: >
-        Produce a clear matrix listing each tool, benefit score, cost scores, and your keep/reduce/remove decision with a one-line rationale.
-    - name: "Replacement Plan Document"
-      description: >
-        Write a short plan replacing at least two tool “benefits” with intentional alternatives, including schedule and success criteria.
-    - name: "Two-Week Reduction Setup"
-      description: >
-        Implement your reduction plan in settings (remove apps, change notifications, add blockers) and record exactly what you changed.
-
-- lesson_id: 11
-  title: "Week 11: Rule #3 — Quit Social Media (Part B): The 30-Day Mindset and High-Quality Leisure"
-  overview: |
-    This week reinforces a key idea: reducing network tools only works if you fill the space with better alternatives.
-    You’ll design high-quality leisure and practice being intentional about relaxation so your attention can recover rather than get trapped in low-value scrolling.
-
-  keys:
-    takeaways:
-      - "Removing distraction creates a vacuum; high-quality leisure prevents relapse."
-      - "Intentional leisure restores energy and supports deep work sustainability."
-      - "A clear leisure plan reduces boredom-driven tool use."
-    concepts:
-      - "High-quality leisure"
-      - "Intentional replacement habits"
-    terms:
-      - "High-quality leisure: activities that are engaging, skillful, or socially meaningful, not passive default consumption."
-      - "Default behavior: what you do when you haven’t planned; often driven by convenience and habit."
-
-  sources:
-    - "Primary Text: Deep Work (Cal Newport), Rule #3: Quit Social Media (leisure emphasis)"
-    - "Supporting Reading: Leisure and recovery basics (summary source of your choice)"
-
-  questions_and_answers:
-    - Q: "Why does high-quality leisure matter for deep work?"
-      A: "Because attention is finite; better leisure restores it, while low-quality leisure often prolongs distraction habits."
-    - Q: "How do you avoid replacing social media with another time sink?"
-      A: "By scheduling leisure intentionally and choosing activities with clear start/stop points and meaningful engagement."
-
-  exercises:
-    - name: "Leisure Menu"
-      difficulty: "Easy"
-      prompt: |
-        Create a list of 12 leisure options across categories: physical, creative, social, learning, and rest.
-        Mark 5 that are low-friction and easy to start.
-    - name: "Evening Plan Template"
-      difficulty: "Medium"
-      prompt: |
-        Design a simple evening template: shutdown, dinner, leisure block, prep for tomorrow, wind-down.
-        Include a “no phone” rule for one segment.
-    - name: "Replace-the-Urge Drill"
-      difficulty: "Medium"
-      prompt: |
-        When you feel the urge to scroll, do a 5-minute replacement action from your leisure menu.
-        Log the urge intensity before and after.
-    - name: "Weekend Deep Rest Design"
-      difficulty: "Hard"
-      prompt: |
-        Plan a 2–4 hour block of restorative leisure (walk + reading, project + social time).
-        Define boundaries that keep it from becoming fragmented screen time.
-    - name: "Relapse Prevention Plan"
-      difficulty: "Hard"
-      prompt: |
-        Write a plan for when you relapse into heavy scrolling:
-        identify triggers, create a reset ritual, and define the next small step back to your rules.
-
-  assignments:
-    - name: "High-Quality Leisure Schedule"
-      description: >
-        Produce a 7-day leisure schedule with at least five planned activities and clear start/stop times, designed to support recovery.
-    - name: "Urge Replacement Log"
-      description: >
-        Complete a short log of at least five “replace-the-urge” moments, including what you did instead and how you felt afterward.
-    - name: "Leisure System Reflection"
-      description: >
-        Write a reflection describing how intentional leisure affected your deep work ability, mood, and sleep, plus one change you’ll keep.
-
-- lesson_id: 12
-  title: "Week 12: Rule #4 — Drain the Shallows (Part A): Identify and Quantify Shallow Work"
-  overview: |
-    This week focuses on reducing shallow work by first making it visible and measurable.
-    You’ll conduct a shallow work audit, estimate the “depth value” of tasks, and begin shifting your schedule so deep work becomes the default.
-
-  keys:
-    takeaways:
-      - "You can’t reduce shallow work you don’t track."
-      - "Many shallow tasks feel urgent but don’t meaningfully move goals."
-      - "Quantifying time and value helps you negotiate boundaries with evidence."
-    concepts:
-      - "Time auditing"
-      - "Task value estimation"
-    terms:
-      - "Shallow audit: a structured review of shallow tasks to understand their volume and drivers."
-      - "Depth value: an estimate of how much a task contributes to long-term outcomes relative to its time cost."
-
-  sources:
-    - "Primary Text: Deep Work (Cal Newport), Rule #4: Drain the Shallows"
-    - "Supporting Reading: Time tracking and prioritization basics (summary source of your choice)"
-
-  questions_and_answers:
-    - Q: "Why do shallow tasks multiply so quickly?"
-      A: "Because they are easy to start, provide quick closure, and are often socially rewarded, so they crowd out planned deep work."
-    - Q: "How do you decide what shallow work to cut?"
-      A: "By comparing its true value to its time and attention cost, then eliminating, batching, automating, or renegotiating low-value items."
-
-  exercises:
-    - name: "Shallow Work Log"
-      difficulty: "Easy"
-      prompt: |
-        For two days, log shallow tasks in categories (email, chat, meetings, admin, browsing).
-        Estimate time spent per category.
-    - name: "Task Value Estimation"
-      difficulty: "Medium"
-      prompt: |
-        Choose 10 shallow tasks from your log.
-        For each, estimate: value (low/med/high), cost (minutes), and whether it can be reduced by batching or rules.
-    - name: "Shallow Budget"
-      difficulty: "Medium"
-      prompt: |
-        Set a weekly shallow work budget (hours/week) appropriate to your job/life.
-        Decide where the budget goes (communication, admin, coordination).
-    - name: "Cut/Batch/Automate Plan"
-      difficulty: "Hard"
-      prompt: |
-        Pick 5 recurring shallow tasks and assign an action:
-        cut, batch, automate, delegate, or renegotiate.
-        Specify exactly how you’ll implement each action.
-    - name: "Two-Block Deep Default Day"
-      difficulty: "Hard"
-      prompt: |
-        Plan one day where deep work is the default:
-        schedule two deep blocks first, then place shallow windows around them.
-        Identify how you’ll protect the day from creeping requests.
-
-  assignments:
-    - name: "Shallow Audit Report"
-      description: >
-        Produce a report summarizing your shallow categories, time spent, and top 5 drivers, plus one chart or table you can reuse weekly.
-    - name: "Shallow Work Budget Policy"
-      description: >
-        Write a one-page policy defining your shallow work budget, the categories it includes, and how you’ll enforce it (batching windows and rules).
-    - name: "Cut/Batch Implementation"
-      description: >
-        Implement at least three cut/batch/automate actions and document before/after time saved or reduced interruptions.
-
-- lesson_id: 13
-  title: "Week 13: Rule #4 — Drain the Shallows (Part B): Schedule Every Minute and Become Hard to Reach"
-  overview: |
-    This week operationalizes shallow control with two tactics: planning time with intention (so shallow doesn’t sprawl) and reshaping communication so you aren’t constantly interruptible.
-    You’ll build a daily planning method, define email/message protocols, and create response templates that protect deep blocks without dropping responsibilities.
-
-  keys:
-    takeaways:
-      - "Minute-level planning reveals tradeoffs and prevents accidental shallow sprawl."
-      - "Communication systems can reduce back-and-forth dramatically."
-      - "Being harder to reach is about clarity and batching, not ignoring people."
-    concepts:
-      - "Time-block planning"
-      - "Asynchronous communication design"
-    terms:
-      - "Time-block plan: a day plan that assigns blocks to activities, updated as reality changes."
-      - "Process-centric email: messages that propose a clear next step to reduce back-and-forth."
-
-  sources:
-    - "Primary Text: Deep Work (Cal Newport), Rule #4: Drain the Shallows (schedule every minute; become hard to reach sections)"
-    - "Supporting Reading: Asynchronous communication practices (summary source of your choice)"
-
-  questions_and_answers:
-    - Q: "Do you have to follow a time-block plan perfectly for it to work?"
-      A: "No—its value is in making choices explicit; you revise the plan when things change instead of drifting into reactive mode."
-    - Q: "How do you reduce email without missing important work?"
-      A: "Batch message processing, use clearer next-step proposals, and set expectations for response times and escalation paths."
-
-  exercises:
-    - name: "Daily Time-Block Template"
-      difficulty: "Easy"
-      prompt: |
-        Create a one-page daily template with blocks from start to end of workday.
-        Include placeholders for deep work, shallow windows, meals, and wrap-up.
-    - name: "Plan-and-Revise Practice"
-      difficulty: "Medium"
-      prompt: |
-        For two days, plan your day in the morning and revise it at least twice as reality changes.
-        Note where shallow work tried to expand.
-    - name: "Email Protocol Draft"
-      difficulty: "Medium"
-      prompt: |
-        Draft an email/message protocol: check times, expected response window, escalation method for urgent issues, and meeting alternatives.
-    - name: "Process-Centric Message Templates"
-      difficulty: "Hard"
-      prompt: |
-        Write 5 templates that reduce back-and-forth:
-        request clarification, propose options, set a deadline, redirect to documentation, and schedule a specific time.
-    - name: "Hard-to-Reach Experiment"
-      difficulty: "Hard"
-      prompt: |
-        Run a 3-day experiment:
-        two message-check windows/day and protected deep blocks.
-        Track outcomes: what broke, what improved, and stakeholder reactions.
-
-  assignments:
-    - name: "Time-Block Planning Pack"
-      description: >
-        Produce a reusable planning pack: daily template, revision rules, and a short guide for how you time-block deep vs shallow work.
-    - name: "Communication Protocol Document"
-      description: >
-        Create a one-page communication protocol you could share with a team, including windows, escalation, and what “urgent” means.
-    - name: "Template Library"
-      description: >
-        Deliver a personal library of at least five process-centric message templates and a note on when to use each.
-
-- lesson_id: 14
-  title: "Week 14: Conclusion — The Deep Life and Long-Term Sustainability"
-  overview: |
-    This week synthesizes the book’s final emphasis: deep work is not just a tactic but a philosophy of living and working with intention.
-    You’ll consolidate your rules into a single operating system, define your long-term metrics, and plan for setbacks without abandoning the approach.
-
-  keys:
-    takeaways:
-      - "Deep work becomes sustainable when it is part of a broader philosophy, not a temporary sprint."
-      - "A simple operating system beats a complex one you won’t maintain."
-      - "Setbacks are expected; the key is having a reset process."
-    concepts:
-      - "Personal operating system"
-      - "Sustainability through review and reset"
-    terms:
-      - "Deep life: a lifestyle oriented around depth, intention, and meaningful engagement over distraction."
-      - "Reset ritual: a short sequence that returns you to your rules after a disruption."
-
-  sources:
-    - "Primary Text: Deep Work (Cal Newport), Conclusion"
-    - "Supporting Reading: Behavior change maintenance (summary source of your choice)"
-
-  questions_and_answers:
-    - Q: "What makes deep work stick beyond the initial enthusiasm?"
-      A: "A small set of clear rules, scheduled routines, and review cycles that keep you aligned even when motivation dips."
-    - Q: "What should you do when life disrupts your deep work schedule?"
-      A: "Use a reset ritual: return to minimum viable deep blocks, restore distraction controls, and rebuild cadence gradually."
-
-  exercises:
-    - name: "Rules Consolidation"
-      difficulty: "Easy"
-      prompt: |
-        Write your personal version of the four rules in your own words.
-        Keep each rule to one sentence and add one supporting habit.
-    - name: "Operating System Draft"
-      difficulty: "Medium"
-      prompt: |
-        Create a one-page “Deep Work OS” including:
-        schedule philosophy, ritual, boredom training, tool rules, shallow budget, communication protocol, review cycle.
-    - name: "Failure Mode List"
-      difficulty: "Medium"
-      prompt: |
-        List your top 5 failure modes (travel, illness, deadlines, stress, social events).
-        For each, define the minimum viable deep work plan.
-    - name: "Reset Ritual Design"
-      difficulty: "Hard"
-      prompt: |
-        Create a reset ritual you can do in 15 minutes:
-        restore blockers, re-plan week, choose next deep task, schedule first deep block, shutdown time.
-    - name: "Long-Term Metrics Selection"
-      difficulty: "Hard"
-      prompt: |
-        Choose 3 metrics you’ll track for 8 weeks:
-        one behavior metric (hours), one output metric (artifacts), one well-being metric (stress/sleep).
-
-  assignments:
-    - name: "Deep Work OS One-Pager"
-      description: >
-        Produce a polished one-page Deep Work OS that you can print or keep pinned as your personal system.
-    - name: "Reset Toolkit"
-      description: >
-        Create a reset toolkit: checklist, minimum viable schedule, and a short note to yourself that you will read when you fall off track.
-    - name: "Eight-Week Continuation Plan"
-      description: >
-        Write an 8-week continuation plan that includes a weekly cadence, metrics, and two experiments you want to run to improve the system.
-
-- lesson_id: 15
-  title: "Week 15: Integration (Capstone Part A) — Build Your Real-World Deep Work System"
-  overview: |
-    This week turns your Deep Work OS into an operational plan tied to a real project: you will select a concrete deliverable and design the full workflow around deep sessions.
-    The goal is to make deep work directly visible in outcomes, with clear artifacts produced each week.
-
-  keys:
-    takeaways:
-      - "Capstones make deep work real by linking it to visible outputs."
-      - "Planning the workflow prevents deep sessions from becoming vague 'work on stuff' time."
-      - "Constraints and checklists reduce drift and increase completion."
-    concepts:
-      - "Project-to-session decomposition"
-      - "Artifact-driven progress"
-    terms:
-      - "Artifact: a concrete output that proves progress (notes, draft, code, plan, diagram, checklist)."
-      - "Decomposition: breaking a project into small, well-defined tasks that fit inside deep sessions."
-
-  sources:
-    - "Primary Text: Deep Work (Cal Newport), Part 2 synthesis across Rules #1–#4"
-    - "Supporting Reading: Project planning basics (summary source of your choice)"
-
-  questions_and_answers:
-    - Q: "How do you ensure deep work sessions produce real progress?"
-      A: "Define each session by a deliverable artifact, prepare inputs in advance, and close with a next-step note."
-    - Q: "What’s the best capstone project for this course?"
-      A: "One that matters to you, requires learning or creation, and can be advanced through 6–10 focused sessions with tangible outputs."
-
-  exercises:
-    - name: "Choose the Capstone"
-      difficulty: "Easy"
-      prompt: |
-        Choose one capstone deliverable you can advance with deep work in two weeks.
-        Define scope, success criteria, and a visible final artifact.
-    - name: "Session Decomposition"
-      difficulty: "Medium"
-      prompt: |
-        Break the capstone into 6–10 session-sized tasks.
-        Each task must fit into a 60–120 minute deep block and produce an artifact.
-    - name: "Input Staging Checklist"
-      difficulty: "Medium"
-      prompt: |
-        For your next deep session, list all required inputs (docs, datasets, references, tools).
-        Create a staging checklist so setup takes under 5 minutes.
-    - name: "Risk and Distraction Controls for the Capstone"
-      difficulty: "Hard"
-      prompt: |
-        Identify the top 5 risks (unclear requirements, procrastination, interruptions).
-        Create one control per risk (rule, environment change, contingency plan).
-    - name: "Capstone Week Schedule"
-      difficulty: "Hard"
-      prompt: |
-        Schedule at least 3 deep blocks for capstone execution next week.
-        Title each block with the session task and intended artifact.
-
-  assignments:
-    - name: "Capstone Plan Document"
-      description: >
-        Produce a capstone plan including scope, success criteria, session breakdown, and the artifact expected from each session.
-    - name: "Staging and Ritual Implementation"
-      description: >
-        Create and use a staging checklist and deep work ritual for one capstone session, then record setup time and focus quality.
-    - name: "Protected Schedule Published"
-      description: >
-        Publish your next-week deep schedule (calendar or written plan) with clearly labeled capstone sessions and shallow-work windows.
-
-- lesson_id: 16
-  title: "Week 16: Integration (Capstone Part B) — Execute, Review, and Lock In the Habit"
-  overview: |
-    This final week is execution and consolidation: complete multiple capstone deep sessions, assemble your final artifact, and evaluate your deep work system with evidence.
-    You’ll finish with a post-course operating plan that keeps deep work alive without needing the course structure.
-
-  keys:
-    takeaways:
-      - "Execution validates the system; review makes it sustainable."
-      - "Evidence-based reflection improves your deep work design faster than guesswork."
-      - "A maintenance plan prevents backsliding into shallow default."
-    concepts:
-      - "Retrospective analysis"
-      - "Maintenance planning"
-    terms:
-      - "Retrospective: a structured review of what worked, what didn’t, and what to change next cycle."
-      - "Maintenance plan: a lightweight ongoing routine that preserves deep work habits long-term."
-
-  sources:
-    - "Primary Text: Deep Work (Cal Newport), full-book synthesis (Introduction + Parts 1–2 + Conclusion)"
-    - "Supporting Reading: Retrospective methods (simple project retrospective summary source of your choice)"
-
-  questions_and_answers:
-    - Q: "What’s the most important measure of success at the end of the course?"
-      A: "A working, repeatable deep work system that produces artifacts consistently—not perfection or never being distracted."
-    - Q: "How do you keep deep work going when motivation fades?"
-      A: "Use minimal viable cadence, scheduled blocks, clear rules, and a weekly review that reconnects deep work to outcomes."
-
-  exercises:
-    - name: "Capstone Execution Sprint"
-      difficulty: "Easy"
-      prompt: |
-        Complete one deep block on your capstone using your ritual and staging checklist.
-        Produce the intended artifact and write a 3-line shutdown note.
-    - name: "Second Session with Improvement"
-      difficulty: "Medium"
-      prompt: |
-        Complete a second deep block, applying one improvement discovered from the first session.
-        Record whether the improvement changed focus stability or output quality.
-    - name: "Assemble the Final Artifact"
-      difficulty: "Medium"
-      prompt: |
-        Combine your session artifacts into a final deliverable:
-        report, notes packet, code release, study guide, or project draft.
-        Ensure it is shareable and organized.
-    - name: "Deep Work Retrospective"
-      difficulty: "Hard"
-      prompt: |
-        Write a retrospective covering:
-        metrics, schedule adherence, biggest distraction sources, best controls, and your top 3 system improvements.
-    - name: "8-Week Maintenance Design"
-      difficulty: "Hard"
-      prompt: |
-        Design an 8-week maintenance plan:
-        minimum deep blocks/week, shallow budget, tool rules, weekly review, and one monthly “system tune-up.”
-
-  assignments:
-    - name: "Capstone Final Deliverable"
-      description: >
-        Submit your completed capstone artifact in a clean, organized format (single document, folder, repo, or packet) with a short description of what it is.
-    - name: "Deep Work Retrospective Report"
-      description: >
-        Produce a 1–2 page retrospective including your metrics, what changed in your behavior, and the top system upgrades you will keep.
-    - name: "Post-Course Maintenance Plan"
-      description: >
-        Deliver a practical 8-week maintenance plan with calendar commitments, rules, review cadence, and a reset ritual you can execute in 15 minutes.
+        Draft a time-block plan for next week that includes deep work blocks, shallow batching windows,
+        and recovery. Include a shutdown plan for at least three days and one contingency plan for disruptions.
