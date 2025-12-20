@@ -629,11 +629,40 @@ function getDefaultQuizStore() {
   return { quizzes: [], versionInfo: normalized };
 }
 
+function normalizeQuizAttemptEntry(entry = {}) {
+  const submittedAt =
+    entry.submittedAt || entry.timestamp || entry.gradedAt || entry.createdAt || new Date().toISOString();
+  const feedback = entry.feedback || null;
+  const responses = typeof entry.responses === "object" && entry.responses ? entry.responses : {};
+  const score =
+    typeof entry.score === "number"
+      ? entry.score
+      : typeof feedback?.overallScore === "number"
+      ? feedback.overallScore
+      : null;
+  return {
+    submittedAt,
+    responses,
+    feedback,
+    score
+  };
+}
+
+function normalizeQuiz(quiz = {}) {
+  const attempts = Array.isArray(quiz.attempts) ? quiz.attempts.map(normalizeQuizAttemptEntry) : [];
+  return { ...quiz, attempts };
+}
+
+function normalizeQuizList(list = []) {
+  if (!Array.isArray(list)) return [];
+  return list.map(q => normalizeQuiz(q));
+}
+
 function parseQuizPayload(txt) {
   try {
     const parsed = JSON.parse(txt || "{}");
     quizVersionInfo = normalizeVersionInfo(parsed.versionInfo, "quizzes-import");
-    return { quizzes: parsed.quizzes || [], versionInfo: quizVersionInfo };
+    return { quizzes: normalizeQuizList(parsed.quizzes || []), versionInfo: quizVersionInfo };
   } catch (e) {
     const fallback = buildVersionInfo("quizzes-legacy");
     quizVersionInfo = fallback;
@@ -801,7 +830,12 @@ async function loadUserQuizzes(user) {
       }
     } else if (data && data.quizzes) {
       quizVersionInfo = normalizeVersionInfo(data.versionInfo, "quizzes-plaintext");
-      quizStore = { ...getDefaultQuizStore(), ...data, versionInfo: quizVersionInfo };
+      quizStore = {
+        ...getDefaultQuizStore(),
+        ...data,
+        quizzes: normalizeQuizList(data.quizzes),
+        versionInfo: quizVersionInfo
+      };
       renderQuizList();
       setQuizStatus("Imported quizzes from a legacy format.", "success");
     }
@@ -1293,19 +1327,32 @@ function getQuestionKey(question, idx) {
 }
 
 function getQuizAttempt(quizId) {
-  if (!quizId) {
+  const quiz = typeof quizId === "object" ? quizId : (quizStore?.quizzes || []).find(q => q.id === quizId);
+  const id = quiz?.id || quizId;
+  if (!id) {
     return { responses: {}, feedback: null, status: "", error: null, submitting: false };
   }
-  if (!quizAttempts[quizId]) {
-    quizAttempts[quizId] = {
+  if (!quizAttempts[id]) {
+    const initial = {
       responses: {},
       feedback: null,
       status: "",
       error: null,
       submitting: false
     };
+    const attempts = Array.isArray(quiz?.attempts) ? [...quiz.attempts] : [];
+    if (attempts.length) {
+      attempts.sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
+      const latest = attempts[0];
+      initial.responses = { ...(latest.responses || {}) };
+      initial.feedback = latest.feedback || null;
+      if (latest.submittedAt) {
+        initial.status = `Last graded: ${formatQuizTimestamp(latest.submittedAt)}`;
+      }
+    }
+    quizAttempts[id] = initial;
   }
-  return quizAttempts[quizId];
+  return quizAttempts[id];
 }
 
 function findQuestionFeedback(feedback, key, idx) {
@@ -1390,7 +1437,7 @@ function renderQuizDetails(quiz) {
   const created = metadata.createdAt || metadata.generatedAt || quiz.createdAt;
   const status = quiz.status || metadata.status || "saved";
   const questions = Array.isArray(quiz.questions) ? quiz.questions : [];
-  const attempt = getQuizAttempt(quiz.id);
+  const attempt = getQuizAttempt(quiz);
   quizDetails.innerHTML = "";
   const detailActions = document.createElement("div");
   detailActions.className = "quiz-detail-actions";
@@ -1434,6 +1481,49 @@ function renderQuizDetails(quiz) {
     helper.className = "settings-note";
     helper.textContent = "Answer each prompt and submit to get AI-generated feedback.";
     gradingSummary.appendChild(helper);
+  }
+  const attemptHistory = document.createElement("div");
+  attemptHistory.className = "quiz-attempt-history";
+  const attempts = Array.isArray(quiz.attempts) ? [...quiz.attempts] : [];
+  if (attempts.length) {
+    const historyTitle = document.createElement("h5");
+    historyTitle.textContent = "Previous attempts";
+    attemptHistory.appendChild(historyTitle);
+    const historyList = document.createElement("ul");
+    historyList.className = "quiz-attempt-history__list";
+    attempts
+      .slice()
+      .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
+      .forEach(entry => {
+        const item = document.createElement("li");
+        item.className = "quiz-attempt-history__item";
+        const label = document.createElement("div");
+        const timestamp = document.createElement("strong");
+        timestamp.textContent = formatQuizTimestamp(entry.submittedAt);
+        label.appendChild(timestamp);
+        const score = document.createElement("span");
+        const numericScore =
+          typeof entry.score === "number"
+            ? entry.score
+            : typeof entry.feedback?.overallScore === "number"
+            ? entry.feedback.overallScore
+            : null;
+        score.textContent = numericScore !== null ? `Score: ${Math.round(numericScore)} / 100` : "Score pending";
+        label.appendChild(score);
+        item.appendChild(label);
+        if (entry.feedback?.summary) {
+          const summary = document.createElement("p");
+          summary.textContent = entry.feedback.summary;
+          item.appendChild(summary);
+        }
+        historyList.appendChild(item);
+      });
+    attemptHistory.appendChild(historyList);
+  } else {
+    const helper = document.createElement("p");
+    helper.className = "settings-note";
+    helper.textContent = "Submit your responses to start building your attempt history.";
+    attemptHistory.appendChild(helper);
   }
   const list = document.createElement("ol");
   list.className = "quiz-question-list";
@@ -1497,6 +1587,7 @@ function renderQuizDetails(quiz) {
   quizDetails.appendChild(h);
   quizDetails.appendChild(meta);
   quizDetails.appendChild(gradingSummary);
+  quizDetails.appendChild(attemptHistory);
   quizDetails.appendChild(list);
   quizDetails.appendChild(responseActions);
   quizDetails.appendChild(detailActions);
@@ -1599,7 +1690,7 @@ function renderQuizList() {
 async function submitQuizForGrading(quiz) {
   if (!quiz) return;
   const apiKey = (decryptedUserPayload || {}).apiKey;
-  const attempt = getQuizAttempt(quiz.id);
+  const attempt = getQuizAttempt(quiz);
   if (!apiKey) {
     attempt.error = "Add your OpenAI API key in Settings to submit for grading.";
     attempt.status = "";
@@ -1699,6 +1790,28 @@ async function submitQuizForGrading(quiz) {
       perQuestion
     };
     attempt.status = "Received AI feedback.";
+    const attemptRecord = normalizeQuizAttemptEntry({
+      submittedAt: new Date().toISOString(),
+      responses: { ...attempt.responses },
+      feedback: attempt.feedback,
+      score: computedScore
+    });
+    const quizzes = Array.isArray(quizStore?.quizzes) ? [...quizStore.quizzes] : [];
+    const quizIdx = quizzes.findIndex(q => q.id === quiz.id);
+    if (quizIdx !== -1) {
+      const normalizedQuiz = normalizeQuiz(quizzes[quizIdx]);
+      const updatedQuiz = {
+        ...normalizedQuiz,
+        attempts: [attemptRecord, ...normalizedQuiz.attempts]
+      };
+      quizzes[quizIdx] = updatedQuiz;
+      quizStore.quizzes = quizzes;
+      attempt.status = "Saving your feedback to the vault...";
+      renderQuizDetails(updatedQuiz);
+      await persistQuizStore();
+      attempt.status = "Feedback saved to your vault.";
+      renderQuizList();
+    }
   } catch (err) {
     console.error("Quiz grading failed", err);
     attempt.error = err?.message || "Could not submit quiz for grading.";
@@ -2680,7 +2793,8 @@ async function generateQuizWithOpenAI(selection) {
       questionCount: requestedQuestionCount
     },
     questions: normalizedQuestions,
-    status: parsed.status || "generated"
+    status: parsed.status || "generated",
+    attempts: []
   };
 }
 
