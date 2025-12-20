@@ -18,5 +18,10 @@
     "id": "0003",
     "title": "Aristotle's Nicomachean Ethics",
     "file": "lessons/0003_NicomacheanEthics.yaml"
+  },
+  {
+	"id": "0004",
+    "title": "Deep Work",
+    "file": "lessons/0004_DeepWork.yaml"
   }
 ]
