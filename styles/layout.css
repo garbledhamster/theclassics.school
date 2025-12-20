@@ -95,6 +95,10 @@ main {
   overflow-x: hidden;
   transform: translateX(0);
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - var(--header-stack-height));
+  overflow: hidden;
 }
 .lesson-sidebar.collapsed {
   width: 50px;
@@ -114,6 +118,9 @@ main {
 .lesson-list-wrapper {
   overflow-y: auto;
   padding-top: 0.5rem;
+  padding-bottom: 1rem;
+  flex: 1;
+  min-height: 0;
 }
 .lesson-sidebar.collapsed .lesson-list-wrapper {
   padding: 0;
