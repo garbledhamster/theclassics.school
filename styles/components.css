@@ -911,6 +911,68 @@ button:focus {
   border: 1px solid #c9b28d;
   border-radius: 12px;
 }
+.quiz-flow {
+  display: grid;
+  gap: 0.65rem;
+  width: 100%;
+}
+.quiz-flow__steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.quiz-flow__step {
+  padding: 0.55rem 0.65rem;
+  background: #fff;
+  border: 1px solid #e0d7ca;
+  border-radius: 10px;
+  font-weight: 700;
+  color: #5a4a38;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.quiz-flow__step.active {
+  border-color: var(--color-green);
+  box-shadow: 0 0 0 3px rgba(130, 149, 89, 0.15);
+}
+.quiz-flow__controls {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+.quiz-flow__field {
+  display: grid;
+  gap: 0.3rem;
+}
+.quiz-flow__field label {
+  font-weight: 700;
+  color: #3c3327;
+}
+.quiz-flow__field select,
+.quiz-flow__field input[type="number"] {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--color-gray);
+  border-radius: 10px;
+  background: #fffbf5;
+}
+.quiz-flow__field select:focus-visible,
+.quiz-flow__field input[type="number"]:focus-visible {
+  outline: none;
+  border-color: var(--color-green);
+  box-shadow: 0 0 0 3px rgba(130, 149, 89, 0.18);
+}
+.quiz-flow__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+#duplicateQuizBtn {
+  border: 1px dashed var(--color-green);
+  color: var(--color-green-dark);
+  background: #f8fbf4;
+}
 #generateQuizBtn {
   background: linear-gradient(135deg, var(--color-red), #b93d12);
   color: #fff;

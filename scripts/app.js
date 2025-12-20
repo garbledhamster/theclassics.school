@@ -39,6 +39,12 @@ const rotatePassphraseBtn = document.getElementById("rotatePassphraseBtn");
 const resetAccountBtn = document.getElementById("resetAccountBtn");
 const settingsStatus = document.getElementById("settingsStatus");
 const generateQuizBtn = document.getElementById("generateQuizBtn");
+const duplicateQuizBtn = document.getElementById("duplicateQuizBtn");
+const quizTemplateSelect = document.getElementById("quizTemplateSelect");
+const quizQuestionCountInput = document.getElementById("quizQuestionCount");
+const quizFlowStepper = document.getElementById("quizFlowStepper");
+const quizFlowNextBtn = document.getElementById("quizFlowNextBtn");
+const quizFlowBackBtn = document.getElementById("quizFlowBackBtn");
 const quizLessonContext = document.getElementById("quizLessonContext");
 const quizStatus = document.getElementById("quizStatus");
 const quizList = document.getElementById("quizList");
@@ -94,6 +100,15 @@ let activeQuizId = null;
 const noteModeCache = {};
 const quizAttempts = {};
 let pendingEmailLinkMode = isSignInWithEmailLink(auth, window.location.href);
+const QUIZ_MIN_QUESTIONS = 5;
+const QUIZ_MAX_QUESTIONS = 15;
+const QUIZ_DEFAULT_QUESTION_COUNT = 10;
+const quizFlowState = {
+  step: 1,
+  template: "standard",
+  questionCount: QUIZ_DEFAULT_QUESTION_COUNT,
+  sourceQuizId: null
+};
 
 function getEmailFromQuerystring() {
   try {
@@ -117,6 +132,58 @@ function setAuthStatus(message, type = "info") {
     label.classList.remove("info", "error", "success");
     label.classList.add(type);
   });
+}
+
+function clampQuestionCount(value = QUIZ_DEFAULT_QUESTION_COUNT) {
+  const parsed = Number.parseInt(value, 10);
+  if (Number.isNaN(parsed)) return QUIZ_DEFAULT_QUESTION_COUNT;
+  return Math.min(QUIZ_MAX_QUESTIONS, Math.max(QUIZ_MIN_QUESTIONS, parsed));
+}
+
+function findQuizById(id) {
+  if (!id) return null;
+  return (quizStore?.quizzes || []).find(q => q.id === id) || null;
+}
+
+function getActiveQuiz() {
+  return findQuizById(activeQuizId);
+}
+
+function setQuizFlowStep(step, statusMessage) {
+  const nextStep = Math.min(3, Math.max(1, step));
+  quizFlowState.step = nextStep;
+  updateQuizFlowUI(statusMessage);
+}
+
+function resetQuizFlowSource() {
+  quizFlowState.sourceQuizId = null;
+  if (quizFlowState.template === "duplicate") {
+    quizFlowState.template = "standard";
+  }
+}
+
+function updateQuizFlowUI(statusMessage) {
+  const steps = Array.from(quizFlowStepper?.querySelectorAll("[data-step]") || []);
+  steps.forEach(stepNode => {
+    const stepNumber = Number.parseInt(stepNode.dataset.step || "0", 10);
+    stepNode.classList.toggle("active", stepNumber <= quizFlowState.step);
+  });
+  if (quizTemplateSelect) quizTemplateSelect.value = quizFlowState.template;
+  if (quizQuestionCountInput) quizQuestionCountInput.value = quizFlowState.questionCount;
+  if (statusMessage) {
+    setQuizStatus(statusMessage, "info");
+  }
+}
+
+function syncQuizFlowWithLesson() {
+  if (quizFlowState.sourceQuizId && !findQuizById(quizFlowState.sourceQuizId)) {
+    resetQuizFlowSource();
+  }
+  const hasLesson = !!(currentLessonSelection && currentLessonSelection.title);
+  const targetStep = hasLesson ? Math.max(quizFlowState.step, 2) : 1;
+  setQuizFlowStep(targetStep, hasLesson
+    ? "Step 2: Choose a quiz template or duplicate an existing quiz."
+    : "Step 1: Select a lesson in the Lessons page to start the quiz flow.");
 }
 
 async function completeEmailLinkSignIn(email) {
@@ -489,15 +556,14 @@ function updateQuizContext(customMessage) {
   if (!quizLessonContext) return;
   if (customMessage) {
     quizLessonContext.textContent = customMessage;
-    return;
-  }
-  if (currentLessonSelection && currentLessonSelection.title) {
+  } else if (currentLessonSelection && currentLessonSelection.title) {
     quizLessonContext.textContent = `Current lesson: ${currentLessonSelection.title}`;
   } else if (currentCourseData?.course) {
     quizLessonContext.textContent = "Select a lesson in the Lessons page to target your quiz.";
   } else {
     quizLessonContext.textContent = "Choose a course from Home to begin.";
   }
+  syncQuizFlowWithLesson();
 }
 
 function showPassphraseGate() {
@@ -2720,7 +2786,7 @@ function buildLessonContext(selection) {
   return base.join("\n");
 }
 
-async function generateQuizWithOpenAI(selection) {
+async function generateQuizWithOpenAI(selection, options = {}) {
   const apiKey = (decryptedUserPayload || {}).apiKey;
   if (!apiKey) {
     throw new Error("Add your OpenAI API key in Settings before generating quizzes.");
@@ -2728,20 +2794,26 @@ async function generateQuizWithOpenAI(selection) {
   const now = new Date().toISOString();
   const quizId = crypto.randomUUID ? crypto.randomUUID() : `quiz-${Date.now()}`;
   const context = buildLessonContext(selection);
-  const minQuestionCount = 5;
-  const maxQuestionCount = 15;
-  const requestedQuestionCount = Math.min(Math.max(10, minQuestionCount), maxQuestionCount);
+  const requestedQuestionCount = clampQuestionCount(options.questionCount ?? QUIZ_DEFAULT_QUESTION_COUNT);
+  const templateName = options.template || options.templateName || quizFlowState.template || "standard";
+  const templateGuidance = {
+    standard: "Create reflective prompts that connect lesson ideas to practical understanding.",
+    review: "Focus on checkpoints that help the student recall and summarize key facts.",
+    challenge: "Lean into higher-order thinking with application and synthesis prompts.",
+    duplicate: "Follow the tone of the duplicated quiz and keep wording concise."
+  };
   const prompt = [
     "You are a tutor generating reflective quiz questions for a student.",
+    templateGuidance[templateName] || templateGuidance.standard,
     "Create concise, open-ended questions that reference the supplied lesson context.",
     "Return a JSON object with keys: id (string), status (string), metadata (object), questions (array of {prompt, detail}).",
     "Metadata should include lessonTitle, courseTitle, createdAt, and questionCount.",
-    `Produce between ${minQuestionCount} and ${maxQuestionCount} questions as requested.`,
+    `Produce between ${QUIZ_MIN_QUESTIONS} and ${QUIZ_MAX_QUESTIONS} questions as requested. Use the template name ${templateName}.`,
     "Respond ONLY with valid JSON."
   ].join(" \n");
   const userMessage = [
     `Lesson context:\n${context}`,
-    `Generate ${requestedQuestionCount} thoughtful questions tailored to this lesson, staying between ${minQuestionCount} and ${maxQuestionCount} questions.`
+    `Generate ${requestedQuestionCount} thoughtful questions tailored to this lesson, staying between ${QUIZ_MIN_QUESTIONS} and ${QUIZ_MAX_QUESTIONS} questions.`
   ].join("\n");
   const resp = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -2773,9 +2845,9 @@ async function generateQuizWithOpenAI(selection) {
     throw new Error("OpenAI response was not valid JSON.");
   }
   const lesson = selection.lesson || {};
-  const cappedQuestions = Array.isArray(parsed.questions) ? parsed.questions.slice(0, maxQuestionCount) : [];
-  if (cappedQuestions.length < minQuestionCount) {
-    throw new Error(`Quiz must include at least ${minQuestionCount} questions.`);
+  const cappedQuestions = Array.isArray(parsed.questions) ? parsed.questions.slice(0, QUIZ_MAX_QUESTIONS) : [];
+  if (cappedQuestions.length < QUIZ_MIN_QUESTIONS) {
+    throw new Error(`Quiz must include at least ${QUIZ_MIN_QUESTIONS} questions.`);
   }
   const normalizedQuestions = cappedQuestions.slice(0, requestedQuestionCount);
   if (normalizedQuestions.length < requestedQuestionCount) {
@@ -2790,10 +2862,39 @@ async function generateQuizWithOpenAI(selection) {
       coursePath: selection.coursePath,
       createdAt: parsed?.metadata?.createdAt || now,
       status: parsed?.metadata?.status || parsed.status || "generated",
-      questionCount: requestedQuestionCount
+      questionCount: requestedQuestionCount,
+      template: templateName
     },
     questions: normalizedQuestions,
     status: parsed.status || "generated",
+    attempts: []
+  };
+}
+
+function buildDuplicatedQuiz(sourceQuiz, options = {}) {
+  if (!sourceQuiz) throw new Error("No quiz selected to duplicate.");
+  const now = new Date().toISOString();
+  const questionCount = clampQuestionCount(options.questionCount ?? QUIZ_DEFAULT_QUESTION_COUNT);
+  const questions = Array.isArray(sourceQuiz.questions) ? [...sourceQuiz.questions] : [];
+  const baseMetadata = { ...(sourceQuiz.metadata || {}) };
+  const duplicatedQuestions = questions.slice(0, questionCount).map((q, idx) => ({
+    ...q,
+    prompt: q.prompt || q.question || `Question ${idx + 1}`,
+    detail: q.detail || q.explanation || q.answer || ""
+  }));
+  if (!duplicatedQuestions.length) throw new Error("The selected quiz has no questions to duplicate.");
+  return {
+    id: crypto.randomUUID ? crypto.randomUUID() : `quiz-${Date.now()}`,
+    metadata: {
+      ...baseMetadata,
+      template: options.template || sourceQuiz?.metadata?.template || "duplicate",
+      duplicatedFrom: sourceQuiz.id,
+      createdAt: now,
+      status: "duplicated",
+      questionCount: duplicatedQuestions.length
+    },
+    questions: duplicatedQuestions,
+    status: "duplicated",
     attempts: []
   };
 }
@@ -2812,13 +2913,46 @@ async function startQuizGeneration() {
   }
   if (!currentLessonSelection) {
     setQuizStatus("Open a lesson in the Lessons page before generating a quiz.", "error");
+    setQuizFlowStep(1);
     return;
   }
-  setQuizStatus(`Starting quiz generation for ${currentLessonSelection.title}...`, "info");
+  const questionCount = clampQuestionCount(quizQuestionCountInput?.value || quizFlowState.questionCount);
+  quizFlowState.questionCount = questionCount;
+  quizFlowState.template = quizTemplateSelect?.value || quizFlowState.template || "standard";
+  if (quizFlowState.step < 3) {
+    setQuizFlowStep(3, "Step 3: Confirm your selections before saving the quiz.");
+    setQuizStatus("Advance through each quiz flow step before saving.", "error");
+    return;
+  }
+  const sourceQuiz = quizFlowState.sourceQuizId ? findQuizById(quizFlowState.sourceQuizId) : null;
   const previousQuizzes = Array.isArray(quizStore?.quizzes) ? [...quizStore.quizzes] : [];
   try {
-    setQuizStatus(`Contacting OpenAI with ${currentLessonSelection.title}...`, "info");
-    const quiz = await generateQuizWithOpenAI(currentLessonSelection);
+    if (sourceQuiz) {
+      setQuizStatus("Preparing duplicate quiz details (step 3)...", "info");
+      const duplicatedQuiz = buildDuplicatedQuiz(sourceQuiz, { questionCount, template: quizFlowState.template });
+      const existing = Array.isArray(quizStore?.quizzes) ? quizStore.quizzes.filter(q => q.id !== duplicatedQuiz.id) : [];
+      quizStore.quizzes = [duplicatedQuiz, ...existing];
+      activeQuizId = duplicatedQuiz.id;
+      setQuizStatus("Encrypting and saving duplicated quiz...", "info");
+      const saved = await persistQuizStore();
+      if (!saved) {
+        quizStore.quizzes = previousQuizzes;
+        activeQuizId = previousQuizzes[0]?.id || null;
+        renderQuizList();
+        return;
+      }
+      setQuizStatus("Duplicated quiz saved and ready to review.", "success");
+      resetQuizFlowSource();
+      setQuizFlowStep(currentLessonSelection ? 2 : 1);
+      renderQuizList();
+      return;
+    }
+
+    setQuizStatus(`Starting quiz generation for ${currentLessonSelection.title} (step 3)...`, "info");
+    const quiz = await generateQuizWithOpenAI(currentLessonSelection, {
+      questionCount,
+      template: quizFlowState.template
+    });
     const existing = Array.isArray(quizStore?.quizzes) ? quizStore.quizzes.filter(q => q.id !== quiz.id) : [];
     quizStore.quizzes = [quiz, ...existing];
     activeQuizId = quiz.id;
@@ -2831,17 +2965,85 @@ async function startQuizGeneration() {
       return;
     }
     setQuizStatus(`Quiz saved for ${currentLessonSelection.title}.`, "success");
+    setQuizFlowStep(currentLessonSelection ? 2 : 1);
     renderQuizList();
   } catch (err) {
     console.error("Quiz generation failed", err);
     quizStore.quizzes = previousQuizzes;
     activeQuizId = previousQuizzes[0]?.id || null;
     renderQuizList();
+    const messagePrefix = sourceQuiz ? "Could not duplicate quiz" : "Could not generate quiz";
     const message = err?.message
-      ? `Could not generate quiz: ${err.message}`
+      ? `${messagePrefix}: ${err.message}`
       : "Could not generate or save the quiz. Unlock with your passphrase and try again.";
     setQuizStatus(message, "error");
   }
+}
+
+function handleQuizFlowNext() {
+  if (quizFlowState.step === 1 && !currentLessonSelection) {
+    setQuizStatus("Select a lesson to move to template selection.", "error");
+    setQuizFlowStep(1);
+    return;
+  }
+  if (quizFlowState.step === 2) {
+    quizFlowState.questionCount = clampQuestionCount(quizQuestionCountInput?.value || quizFlowState.questionCount);
+    if (quizQuestionCountInput) quizQuestionCountInput.value = quizFlowState.questionCount;
+  }
+  const nextStep = Math.min(quizFlowState.step + 1, 3);
+  const statusMessage = nextStep === 2
+    ? "Step 2: Choose a quiz template and question count."
+    : "Step 3: Confirm your selections and save the quiz.";
+  setQuizFlowStep(nextStep, statusMessage);
+}
+
+function handleQuizFlowBack() {
+  const prev = Math.max(1, quizFlowState.step - 1);
+  resetQuizFlowSource();
+  const statusMessage = prev === 1
+    ? "Step 1: Select a lesson to begin the quiz flow."
+    : "Step 2: Adjust the template or question count before confirming.";
+  setQuizFlowStep(prev, statusMessage);
+}
+
+function handleQuizTemplateChange() {
+  quizFlowState.template = quizTemplateSelect?.value || quizFlowState.template;
+  if (quizFlowState.step < 2) {
+    setQuizFlowStep(2, "Step 2: Template selected. Continue to confirm and save.");
+  } else {
+    updateQuizFlowUI();
+  }
+}
+
+function handleQuizQuestionCountChange() {
+  const safeValue = clampQuestionCount(quizQuestionCountInput?.value || quizFlowState.questionCount);
+  quizFlowState.questionCount = safeValue;
+  if (quizQuestionCountInput) quizQuestionCountInput.value = safeValue;
+}
+
+function beginDuplicateFromActive() {
+  if (!quizStatus) return;
+  if (!auth.currentUser) {
+    setQuizStatus("Sign in to duplicate a quiz.", "error");
+    return;
+  }
+  if (!derivedVaultKey) {
+    showPassphraseGate();
+    setQuizStatus("Unlock with your passphrase to duplicate quizzes.", "error");
+    return;
+  }
+  const sourceQuiz = getActiveQuiz();
+  if (!sourceQuiz) {
+    setQuizStatus("Select a saved quiz from the list to duplicate it.", "error");
+    return;
+  }
+  quizFlowState.sourceQuizId = sourceQuiz.id;
+  quizFlowState.template = sourceQuiz?.metadata?.template || "duplicate";
+  const sourceCount = Array.isArray(sourceQuiz.questions) ? sourceQuiz.questions.length : quizFlowState.questionCount;
+  quizFlowState.questionCount = clampQuestionCount(sourceCount || quizFlowState.questionCount);
+  if (quizTemplateSelect) quizTemplateSelect.value = quizFlowState.template;
+  if (quizQuestionCountInput) quizQuestionCountInput.value = quizFlowState.questionCount;
+  setQuizFlowStep(3, "Duplicating quiz: confirm the details and save.");
 }
 
 function updateCourseCardStatus(p) {
@@ -2910,12 +3112,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   setActiveSection("home");
   updateQuizContext();
   renderNotesSummary();
+  updateQuizFlowUI();
 
   document.getElementById("courseSearch")?.addEventListener("input", e => {
     renderCourses(filterCourses(allCourses, e.target.value));
   });
 
   quizLessonFilter?.addEventListener("input", renderQuizList);
+  quizTemplateSelect?.addEventListener("change", handleQuizTemplateChange);
+  quizQuestionCountInput?.addEventListener("change", handleQuizQuestionCountChange);
+  quizFlowNextBtn?.addEventListener("click", handleQuizFlowNext);
+  quizFlowBackBtn?.addEventListener("click", handleQuizFlowBack);
+  duplicateQuizBtn?.addEventListener("click", beginDuplicateFromActive);
 
   document.addEventListener("click", e => {
     const b = e.target;
