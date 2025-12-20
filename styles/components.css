@@ -1,3 +1,21 @@
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand__logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
 .brand h1 {
   color: var(--color-red);
   margin-bottom: 0.35rem;
@@ -272,6 +290,18 @@ nav a.active {
 footer a {
   color: var(--color-white);
   text-decoration: underline;
+}
+
+.footer-brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+}
+
+.footer-brand__logo {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
 }
 .lesson-list li:focus,
 .sidebar-header-icon:focus,
